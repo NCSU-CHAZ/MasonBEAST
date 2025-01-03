@@ -129,7 +129,7 @@ cbar=colorbar('EastOutside'); cbar.Label.String = 'RMSE (m)'; colormap("spring")
 
 %% Comparing GEMs with and without manual camera locations
 % Paths
-folderpath='/Users/bagaenzl/Desktop/MasonBEAST Data/PointClouds/';
+folderpath='/Users/bagaenzl/Desktop/Cam Comparison/';
 filePattern=fullfile(folderpath,'*.txt');
 listofFiles=dir(filePattern);
 tranfolderpath='/Users/bagaenzl/Desktop/MasonBEAST Data/surveys/';
@@ -166,7 +166,6 @@ for k=1:length(listofFiles)
     idx = arrayfun(fun,ptcld_struct);
     ptcld_struct(idx)=[]; % remove the empty elements
 end
-% (works fine up until here)
 
 % % create matrix for storing z values
 numframes=2;
@@ -195,14 +194,16 @@ for j=1:length(ptcld_struct)
         MeanGEMz(:,:,i) = ztemp; % median (or mean) values of all of the point cloud frames
         numpts(:,:,i) = ntemp;
         clear ztemp ntemp
+
     end
 
     GEMname=split(ptcld_struct(j).ptclds,'/');
-    GEMname=split(GEMname(7,1),'.');
+    GEMname=split(GEMname(6,1),'.');
     GEMname=GEMname(1,1);
     GEMname=string(GEMname);
-    GEMfilepath=append('/Users/bagaenzl/Desktop/MasonBEAST Data/GEM_comp_files/',GEMname);
+    GEMfilepath=append('/Users/bagaenzl/Desktop/Cam Comparison/',GEMname);
     save(GEMfilepath,"MeanGEMz",'-mat') % save z values from GEM as mat file
+
 
     % read in hand surveys
     transectfilepath=append(ptcld_struct(j).transects(1),ptcld_struct(j).transects(2),'_Transects_UTM.xlsx');
@@ -221,20 +222,20 @@ for j=1:length(ptcld_struct)
     save(ZtranMean_filepath,"ZtranMean",'-mat'); % save ztran values as mat file
 
     % Plot GEM with Hand Survey, Difference, and RMSE
-    comp_figfilepath=append('/Users/bagaenzl/Desktop/MasonBEAST Data/GEM_comp_files/',GEMname,'_comparison');
+    comp_figfilepath=append('/Users/bagaenzl/Desktop/Cam Comparison/',GEMname,'_comparison');
     % Need to specify size, and place to store it
     fig=figure; ax1=subplot(1,4,1);pcolor(Xgrid,Ygrid,MeanGEMz(:,:,1)); grid off; shading flat;
-    hold on; title("Averaged GEM Elevation Values"); colorbar;c1=clim;
+    hold on; title("Averaged GEM Elevation Values"); colorbar;caxis([0 5]);c1=clim;
     hold on; ax2=subplot(1,4,2);pcolor(Xgrid,Ygrid,ZtranMean); grid off; shading flat; title("Averaged Hand Transect Elevation Values");
-    colorbar;c2 = clim;
+    colorbar;caxis([0 5]);c2 = clim;
     %c2.Label.String = 'Elevation (m NAD83 (2011))'
     c=[min([c1(1) c2(1)]),max([c1(2) c2(2)])];
     subplot(1,4,1); colorbar off; subplot(1,4,2); colorbar off; cbar=colorbar('EastOutside'); cbar.Label.String = 'Elevation (m NAD83 (2011))';
-    hold on; ax3=subplot(1,4,3); pcolor(Xgrid,Ygrid,ZtranMean-MeanGEMz(:,:,1)); grid off; shading flat; title("Difference")
-    c3 = colorbar; colormap(ax3,"hot");
-    c3.Label.String = 'Difference in Elevation (m NAD83 (2011))'; hold on;
+    hold on; ax3=subplot(1,4,3); pcolor(Xgrid,Ygrid,ZtranMean-MeanGEMz(:,:,1)); grid off; shading flat; title("Hand Survey - GEM")
+    c3 = colorbar; caxis([0 0.3]); colormap(ax3,"hot");
+    c3.Label.String = 'Elevation (m NAD83 (2011))'; hold on;
     ax4=subplot(1,4,4); pcolor(Xgrid,Ygrid,rmse(MeanGEMz(:,:,1),ZtranMean,[58 68],"omitnan")); grid off; shading flat; title("RMSE per Bin");
-    c4=colorbar; colormap(ax4,"summer");c4.Label.String = 'RMSE (m NAD83 (2011))';
+    c4=colorbar; caxis([0 0.3]); colormap(ax4,"cool");c4.Label.String = 'RMSE (m NAD83 (2011))';
     linkaxes([ax1 ax2 ax3 ax4]);
     sgtitle(GEMname(1,1));
     set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 1, 0.96]);% Enlarge figure to full screen
@@ -246,58 +247,58 @@ for j=1:length(ptcld_struct)
     TF3=contains(ptcld_struct(j).ptclds,dates_wanted(3));
     % loop through and create plots to compare 1st frame of man cam and
     % norm GEM for each date
-        if TF1==1
-        cam_man=load(['/Users/bagaenzl/Desktop/MasonBEAST Data/GEM_comp_files/','1723489201189_cam_man_ptcld1']); % load manually camer loc GEM
+        if TF1==1 % This is 1723489201189
+        cam_man=load(['/Users/bagaenzl/Desktop/Cam Comparison/','1723489201189_cam_man_redo_ptcld1']); % load manually camer loc GEM
         norm=load(['/Users/bagaenzl/Desktop/MasonBEAST Data/GEM_comp_files/','1723489201189_ptcld1']); % load GEM
-        figfilepath=append('/Users/bagaenzl/Desktop/MasonBEAST Data/GEM_comp_files/',dates_wanted(1),'_camera_loc_comparison');
-        %plot
+        figfilepath=append('/Users/bagaenzl/Desktop/Cam Comparison/',dates_wanted(1),'_camera_loc_comparison');
+        % plot Camera input vs no cam input with difference
         fig=figure; ax1=subplot(1,3,1);pcolor(Xgrid,Ygrid,cam_man.MeanGEMz(:,:,2)); grid off; shading flat;
-        hold on; title("Manual Camera Location"); colorbar;c1=clim;
+        hold on; title("Manual Camera Location"); colorbar;caxis([0 5]);c1=clim;
         hold on; ax2=subplot(1,3,2);pcolor(Xgrid,Ygrid,norm.MeanGEMz(:,:,1)); grid off; shading flat; title("No Camera Location Input");
-        colorbar;c2 = clim;
+        colorbar;caxis([0 5]);c2 = clim;
         c=[min([c1(1) c2(1)]),max([c1(2) c2(2)])];
         subplot(1,3,1); colorbar off; subplot(1,3,2); colorbar off; cbar=colorbar('EastOutside'); cbar.Label.String = 'Elevation (m NAD83 (2011))';
-        hold on; ax3=subplot(1,3,3); pcolor(Xgrid,Ygrid,cam_man.MeanGEMz(:,:,1)-norm.MeanGEMz(:,:,1)); grid off; shading flat; title("Difference")
-        c3 = colorbar; colormap(ax3,"hot");
-        c3.Label.String = 'Difference in Elevation (m NAD83 (2011))'; hold on;
+        hold on; ax3=subplot(1,3,3); pcolor(Xgrid,Ygrid,cam_man.MeanGEMz(:,:,1)-norm.MeanGEMz(:,:,1)); grid off; shading flat; title("Camera - No Camera")
+        c3 = colorbar; caxis([0 0.2]);colormap(ax3,"hot");
+        c3.Label.String = 'Elevation (m NAD83 (2011))'; hold on;
         linkaxes([ax1 ax2 ax3]);
         sgtitle(dates_wanted(1));
         set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 1, 0.96]);% Enlarge figure to full screen
         saveas(fig,figfilepath,'png');
 
-        elseif TF2==1
-            cam_man=load(['/Users/bagaenzl/Desktop/MasonBEAST Data/GEM_comp_files/','1726772401770_cam_man_ptcld1']); % load manually camer loc GEM
+        elseif TF2==1 % This is 1726772401770
+            cam_man=load(['/Users/bagaenzl/Desktop/Cam Comparison/','1726772401770_cam_man_redo_ptcld1']); % load manually camer loc GEM
             norm=load(['/Users/bagaenzl/Desktop/MasonBEAST Data/GEM_comp_files/','1726772401770_redo_ptcld1']); % load GEM
-            figfilepath=append('/Users/bagaenzl/Desktop/MasonBEAST Data/GEM_comp_files/',dates_wanted(2),'_camera_loc_comparison');
+            figfilepath=append('/Users/bagaenzl/Desktop/Cam Comparison/',dates_wanted(2),'_camera_loc_comparison');
             %plot
-            fig=figure; ax1=subplot(1,3,1);pcolor(Xgrid,Ygrid,cam_man.MeanGEMz(:,:,1)); grid off; shading flat;
-            hold on; title("Manual Camera Location"); colorbar;c1=clim;
+            fig=figure; ax1=subplot(1,3,1);pcolor(Xgrid,Ygrid,cam_man.MeanGEMz(:,:,2)); grid off; shading flat;
+            hold on; title("Manual Camera Location"); colorbar;caxis([0 5]);c1=clim;
             hold on; ax2=subplot(1,3,2);pcolor(Xgrid,Ygrid,norm.MeanGEMz(:,:,1)); grid off; shading flat; title("No Camera Location Input");
-            colorbar;c2 = clim;
+            colorbar;caxis([0 5]);c2 = clim;
             c=[min([c1(1) c2(1)]),max([c1(2) c2(2)])];
             subplot(1,3,1); colorbar off; subplot(1,3,2); colorbar off; cbar=colorbar('EastOutside'); cbar.Label.String = 'Elevation (m NAD83 (2011))';
-            hold on; ax3=subplot(1,3,3); pcolor(Xgrid,Ygrid,cam_man.MeanGEMz(:,:,1)-norm.MeanGEMz(:,:,1)); grid off; shading flat; title("Difference")
-            c3 = colorbar; colormap(ax3,"hot");
-            c3.Label.String = 'Difference in Elevation (m NAD83 (2011))'; hold on;
+            hold on; ax3=subplot(1,3,3); pcolor(Xgrid,Ygrid,cam_man.MeanGEMz(:,:,1)-norm.MeanGEMz(:,:,1)); grid off; shading flat; title("Camera - No Camera")
+            c3 = colorbar; caxis([0 0.2]);colormap(ax3,"hot");
+            c3.Label.String = 'Elevation (m NAD83 (2011))'; hold on;
             linkaxes([ax1 ax2 ax3]);
             sgtitle(dates_wanted(2));
             set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 1, 0.96]);% Enlarge figure to full screen
             saveas(fig,figfilepath,'png');
 
-        elseif TF3==1
-            cam_man=load(['/Users/bagaenzl/Desktop/MasonBEAST Data/GEM_comp_files/','1730736001873_cam_man_ptcld1']); % load manually camer loc GEM
+        elseif TF3==1 % This is 1730736001873
+            cam_man=load(['/Users/bagaenzl/Desktop/Cam Comparison/','1730736001873_cam_man_redo_ptcld1']); % load manually camer loc GEM
             norm=load(['/Users/bagaenzl/Desktop/MasonBEAST Data/GEM_comp_files/','1730736001873_ptcld1']); % load GEM
-            figfilepath=append('/Users/bagaenzl/Desktop/MasonBEAST Data/GEM_comp_files/',dates_wanted(3),'_camera_loc_comparison');
-            %plot
-            fig=figure; ax1=subplot(1,3,1);pcolor(Xgrid,Ygrid,cam_man.MeanGEMz(:,:,1)); grid off; shading flat;
-            hold on; title("Manual Camera Location"); colorbar;c1=clim;
+            figfilepath=append('/Users/bagaenzl/Desktop/Cam Comparison/',dates_wanted(3),'_camera_loc_comparison');
+        %plot
+            fig=figure; ax1=subplot(1,3,1);pcolor(Xgrid,Ygrid,cam_man.MeanGEMz(:,:,2)); grid off; shading flat;
+            hold on; title("Manual Camera Location"); colorbar;caxis([0 5]);c1=clim;
             hold on; ax2=subplot(1,3,2);pcolor(Xgrid,Ygrid,norm.MeanGEMz(:,:,1)); grid off; shading flat; title("No Camera Location Input");
-            colorbar;c2 = clim;
+            colorbar;caxis([0 5]);c2 = clim;
             c=[min([c1(1) c2(1)]),max([c1(2) c2(2)])];
             subplot(1,3,1); colorbar off; subplot(1,3,2); colorbar off; cbar=colorbar('EastOutside'); cbar.Label.String = 'Elevation (m NAD83 (2011))';
-            hold on; ax3=subplot(1,3,3); pcolor(Xgrid,Ygrid,cam_man.MeanGEMz(:,:,1)-norm.MeanGEMz(:,:,1)); grid off; shading flat; title("Difference")
-            c3 = colorbar; colormap(ax3,"hot");
-            c3.Label.String = 'Difference in Elevation (m NAD83 (2011))'; hold on;
+            hold on; ax3=subplot(1,3,3); pcolor(Xgrid,Ygrid,cam_man.MeanGEMz(:,:,1)-norm.MeanGEMz(:,:,1)); grid off; shading flat; title("Camera - No Camera")
+            c3 = colorbar; caxis([0 0.2]);colormap(ax3,"hot");
+            c3.Label.String = 'Elevation (m NAD83 (2011))'; hold on;
             linkaxes([ax1 ax2 ax3]);
             sgtitle(dates_wanted(3));
             set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 1, 0.96]);% Enlarge figure to full screen
