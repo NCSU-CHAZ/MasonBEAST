@@ -15,7 +15,7 @@ function[handsurvey_grid_mean,handsurvey_grid_med]=GEM_compare(GEMmat_path,camlo
 % camlocB = camera B location coordinates [Bx,By]
 % dxy = grid bin size (m)
 %
-% hand_survey_path = path to hand survey
+% hand_survey_path = path to hand survey folder
 %%%%% Hand surveys need to be in the order of (Elevation, Northing,
 %%%%% Easting)
 % GCPpath = path to GCP location (.txt file) THIS IS NOT ADDED IN YET BUT
@@ -75,37 +75,40 @@ GEMdate=string(GEMdate);
 GEMtitle=append(GEMname,',',GEMdate);
 
 %--------------------------------------------------------------------------
-
 % read in hand surveys
-handtran=readmatrix(hand_survey_path);
-Xtran=handtran(:,3); % Easting
-Ytran=handtran(:,2); % Northing
-Ztran=handtran(:,1); % Elevation (meters)
+listofsurveys=dir(hand_survey_path);
+for i=1:length(listofsurveys)
+    hand_survey=append(listofsurveys(i).folder,listofsurveys(i).name);
+    handtran=readmatrix(hand_survey);
+    Xtran=handtran(:,3); % Easting
+    Ytran=handtran(:,2); % Northing
+    Ztran=handtran(:,1); % Elevation (meters)
 
-% Hand survey date
-HSdate=split(hand_survey_path,'/');
-HSdate=HSdate(7,1);
-HSdate=split(HSdate,'_');
-HSdate=append(HSdate(1,1),HSdate(2,1),HSdate(3,1));
-HSdate=string(HSdate);
+    % Hand survey date
+    HSdate=split(hand_survey(i),'/');
+    HSdate=HSdate(7,1);
+    HSdate=split(HSdate,'_');
+    HSdate=append(HSdate(1,1),HSdate(2,1),HSdate(3,1));
+    HSdate=string(HSdate);
 
-% Rotate Hand Survey 
-% coordinate rotation and transformation x,y to cross- and alongshore
-[Xrottran, Yrottran] = rotateCoordinates(Xtran,Ytran, Xloc, Yloc, rotang);
+    % Rotate Hand Survey 
+    % coordinate rotation and transformation x,y to cross- and alongshore
+    [Xrottran, Yrottran] = rotateCoordinates(Xtran,Ytran, Xloc, Yloc, rotang);
 
-% Calculate average Z value for hand surveys
-[ZtranMean,TranNumpts]=roundgridfun(Xrottran,Yrottran,Ztran,Xgrid,Ygrid,@mean);
-ZtranMean(ZtranMean==0)=NaN;
-handsurvey_grid_mean=ZtranMean;
-HSGmean_filepath=fullfile(HS_savepath,[append(HSdate,'mean','.mat')]);
-save(HSGmean_filepath,"handsurvey_grid_mean") % save mean z values from hand survey as mat file
+    % Calculate average Z value for hand surveys
+    [ZtranMean,TranNumpts]=roundgridfun(Xrottran,Yrottran,Ztran,Xgrid,Ygrid,@mean);
+    ZtranMean(ZtranMean==0)=NaN;
+    handsurvey_grid_mean=ZtranMean;
+    HSGmean_filepath=fullfile(HS_savepath,[append(HSdate,'mean','.mat')]);
+    save(HSGmean_filepath,"handsurvey_grid_mean") % save mean z values from hand survey as mat file
 
-% Calculate the median Z value for hand surveys
-[ZtranMed,TranNumpts]=roundgridfun(Xrottran,Yrottran,Ztran,Xgrid,Ygrid,@median);
-ZtranMed(ZtranMed==0)=NaN;
-handsurvey_grid_med=ZtranMed;
-HSGmed_filepath=fullfile(HS_savepath,[append(HSdate,'med','.mat')]);
-save(HSGmed_filepath,"handsurvey_grid_med") % save mean z values from hand survey as mat file
+    % Calculate the median Z value for hand surveys
+    [ZtranMed,TranNumpts]=roundgridfun(Xrottran,Yrottran,Ztran,Xgrid,Ygrid,@median);
+    ZtranMed(ZtranMed==0)=NaN;
+    handsurvey_grid_med=ZtranMed;
+    HSGmed_filepath=fullfile(HS_savepath,[append(HSdate,'med','.mat')]);
+    save(HSGmed_filepath,"handsurvey_grid_med") % save mean z values from hand survey as mat file
+end
 
 % --------------------------------------------------------------------------
 
