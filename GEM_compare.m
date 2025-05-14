@@ -67,10 +67,10 @@ meanGEMz=[meanGEMz.meanGEMz];
 
 % GEM name and date
 GEMname=split(GEMmat_path,'/');
-GEMname=GEMname(7,1);
+GEMname=GEMname(12,1);
 GEMname=string(GEMname);
 
-GEMdate=datetime(str2num(GEMname),'ConvertFrom','epochtime');
+GEMdate=datetime(str2num(GEMname),'ConvertFrom','epochtime','TicksPerSecond',1000);
 GEMdate=string(GEMdate);
 GEMtitle=append(GEMname,',',GEMdate);
 
