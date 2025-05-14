@@ -57,7 +57,7 @@ gridY = -80:dxy:25;
 % camera rotation and transformation
 [CamAx, CamAy] = rotateCoordinates(camlocA(1), camlocA(2), Xloc, Yloc, rotang);
 [CamBx, CamBy] = rotateCoordinates(camlocB(1), camlocB(2), Xloc, Yloc, rotang);
-% ---------------------------------------------------------------------------
+% 
 % Loop through given pointclouds
 filePattern=fullfile(pcpath,spec);
 listofFiles=dir(filePattern);
@@ -66,6 +66,7 @@ ptcld_struct=struct(); % structure to store wanted ptclds in
 for k=1:length(listofFiles)
     baseFilename=listofFiles(k).name;
     fullFilename=fullfile(listofFiles(k).folder,baseFilename);
+    fprintf(1, 'Now reading %s\n', fullFilename);
     % for i=1:length(dates_wanted)
     %     transectFilename=[tranfolderpath,transects_wanted(i)];
     %     TF=contains(baseFilename,dates_wanted(i));
@@ -76,7 +77,7 @@ for k=1:length(listofFiles)
     % end
 end
 
-% -------------------------------------------------------------------------------------------
+%
 % Create median and mean GEM using the Pointcloud (Modified from CM Baker)
 % point cloud is in NAVD83 (2011) UTM Zone 18 N EPSG 6347
 
@@ -111,23 +112,26 @@ for j=1:length(listofFiles)
         clear ztemp ntemp
 
     end
+
     % save mean and median elevation values
     GEMname=split(listofFiles(j).name,'_');
     GEMname=GEMname(1,1);
     GEMname=string(GEMname);
-    GEMdate=datetime(str2num(GEMname),'ConvertFrom','epochtime');
+    GEMdate=datetime(str2num(GEMname),'ConvertFrom','epochtime','TicksPerSecond',10000);
     GEMdate=string(GEMdate);
     GEMtitle=append(GEMname,',',GEMdate);
     GEMfilepath=append(GEMsavepath,GEMname,'/');
+
     % check if folder exists and save
     if isfolder(GEMfilepath) == true
         save GEMfilepath meanGEMz medGEMz;
     else
         mkdir(GEMfilepath);
     end 
-    matname=fullfile(GEMfilepath,['meanGEMz.mat']);
+
+    matname=fullfile(GEMfilepath,'meanGEMz.mat');
     save(matname,'meanGEMz')
-    matname=fullfile(GEMfilepath,['medGEMz.mat']);
+    matname=fullfile(GEMfilepath,'medGEMz.mat');
     save(matname,'medGEMz')
 
     % Plotting GEM with mean elevation
@@ -146,7 +150,9 @@ for j=1:length(listofFiles)
     set(hc,'fontsize',ftsz(2),'linewidth',lw);
     set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 1, 0.96]); % Enlarge figure to full screen
     title(GEMtitle);
-    meanfigpath=append(figpath,"/mean",GEMname);
+    filename=append('mean',GEMname);
+    meanfigpath=fullfile(figpath, filename);
+    %meanfigpath=append(figpath,"/mean",GEMname);
     saveas(fig,meanfigpath,'png');
 
     % Plotting GEM with median elevation
@@ -155,7 +161,7 @@ for j=1:length(listofFiles)
     pcolor(Xgrid,Ygrid,medGEMz(:,:,1)); grid off;box on;hold on
     %scatter(GCPx,GCPy,60,'fill','r','MarkerEdgeColor','k') (need to figure
     %out how to specifiy GCPs/do we need?)
-   scatter(CamAx,CamAy,60,'fill','sq','m','MarkerEdgeColor','k');
+    scatter(CamAx,CamAy,60,'fill','sq','m','MarkerEdgeColor','k');
     text(CamAx(1)+0.5, CamAy(1), 'Cam A', 'FontSize', 12, 'Color', 'm');
     scatter(CamBx,CamBy,60,'fill','sq','m','MarkerEdgeColor','k');
     text(CamBx(1)+0.5, CamBy(1), 'Cam B', 'FontSize', 12, 'Color', 'm'); shading interp;
@@ -164,12 +170,12 @@ for j=1:length(listofFiles)
     set(hc,'fontsize',ftsz(2),'linewidth',lw);
     set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 1, 0.96]); % Enlarge figure to full screen
     title(GEMtitle);
-    medfigpath=append(figpath,"/med",GEMname);
+    filename=append('med',GEMname);
+    medfigpath=fullfile(figpath, filename);
+    %meanfigpath=append(figpath,"/mean",GEMname);
     saveas(fig,medfigpath,'png');
 
 end
-
-
 
 
 %% TEST
