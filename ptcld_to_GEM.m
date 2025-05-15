@@ -191,3 +191,8 @@ end
 % spec='1702827001820_ptcld1.txt';
 % 
 % [meanGEMz,medGEMz]=ptcld_to_GEM(camlocA,camlocB,dxy,numframes,pcpath,GEMsavepath,figpath,spec);
+
+
+%% Edits NEEDED
+% increase font size 
+% sve a figure per frame

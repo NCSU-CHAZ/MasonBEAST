@@ -153,3 +153,6 @@ for i=1:numframes
     saveas(fig,medfigpath,'png');
 end
 
+%% Edits Needed 
+% reduce whitespace between plots
+% increase font size
