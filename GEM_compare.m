@@ -67,7 +67,7 @@ meanGEMz=[meanGEMz.meanGEMz];
 
 % GEM name and date
 GEMname=split(GEMmat_path,'/');
-GEMname=GEMname(12,1);
+GEMname=GEMname(10,1);
 GEMname=string(GEMname);
 
 GEMdate=datetime(str2num(GEMname),'ConvertFrom','epochtime','TicksPerSecond',1000);
@@ -76,17 +76,15 @@ GEMtitle=append(GEMname,',',GEMdate);
 
 %--------------------------------------------------------------------------
 % read in hand surveys
-listofsurveys=dir(hand_survey_path);
-for i=1:length(listofsurveys)
-    hand_survey=append(listofsurveys(i).folder,listofsurveys(i).name);
-    handtran=readmatrix(hand_survey);
+
+    handtran=readmatrix(hand_survey_path);
     Xtran=handtran(:,3); % Easting
     Ytran=handtran(:,2); % Northing
     Ztran=handtran(:,1); % Elevation (meters)
 
     % Hand survey date
-    HSdate=split(hand_survey(i),'/');
-    HSdate=HSdate(7,1);
+    HSdate=split(hand_survey_path,'/');
+    HSdate=HSdate(9,1);
     HSdate=split(HSdate,'_');
     HSdate=append(HSdate(1,1),HSdate(2,1),HSdate(3,1));
     HSdate=string(HSdate);
@@ -108,7 +106,7 @@ for i=1:length(listofsurveys)
     handsurvey_grid_med=ZtranMed;
     HSGmed_filepath=fullfile(HS_savepath,[append(HSdate,'med','.mat')]);
     save(HSGmed_filepath,"handsurvey_grid_med") % save mean z values from hand survey as mat file
-end
+
 
 % --------------------------------------------------------------------------
 
