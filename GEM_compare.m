@@ -131,7 +131,7 @@ for i=1:numframes
     % Mean
     meanfigpath=append(figpath,"/mean_comp_",GEMname,'_',string(i));
 
-    t=tiledlayout('horizontal');nextile;
+    t=tiledlayout('horizontal');nexttile;
     %fig=figure; ax1=subplot(1,2,1);
     pcolor(Xgrid,Ygrid,meanGEMz(:,:,i)); grid off; shading flat;
     hold on; title("Averaged GEM Elevation Values"); colorbar;caxis([0 5]);c1=clim; hold on;
@@ -142,22 +142,22 @@ for i=1:numframes
     %linkaxes([ax1 ax2]);sgtitle(append(GEMname,',',GEMdate)); 
     title(t,append(GEMname,',',GEMdate));ylabel(t,'Alongshore (m)');xlabel(t,'Cross-shore (m)');
     set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 1, 0.96]);% Enlarge figure to full screen
-    rmse_txt=num2str(rmse_mean(i)); rmse_txt=append('RMSE = ', rmse_txt); annotation('textbox',[0.911904761904759,0.07001239157373,0.100000000000001,0.2],'String',rmse_txt,'EdgeColor','none','FontSize',28);
+    rmse_txt=num2str(rmse_mean(i)); rmse_txt=append('RMSE = ', rmse_txt); annotation('textbox',[0.531589801274837,0.07001239157373,0.100000000000001,0.2],'String',rmse_txt,'EdgeColor','none','FontSize',28);
     saveas(t,meanfigpath,'png');
 
     % Median
     medfigpath=append(figpath,"/med_comp_",GEMname,'_',string(i));
-
-    fig=figure; ax1=subplot(1,2,1);pcolor(Xgrid,Ygrid,medGEMz(:,:,i)); grid off; shading flat;
+    t=tiledlayout('horizontal');nexttile;
+    %fig=figure; ax1=subplot(1,2,1);
+    pcolor(Xgrid,Ygrid,medGEMz(:,:,i)); grid off; shading flat;
     hold on; title("Median GEM Elevation Values"); colorbar;caxis([0 5]);c1=clim; hold on;
-    ax2=subplot(1,2,2);pcolor(Xgrid,Ygrid,ZtranMean); grid off; shading flat; title("Gridded Hand Transect Elevation Values");
+    %ax2=subplot(1,2,2);
+    nexttile;
+    pcolor(Xgrid,Ygrid,ZtranMean); grid off; shading flat; title("Gridded Hand Transect Elevation Values");
     a=colorbar();caxis([0 5]);c2 = clim; a.Label.String = 'Elevation (m NAD83 (2011))';
-    linkaxes([ax1 ax2]);sgtitle(append(GEMname,',',GEMdate)); % need to figure out GEM name here
+    %linkaxes([ax1 ax2]);sgtitle(append(GEMname,',',GEMdate));
+    title(t,append(GEMname,',',GEMdate));ylabel(t,'Alongshore (m)');xlabel(t,'Cross-shore (m)');
     set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 1, 0.96]);% Enlarge figure to full screen
-    rmse_txt=num2str(rmse_med(i)); rmse_txt=append('RMSE = ', rmse_txt); annotation('textbox',[0.911904761904759,0.07001239157373,0.100000000000001,0.2],'String',rmse_txt,'EdgeColor','none','FontSize',28);
+    rmse_txt=num2str(rmse_med(i)); rmse_txt=append('RMSE = ', rmse_txt); annotation('textbox',[0.531589801274837,0.07001239157373,0.100000000000001,0.2],'String',rmse_txt,'EdgeColor','none','FontSize',28);
     saveas(fig,medfigpath,'png');
 end
-
-%% Edits Needed 
-% reduce whitespace between plots
-% increase font size
