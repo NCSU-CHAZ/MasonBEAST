@@ -185,7 +185,9 @@ end
 % numframes=2;
 % 
 % pcpath='/Users/bagaenzl/Desktop/MasonBEAST Data/PointClouds/';
+% /Volumes/kanarde-1/MasonBEAST/data/PointClouds
 % GEMsavepath='/Users/bagaenzl/Desktop/MasonBEAST Data/GEM_mat_files/';
+%/Volumes/kanarde-1/MasonBEAST/data/GEMs/Camera_Location_Analysis
 % figpath='/Users/bagaenzl/Desktop/MasonBEAST Data/Figures';
 % 
 % spec='1702827001820_ptcld1.txt';
