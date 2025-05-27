@@ -51,14 +51,15 @@ surveypath=append(CAM_analysispath,'/Surveys');
 % '2024_09_18_Transects_UTM.xlsx' '2024_10_01_Transects_UTM.xlsx'
 % '2024_11_04_Transects_UTM.xlsx' '2025_01_29_Transects_UTM.xlsx'
 
+% survey path
+hand_survey_path=append(surveypath,'/2024_11_04_Transects_UTM.xlsx');
 % metashape
-GEMmat_path=append(metashape_path,'/1734181201371/');
+GEMmat_path=append(metashape_path,'/1730736001873/');
 figpath=append(metashape_path,'Figures');
+[handsurvey_grid_mean,handsurvey_grid_med]=GEM_compare(GEMmat_path,camlocA,camlocB,dxy,hand_survey_path,HS_savepath,figpath);
 % measured
-GEMmat_path=append(measured_path,'/1734181201371/');
+GEMmat_path=append(measured_path,'/1730736001873/');
 figpath=append(measured_path,'Figures');
-
-hand_survey_path=append(surveypath,'/2025_01_29_Transects_UTM.xlsx');
 [handsurvey_grid_mean,handsurvey_grid_med]=GEM_compare(GEMmat_path,camlocA,camlocB,dxy,hand_survey_path,HS_savepath,figpath);
 
 
