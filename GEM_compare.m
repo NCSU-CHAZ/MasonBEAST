@@ -130,9 +130,9 @@ end
 for i=1:numframes
     % Mean
     meanfigpath=append(figpath,"/mean_comp_",GEMname,'_',string(i));
-
+    fig=figure;
     t=tiledlayout('horizontal');nexttile;
-    %fig=figure; ax1=subplot(1,2,1);
+    %ax1=subplot(1,2,1);
     pcolor(Xgrid,Ygrid,meanGEMz(:,:,i)); grid off; shading flat;
     hold on; title("Averaged GEM Elevation Values"); colorbar;caxis([0 5]);c1=clim; hold on;
     %ax2=subplot(1,2,2);
@@ -147,8 +147,9 @@ for i=1:numframes
 
     % Median
     medfigpath=append(figpath,"/med_comp_",GEMname,'_',string(i));
+    fig=figure;
     t=tiledlayout('horizontal');nexttile;
-    %fig=figure; ax1=subplot(1,2,1);
+    % ax1=subplot(1,2,1);
     pcolor(Xgrid,Ygrid,medGEMz(:,:,i)); grid off; shading flat;
     hold on; title("Median GEM Elevation Values"); colorbar;caxis([0 5]);c1=clim; hold on;
     %ax2=subplot(1,2,2);
@@ -159,5 +160,5 @@ for i=1:numframes
     title(t,append(GEMname,',',GEMdate));ylabel(t,'Alongshore (m)');xlabel(t,'Cross-shore (m)');
     set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 1, 0.96]);% Enlarge figure to full screen
     rmse_txt=num2str(rmse_med(i)); rmse_txt=append('RMSE = ', rmse_txt); annotation('textbox',[0.531589801274837,0.07001239157373,0.100000000000001,0.2],'String',rmse_txt,'EdgeColor','none','FontSize',28);
-    saveas(fig,medfigpath,'png');
+    saveas(t,medfigpath,'png');
 end
