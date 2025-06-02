@@ -14,7 +14,7 @@ dxy = 0.5; % meter
 numframes=2;
 
 % Loop through Metashape pointclouds
-spec='*1734181201371_meta_ptcld*';
+spec='*1713452401874_meta_ptcld*';
 figpath=append(metashape_path,'Figures');
 [meanGEMz,medGEMz]=ptcld_to_GEM(camlocA,camlocB,dxy,numframes,pcpath,metashape_path,figpath,spec);
 
@@ -34,7 +34,7 @@ figpath=append(metashape_path,'Figures');
 %end
 
 % Loop through Measured pointclouds
-spec='*1734181201371_meas_ptcld*';
+spec='*1713452401874_meas_ptcld*';
 figpath=append(measured_path,'Figures');
 [meanGEMz,medGEMz]=ptcld_to_GEM(camlocA,camlocB,dxy,numframes,pcpath,measured_path,figpath,spec);
 
@@ -42,7 +42,7 @@ figpath=append(measured_path,'Figures');
 % GEM comparison manually
 HS_savepath=append(genpath,'/Surveys/rotated_surveys');
 surveypath=append(CAM_analysispath,'/Surveys');
-% epoch nums: 1708030441768, 1711479601066, 1717156801902,
+% epoch nums: 1708030441768, 1711479601066,1713452401874, 1717156801902,
 % 1719428401397,1721934001780, 1723489201189, 1726772401770, 1728561601419,
 % 1730736001873, 1734181201371
 % survey names: '2024_03_26_Transects_UTM.xlsx'
@@ -52,13 +52,13 @@ surveypath=append(CAM_analysispath,'/Surveys');
 % '2024_11_04_Transects_UTM.xlsx' '2025_01_29_Transects_UTM.xlsx'
 
 % survey path
-hand_survey_path=append(surveypath,'/2024_11_04_Transects_UTM.xlsx');
+hand_survey_path=append(surveypath,'/2024_03_26_Transects_UTM.xlsx');
 % metashape
-GEMmat_path=append(metashape_path,'/1730736001873/');
+GEMmat_path=append(metashape_path,'/1713452401874/');
 figpath=append(metashape_path,'Figures');
 [handsurvey_grid_mean,handsurvey_grid_med]=GEM_compare(GEMmat_path,camlocA,camlocB,dxy,hand_survey_path,HS_savepath,figpath);
 % measured
-GEMmat_path=append(measured_path,'/1730736001873/');
+GEMmat_path=append(measured_path,'/1713452401874/');
 figpath=append(measured_path,'Figures');
 [handsurvey_grid_mean,handsurvey_grid_med]=GEM_compare(GEMmat_path,camlocA,camlocB,dxy,hand_survey_path,HS_savepath,figpath);
 
