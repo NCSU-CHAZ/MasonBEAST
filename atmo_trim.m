@@ -10,8 +10,8 @@ function[Patmos]=atmo_trim(atmospress, atmostime,RBR_structure,start_time,end_ti
 % atmospress = array of atmospheirc pressure data in mbar
 % atmostime = array of time points correlating to atmospress
 % RBR_structure = structure from RSKreaddata
-% start_time = collection start time in string format 'yyyy-mm-dd-HH-MM'
-% end_time = collection end time in string format 'yyyy-mm-dd-HH-MM'
+% start_time = collection start time in string format 'yyyy-mm-dd-HH-MM-ss'
+% end_time = collection end time in string format 'yyyy-mm-dd-HH-MM-ss'
 % 
 % OUTPUTS:
 % ---------
@@ -22,7 +22,7 @@ function[Patmos]=atmo_trim(atmospress, atmostime,RBR_structure,start_time,end_ti
 mbar2dbar=0.01; 
 
 % Convert start and end time to dateime
-format_in='yyyy-mm-dd-HH-MM';
+format_in='yyyy-mm-dd-HH-MM-ss';
 start_time=datenum(start_time,format_in);
 end_time=datenum(end_time,format_in);
 
