@@ -12,6 +12,8 @@ RBRpath=append(stormpath,'RBRs/','209244_20240918_1723'); % path to RBR data
 dbar2Pa = 1000; % conversion from dbar to Pa
 fs=16; % sampling frequency
 window_length=3600; % one hour windows (s)
+nw = 6; % bandwidth product
+taper_type='Slepian'; % slepian tapers
 
 % Read in data
 RBR_structure=RSKopen(RBRpath);
@@ -31,5 +33,6 @@ end_time='2024-09-18-17-22-00'; % sept 18 2024, 5:22:00 PM (end of final bucket 
 RBR_structure=RSKderiveseapressure(RBR_structure,'patm',Patmos); % (remove atmospheric pressure)
 RBR_pressure = RBR_structure.data.values(:,2).*dbar2Pa; % guage pressure (Pa)
 
-% Calculate power spectra
+% Calculate pressure power spectra
 [P_window,nburst,NFFT]=window_data(fs,window_length,RBR_pressure); % window guage pressure data
+[pxx,f]=calc_spectra(P_window,nw,nbursts,NFFT,fs,taper_type); % calculate power spectra
