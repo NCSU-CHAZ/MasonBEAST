@@ -1,4 +1,4 @@
-function[win_data]=window_data(fs,window_length,data)
+function[win_data,nbursts]=window_data(fs,window_length,data)
 % function[win_data]=window_data(fs,window_length,data)
 % 
 % This function takes in a data array of one column of a creates a matrix
@@ -13,6 +13,7 @@ function[win_data]=window_data(fs,window_length,data)
 % OUTPUTS:
 % ---------
 % win_data = windowed data matrix
+% nbursts = number of bursts per window
 % 
 
 window=window_length*fs; 
