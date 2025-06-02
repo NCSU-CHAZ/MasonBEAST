@@ -1,4 +1,4 @@
-function[win_data,nbursts]=window_data(fs,window_length,data)
+function[win_data,nbursts, NFFT]=window_data(fs,window_length,data)
 % function[win_data]=window_data(fs,window_length,data)
 % 
 % This function takes in a data array of one column of a creates a matrix
@@ -14,11 +14,15 @@ function[win_data,nbursts]=window_data(fs,window_length,data)
 % ---------
 % win_data = windowed data matrix
 % nbursts = number of bursts per window
+% NFFT = number of FFT points
 % 
 
 window=window_length*fs; 
 nbursts = floor(length(data)/window); % number of bursts in datasets (rounded to nearest whole number)
+N=floor(log2(length(data)));
+NFFT= 2^N; % number of FFT points
 win_data= deal(NaN(window,nbursts)); % preallocate array
+
 
 windct=0;
 for i=1:nbursts
