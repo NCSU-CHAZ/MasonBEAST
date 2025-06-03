@@ -16,7 +16,8 @@ dbar2Pa = 1000; % conversion from dbar to Pa
 fs=16; % sampling frequency
 window_length=3600; % one hour windows (s)
 nw = 6; % bandwidth product
-taper_type='Slepian'; % slepian tapers
+taper_type='slepian'; % slepian tapers
+h_inst=0; % height of instrument (m) (0 because it's bottom mounted)
 
 % Read in data
 RBR_structure=RSKopen(RBRpath);
@@ -38,6 +39,12 @@ RBR_pressure = RBR_structure.data.values(:,2).*dbar2Pa; % guage pressure (Pa)
 RBR_gpress_filepath=fullfile(savepath,[append('RBR_guage_09052024_09182024','.mat')]);
 save(RBR_gpress_filepath,"RBR_pressure") ;
 
+% Calculate dynamic pressure and save
+[dyn_press,MWL]=dynpress(RBR_pressure,h_inst);
+RBR_dpress_filepath=fullfile(savepath,[append('RBR_dyn_09052024_09182024','.mat')]);
+save(RBR_dpress_filepath,"dyn_press") ;
+clear RBR_pressure;
+
 % Calculate pressure power spectra
-[P_window,nburst,NFFT]=window_data(fs,window_length,RBR_pressure); % window guage pressure data
-[pxx,f]=calc_spectra(P_window,nw,nbursts,NFFT,fs,taper_type); % calculate power spectra
+[P_window,nburst,NFFT]=window_data(fs,window_length,dyn_press); % window guage pressure data
+[pxx,f]=calc_spectra(P_window,nw,nburst,NFFT,fs,taper_type); % calculate power spectra
