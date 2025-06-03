@@ -1,0 +1,25 @@
+function[dyn_press,MWL]=dynpress(guagepress,h_inst)
+% function[dyn_press,MWL]=dynpress(guagepress,h_inst)
+% 
+% This function calculates the dynamic pressure from a given guage pressure
+% vector (absolute - atmospheric). 
+% 
+% INPUTS:
+% -------
+% guagepress = windowed guage pressure vector (Pa)
+% h_inst = height of instrument (0 if bottom mounted)
+% 
+% OUTPUTS:
+% ---------
+% dyn_press = vector of dynamic pressure data (Pa)
+% MWL = mean water level (m)
+
+% constants
+rho = 1024; % density of sea water (kg/m^3)
+g = 9.81; % gravitational constant (m/s^2)
+
+% calculate dynamic pressure
+dyn_press = guagepress - repmat(mean(guagepress),length(guagepress),1);
+
+% calculate mean water level (m) 
+MWL=(mean(guagepress)/(rho*g))+h_inst;
