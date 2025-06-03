@@ -26,9 +26,10 @@ format_in='yyyy-mm-dd-HH-MM-ss';
 start_time=datenum(start_time,format_in);
 end_time=datenum(end_time,format_in);
 
+atmostime=datenum(atmostime);
 
 % Trim to start and end times
-time_trim=find(atmostime>=start_time & atmostime<= end_time);
+time_trim=find(atmostime>= start_time & atmostime<= end_time);
 atmostime=atmostime(time_trim);
 atmospress=atmospress(time_trim);
 
