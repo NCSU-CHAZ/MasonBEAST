@@ -1,29 +1,51 @@
-function[wave_video]=tran_video(ztranpath,figpath)
+function[wave_video]=tran_video(GEMpath,yavg,dxy,ypick,figpath)
 %function[wave_video]=tran_video(ztranpath)
 % 
-% This function takes in a matrix of transect elevation values per frame at the same
-% location and creates a video showing timesteps of 1 second. The lowest
-% transect values are used as the bed surface of the beach, whereas the
-% rest are depicted as incoming waves.
+% This function takes in a GEM and creates a video showing timesteps of 1 
+% second a specified transect. The lowest transect values are used as 
+% the bed surface of the beach, whereas the rest are depicted as 
+% incoming waves.
 % 
 % INPUTS:
 % ---------
-% ztranpath = path to matrix of transect elevation values (m) 
-% [elevation values (z),frame number]
-% 
+% GEMpath = path to GEM mat files 
+% yavg = width of transect in alongshore direction (m)
+% dxy = matrix bin size
+% ypick = transect location [x y] format
 % figpath = path to save video to
 % 
 % OUTPUTS: 
 % ----------
 % wave_video = video of wave by wave interactions with the bed
 
-% load z transect
-ztran=load(ztranpath);
-ztran=ztran.ztran;
+% Constants
+xloc=239737;
+yloc=3784751;
+rotang=35;
+iyavg=round(yavg/dxy/2); % indices to pull out before and after transect to average over
+figfolder=figpath;
+
+% Load GEM
+GEMz=load(GEMpath);
+GEMz=GEMz.meanGEMz;
+
+% GEM name
+GEMname=split(GEMpath,'/');
+GEMname=GEMname(9,1);
+GEMname=string(GEMname);
+GEMdate=datetime(str2num(GEMname),'ConvertFrom','epochtime','TicksPerSecond',1000);
+GEMdate=string(GEMdate);
+GEMtitle=append(GEMname,',',GEMdate);
+
+
+% create and rotate grid 
+gridX=0:dxy:110;
+gridY=-80:dxy:25;
+[x,y]=meshgrid(gridX,gridY);
 
 % extranct transect 1
 [~,iy] = min(abs(y(:,1)-ypick(1)));
-ztran = median(z(iy-iyavg:iy+iyavg,:,:),1,'omitnan');
+ztran = median(GEMz(iy-iyavg:iy+iyavg,:,:),1,'omitnan');
 ztran = squeeze(ztran);
 ztran = movmean(ztran,2,1,'omitnan');
 
@@ -42,11 +64,11 @@ ztran(ztran-zbeach < 0.04)  = NaN; % NaN out z elevations if they're within 4 cm
 % remove values that are less than 5 indeces long (removes features that
 % are intermittant -- likely remove this in future. This is just to improve
 % the video visualization
-numstring = 5;
-ztran_filt = ztran;
-for i = 1:size(ztran,2)
-    ztran_filt(:,i) = replaceShortNonNanSequences(squeeze(ztran(:,i)), numstring); % this is water elevation
-end
+%numstring = 5;
+%ztran_filt = ztran;
+%for i = 1:size(ztran,2)
+    %ztran_filt(:,i) = replaceShortNonNanSequences(squeeze(ztran(:,i)), numstring); % this is water elevation
+%end
 
 % constants
 numframes=size(ztran,2);
@@ -61,10 +83,10 @@ ticklen = 0.5;
 xlab = 'Cross-shore (m)';
 ylab = 'Elev. (m)';
 
-% need to edit this part
-sname =[trialname,'_timeseries'];
+sname =append(GEMname,'_timeseries');
 
-v = VideoWriter([figfolder,'\',sname], 'MPEG-4');
+% need to test this
+v = VideoWriter(append(figfolder,'\',sname), 'MPEG-4');
 v.FrameRate=2;%12;
 v.Quality = 100;
 open(v)
@@ -82,8 +104,8 @@ for i = 1:numframes+1
     ylim([0 4.5]);
     xlim([0 100]);
     clim([0 (numframes-1)/2])
-    colormap(cmap)
-    h1 = plotstyleCMB(gca,xlab,ylab,ftsz,ticklen,lw,tickminor,tickdir);
+    %colormap(cmap)
+    %h1 = plotstyleCMB(gca,xlab,ylab,ftsz,ticklen,lw,tickminor,tickdir);
     title(['$t$ = ',num2str(round(i/2)),' s'],'interpreter','latex','fontsize',ftsz(1));
     pause(0.1)
     writeVideo(v,getframe(gcf))
