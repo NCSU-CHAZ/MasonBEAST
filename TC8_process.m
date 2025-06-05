@@ -18,6 +18,8 @@ window_length=3600; % one hour windows (s)
 nw = 6; % bandwidth product
 taper_type='slepian'; % slepian tapers
 h_inst=0; % height of instrument (m) (0 because it's bottom mounted)
+zbeg=0; % using starting RBR point as bed surface
+zend=1.639667-1.66567; % initial top point - final top point (m)
 
 % Read in data
 RBR_structure=RSKopen(RBRpath);
@@ -51,3 +53,6 @@ clear RBR_pressure;
 
 % Elevation spectra and depth attenuation
 Snn=pxx2Snn(pxx,rho,nbursts);
+[Snn_d,kp,ekz]=depth_att(Snn,f,zbeg,zend,h_inst,MWL,nbursts,savepath);
+
+% Plotting function (need to write)
