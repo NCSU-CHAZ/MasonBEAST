@@ -33,6 +33,7 @@ function[meanGEMz,medGEMz,Xrot,Yrot]=ptcld_to_GEM(camlocA,camlocB,dxy,numframes,
 % Xrot = rotated x coords of GEM
 % Yrot = rotated y coords of GEM
 %
+% EDITS NEEDED: Need to save for each frame similar to GEM_compare
 % --------------------------------------------------------------------------
 format long g
 
@@ -111,11 +112,9 @@ for j=1:length(listofFiles)
         % store output into a matrix
         medGEMz(:,:,i) = ztemp; % median (or mean) values of all of the point cloud frames
         numpts(:,:,i) = ntemp;
-        clear ztemp ntemp
+        clear ztemp ntemp 
 
-    end
-
-    % save mean and median elevation values
+            % save mean and median elevation values
     GEMname=split(listofFiles(j).name,'_');
     GEMname=GEMname(1,1);
     GEMname=string(GEMname);
@@ -129,19 +128,17 @@ for j=1:length(listofFiles)
         save GEMfilepath meanGEMz medGEMz;
     else
         mkdir(GEMfilepath);
-    end 
+    end
 
-    matname=fullfile(GEMfilepath,'meanGEMz.mat');
+    matname=fullfile(GEMfilepath,append('meanGEMz','_',string(i),'.mat'));
     save(matname,'meanGEMz')
-    matname=fullfile(GEMfilepath,'medGEMz.mat');
+    matname=fullfile(GEMfilepath,append('medGEMz','_',string(i),'.mat'));
     save(matname,'medGEMz')
-    matname=fullfile(GEMfilepath,'Xrot.mat');
+    matname=fullfile(GEMfilepath,append('Xrot','_',string(i),'.mat'));
     save(matname,'Xrot');
-    matname=fullfile(GEMfilepath,'Yrot.mat');
+    matname=fullfile(GEMfilepath,append('Yrot','_',string(i),'.mat'));
     save(matname,'Yrot');
-
-
-    % Plotting GEM with mean elevation
+% Plotting GEM with mean elevation
     xlab = 'Cross-Shore (m)';ylab = 'Alongshore (m)';
     fig=figure('units','inches','position',[0 0 10 6],'color','w');
     pcolor(Xgrid,Ygrid,meanGEMz(:,:,1)); grid off;box on;hold on
@@ -157,7 +154,7 @@ for j=1:length(listofFiles)
     set(hc,'fontsize',ftsz(2),'linewidth',lw);
     set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 1, 0.96]); % Enlarge figure to full screen
     title(GEMtitle);
-    filename=append('mean',GEMname);
+    filename=append('mean',GEMname,'_',string(i));
     meanfigpath=fullfile(figpath, filename);
     %meanfigpath=append(figpath,"/mean",GEMname);
     saveas(fig,meanfigpath,'png');
@@ -177,11 +174,14 @@ for j=1:length(listofFiles)
     set(hc,'fontsize',ftsz(2),'linewidth',lw);
     set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 1, 0.96]); % Enlarge figure to full screen
     title(GEMtitle);
-    filename=append('med',GEMname);
+    filename=append('med',GEMname,'_',string(i));
     medfigpath=fullfile(figpath, filename);
     %meanfigpath=append(figpath,"/mean",GEMname);
     saveas(fig,medfigpath,'png');
-
+    
+    end
+  
+    
 end
 
 
