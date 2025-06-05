@@ -19,8 +19,8 @@ function[pxx,f]=calc_spectra(win_data,nw,nbursts,NFFT,fs,taper_type)
 % f = frequency
 
 % preallocate arrays
-pxx=deal(NaN(NFFT,nbursts));
-f=deal(NaN(NFFT,nbursts));
+pxx=deal(NaN((NFFT/2)+1,nbursts));
+f=deal(NaN((NFFT/2)+1,nbursts));
 
 % calculate power spectra using multitaper method
 for i=1:nbursts

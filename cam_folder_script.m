@@ -1,7 +1,7 @@
 %% Script to split tiff files into CamA and CamB folders
 % Remember to change campath AND spec before running
 % epoch number
-epochnum='1726504201906'; % 1726504201906
+epochnum='1726687801658'; % 1726504201906, 1726687801658
 % paths 
 genpath='/Volumes/kanarde/MasonBEAST/data';% path to Research storage /Volumes/kanarde-1/MasonBEAST/data /Volumes/rsstu/users/k/kanarde/MasonBEAST/data
 epochpath=append(genpath,'/RawImages/',epochnum); % path to folder with photos
@@ -15,18 +15,19 @@ listofFiles=dir(filePattern);
 for k=1:length(listofFiles)
     baseFilename=listofFiles(k).name;
     fullFilename=fullfile(listofFiles(k).folder,baseFilename);
-    fprintf(1, 'Now moving %s\n', fullFilename);
+    %fprintf(1, 'Now moving %s\n', fullFilename);
     % check for folder and save
     if isfolder(campath) == true
         movefile(fullFilename);
+        %fprintf(k);
         movefile(append('/Users/bagaenzl/Desktop/MasonBEAST_GIT/',baseFilename),campath);
-        fprintf('Moved %s\n',baseFilename,'to %s\n',campath);
+        %fprintf('Moved %s\n',baseFilename,'to %s\n',campath);
     else
         mkdir(campath);
         fprintf('Created new folder for %s\n',spec);
         movefile(fullFilename);
         movefile(append('/Users/bagaenzl/Desktop/MasonBEAST_GIT/',baseFilename),campath);
-        fprintf('Moved %s\n',baseFilename,'to %s\n',campath);
+        %fprintf('Moved %s\n',baseFilename,'to %s\n',campath);
     end
    
 end
@@ -45,14 +46,15 @@ for k=1:length(listofFiles)
     % check for folder and save
     if isfolder(campath) == true
         movefile(fullFilename);
+        %frpintf(k);
         movefile(append('/Users/bagaenzl/Desktop/MasonBEAST_GIT/',baseFilename),campath);
-        fprintf('Moved %s\n',baseFilename,'to %s\n',campath);
+        %fprintf('Moved %s\n',baseFilename,'to %s\n',campath);
     else
         mkdir(campath);
-        fprintf('Created new folder for %s\n',spec);
+        %fprintf('Created new folder for %s\n',spec);
         movefile(fullFilename);
         movefile(append('/Users/bagaenzl/Desktop/MasonBEAST_GIT/',baseFilename),campath);
-        fprintf('Moved %s\n',baseFilename,'to %s\n',campath);
+        %fprintf('Moved %s\n',baseFilename,'to %s\n',campath);
     end
    
 end

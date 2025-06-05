@@ -48,3 +48,6 @@ clear RBR_pressure;
 % Calculate pressure power spectra
 [P_window,nburst,NFFT]=window_data(fs,window_length,dyn_press); % window guage pressure data
 [pxx,f]=calc_spectra(P_window,nw,nburst,NFFT,fs,taper_type); % calculate power spectra
+
+% Elevation spectra and depth attenuation
+Snn=pxx2Snn(pxx,rho,nbursts);
