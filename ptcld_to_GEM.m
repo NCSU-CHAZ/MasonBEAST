@@ -155,6 +155,7 @@ for j=1:length(listofFiles)
     meanfigpath=fullfile(figpath, filename);
     %meanfigpath=append(figpath,"/mean",GEMname);
     saveas(fig,meanfigpath,'png');
+    close(fig);
 
     % Plotting GEM with median elevation
     xlab = 'Cross-Shore (m)';ylab = 'Alongshore (m)';
@@ -175,6 +176,7 @@ for j=1:length(listofFiles)
     medfigpath=fullfile(figpath, filename);
     %meanfigpath=append(figpath,"/mean",GEMname);
     saveas(fig,medfigpath,'png');
+    close(fig);
     
     end
   
