@@ -1,7 +1,7 @@
 %% Script to process monthly GEMs (camera location comparison)
 
 % paths 
-genpath='/Volumes/kanarde-1/MasonBEAST/data';% path to Research storage /Volumes/kanarde-1/MasonBEAST/data /Volumes/rsstu/users/k/kanarde/MasonBEAST/data
+genpath='/Volumes/kanarde/MasonBEAST/data';% path to Research storage /Volumes/kanarde-1/MasonBEAST/data /Volumes/rsstu/users/k/kanarde/MasonBEAST/data
 pcpath=append(genpath,'/PointClouds/'); % path to pointclouds
 CAM_analysispath=append(genpath,'/GEMs/Camera_Location_Analysis'); % path to camera analysis files  
 measured_path=append(CAM_analysispath,'/Measured/'); % save measured GEMs
@@ -16,7 +16,7 @@ numframes=2;
 % Loop through Metashape pointclouds
 spec='*1713452401874_meta_ptcld*';
 figpath=append(metashape_path,'Figures');
-[meanGEMz,medGEMz]=ptcld_to_GEM(camlocA,camlocB,dxy,numframes,pcpath,metashape_path,figpath,spec);
+[meanGEMz,medGEMz,Xrot,Yrot]=ptcld_to_GEM(camlocA,camlocB,dxy,numframes,pcpath,metashape_path,figpath,spec);
 
 % compare to hand surveys (need to figure out how to grab surveys through
 % loop) 
@@ -62,4 +62,10 @@ GEMmat_path=append(measured_path,'/1713452401874/');
 figpath=append(measured_path,'Figures');
 [handsurvey_grid_mean,handsurvey_grid_med]=GEM_compare(GEMmat_path,camlocA,camlocB,dxy,hand_survey_path,HS_savepath,figpath);
 
-
+%% Pull a transect from GEMs
+% specs
+ypick = [7.3 -20]; % (location on grid)
+yavg=1.2; % width (m)
+savepath=append(metashape_path,'/Transects');
+figpath=append(savepath,'/Figures');
+[ztran]=transect_pull(GEMpath,numframes,yavg,dxy,ypick,savepath,figpath);
