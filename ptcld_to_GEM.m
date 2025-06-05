@@ -1,4 +1,4 @@
-function[meanGEMz,medGEMz,Xrot,Yrot]=ptcld_to_GEM(camlocA,camlocB,dxy,numframes,pcpath,GEMsavepath,figpath,spec)
+function[meanGEMz,medGEMz]=ptcld_to_GEM(camlocA,camlocB,dxy,numframes,pcpath,GEMsavepath,figpath,spec)
 % function[meanGEMz,medGEMz]=ptcld_to_GEM(datapath,savepath)
 % --------------------------------------------------------------------------
 % This function takes in a pointcloud txt file from Metashape and creates a
