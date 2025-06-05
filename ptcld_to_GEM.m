@@ -130,14 +130,11 @@ for j=1:length(listofFiles)
         mkdir(GEMfilepath);
     end
 
-    matname=fullfile(GEMfilepath,append('meanGEMz','_',string(i),'.mat'));
+    matname=fullfile(GEMfilepath,append('meanGEMz','.mat'));
     save(matname,'meanGEMz')
-    matname=fullfile(GEMfilepath,append('medGEMz','_',string(i),'.mat'));
+    matname=fullfile(GEMfilepath,append('medGEMz','.mat'));
     save(matname,'medGEMz')
-    matname=fullfile(GEMfilepath,append('Xrot','_',string(i),'.mat'));
-    save(matname,'Xrot');
-    matname=fullfile(GEMfilepath,append('Yrot','_',string(i),'.mat'));
-    save(matname,'Yrot');
+    
 % Plotting GEM with mean elevation
     xlab = 'Cross-Shore (m)';ylab = 'Alongshore (m)';
     fig=figure('units','inches','position',[0 0 10 6],'color','w');
