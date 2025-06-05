@@ -1,4 +1,4 @@
-function[meanGEMz,medGEMz]=ptcld_to_GEM(camlocA,camlocB,dxy,numframes,pcpath,GEMsavepath,figpath,spec)
+function[meanGEMz,medGEMz,Xrot,Yrot]=ptcld_to_GEM(camlocA,camlocB,dxy,numframes,pcpath,GEMsavepath,figpath,spec)
 % function[meanGEMz,medGEMz]=ptcld_to_GEM(datapath,savepath)
 % --------------------------------------------------------------------------
 % This function takes in a pointcloud txt file from Metashape and creates a
@@ -30,6 +30,8 @@ function[meanGEMz,medGEMz]=ptcld_to_GEM(camlocA,camlocB,dxy,numframes,pcpath,GEM
 % pointcloud as a mat file
 % medGEMz = matrix of median elevation values from given
 % pointcloud as a mat file
+% Xrot = rotated x coords of GEM
+% Yrot = rotated y coords of GEM
 %
 % --------------------------------------------------------------------------
 format long g
@@ -133,6 +135,11 @@ for j=1:length(listofFiles)
     save(matname,'meanGEMz')
     matname=fullfile(GEMfilepath,'medGEMz.mat');
     save(matname,'medGEMz')
+    matname=fullfile(GEMfilepath,'Xrot.mat');
+    save(matname,'Xrot');
+    matname=fullfile(GEMfilepath,'Yrot.mat');
+    save(matname,'Yrot');
+
 
     % Plotting GEM with mean elevation
     xlab = 'Cross-Shore (m)';ylab = 'Alongshore (m)';
