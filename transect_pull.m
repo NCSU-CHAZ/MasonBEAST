@@ -48,7 +48,7 @@ ztran=median(GEMz(iy-iyavg:iy+iyavg,:,:),1,'omitnan');
 ztran=squeeze(ztran);
 ztran=movmean(ztran,2,1,'omitnan');
 
-savepath = fullfile('/Volumes/kanarde/MasonBEAST/data/GEMs/Camera_Location_Analysis/Metashape/Transects',append(GEMname, '_ztran.mat'));
+savepath = fullfile(savepath,append(GEMname, '_ztran.mat'));
 save(savepath,'ztran','-mat');
 
 % plotting specs 
