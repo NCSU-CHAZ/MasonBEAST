@@ -1,4 +1,4 @@
-function[Snn_d,kp,ekz]=depth_att(Snn,f,zbeg,zend,h_inst,MWL,nbursts,savepath)
+function[Snn_d,kp,ekz]=depth_att(Snn,f,zbeg,zend,h_inst,MWL,nbursts,NFFT,savepath)
 % function[Snn_d]=depth_att(Snn)
 % 
 % This function corrects the elevation spectra for depth attenuation.
@@ -79,5 +79,5 @@ end
 % ---------------------------------------------------
 % save corrected elevation spectrum
 Snn_d_filepath=fullfile(savepath,[append('Snn_d_09052024_09182024','.mat')]);
-save(RBR_dpress_filepath,"Snn_d") ;
+save(Snn_d_filepath,"Snn_d") ;
 
