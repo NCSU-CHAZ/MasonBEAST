@@ -47,7 +47,7 @@ Snn_d=deal(NaN((NFFT/2)+1,nbursts));
 for i=1:nbursts
     T(:,i)=1./f(:,i); % wave period (s)
     rad_f(:,i)=(2*pi)./T(:,i); % radial frequency 
-    for j=1:10%length(T(:,i))
+    for j=1:length(T(:,i))
         % solve for wavelength iteratively
         Tcalc=T(:,i); % simplify calculations
         L0(j)=(g*Tcalc(j)^2)/(2*pi); % deep water wavelength (m)
