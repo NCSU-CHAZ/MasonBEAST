@@ -1,4 +1,4 @@
-function[meanGEMz,medGEMz]=ptcld_to_GEM(camlocA,camlocB,dxy,numframes,pcpath,GEMsavepath,figpath,spec)
+function[meanGEMz,medGEMz,Xrot,Yrot]=ptcld_to_GEM(camlocA,camlocB,rbrloc,dxy,numframes,pcpath,GEMsavepath,figpath,spec)
 % function[meanGEMz,medGEMz]=ptcld_to_GEM(datapath,savepath)
 % --------------------------------------------------------------------------
 % This function takes in a pointcloud txt file from Metashape and creates a
@@ -11,6 +11,7 @@ function[meanGEMz,medGEMz]=ptcld_to_GEM(camlocA,camlocB,dxy,numframes,pcpath,GEM
 % 
 % camloc = camera A location coordinates [Ax,Ay]
 % camloc = camera B location coordinates [Bx,By]
+% rbrloc = rbr location coordinates
 % dxy = grid bin size (m)
 % numframes = number of frames to process per poinmtcloud
 %
@@ -60,6 +61,10 @@ gridY = -80:dxy:25;
 % camera rotation and transformation
 [CamAx, CamAy] = rotateCoordinates(camlocA(1), camlocA(2), Xloc, Yloc, rotang);
 [CamBx, CamBy] = rotateCoordinates(camlocB(1), camlocB(2), Xloc, Yloc, rotang);
+
+% rbr rotation and transformation
+[rbrx, rbry] = rotateCoordinates(rbrloc(1), rbrloc(2), Xloc, Yloc, rotang);
+
 % 
 % Loop through given pointclouds
 filePattern=fullfile(pcpath,spec);
@@ -145,6 +150,8 @@ for j=1:length(listofFiles)
     text(CamAx(1)+0.5, CamAy(1), 'Cam A', 'FontSize', 12, 'Color', 'm');
     scatter(CamBx,CamBy,60,'fill','sq','m','MarkerEdgeColor','k');
     text(CamBx(1)+0.5, CamBy(1), 'Cam B', 'FontSize', 12, 'Color', 'm');
+    scatter(rbrx,rbry,60,'fill','sq','g','MarkerEdgeColor','k');
+    text(rbrx(1)+0.5, rbry(1), 'RBR', 'FontSize', 12, 'Color', 'g');
     shading interp;
     axis equal;ylim([-60 30]); ylabel(ylab);xlabel(xlab);xlim([-10 90]);clim([0 3.8]);
     ftsz = [22 18]; lw = 1.2; hc = colorbar('Location','eastoutside','Position', [0.83 0.14 0.035 0.4],'orientation','vertical','YAxisLocation','right');
@@ -166,7 +173,10 @@ for j=1:length(listofFiles)
     scatter(CamAx,CamAy,60,'fill','sq','m','MarkerEdgeColor','k');
     text(CamAx(1)+0.5, CamAy(1), 'Cam A', 'FontSize', 12, 'Color', 'm');
     scatter(CamBx,CamBy,60,'fill','sq','m','MarkerEdgeColor','k');
-    text(CamBx(1)+0.5, CamBy(1), 'Cam B', 'FontSize', 12, 'Color', 'm'); shading interp;
+    text(CamBx(1)+0.5, CamBy(1), 'Cam B', 'FontSize', 12, 'Color', 'm'); 
+    scatter(rbrx,rbry,60,'fill','sq','g','MarkerEdgeColor','k');
+    text(rbrx(1)+0.5, rbry(1), 'RBR', 'FontSize', 12, 'Color', 'g');
+    shading interp;
     axis equal;ylim([-60 30]); ylabel(ylab);xlabel(xlab);xlim([-10 90]);clim([0 3.8]);
     ftsz = [22 18]; lw = 1.2; hc = colorbar('Location','eastoutside','Position', [0.83 0.14 0.035 0.4],'orientation','vertical','YAxisLocation','right');
     set(hc,'fontsize',ftsz(2),'linewidth',lw);
@@ -199,8 +209,3 @@ end
 % spec='1702827001820_ptcld1.txt';
 % 
 % [meanGEMz,medGEMz]=ptcld_to_GEM(camlocA,camlocB,dxy,numframes,pcpath,GEMsavepath,figpath,spec);
-
-
-%% Edits NEEDED
-% increase font size 
-% sve a figure per frame
