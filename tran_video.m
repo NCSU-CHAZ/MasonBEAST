@@ -138,7 +138,7 @@ for i = 1:numframes+1
     timefigpath=fullfile(timestepfolder, filename);
     
     nannum=sum(isnan(ztran(:,i)));
-    quality_array(i)=nannum/length(ztran(:,i));
+    quality_array(i)=nannum/length(ztran(:,i)); % array of quality values (later use to separate usable transects for ML training)
 
     % create time step folder (if not created) and save individual time
     % step
@@ -160,7 +160,7 @@ fig=figure(3);clf;
 plot(quality_array,'o','Color','m','MarkerFaceColor','m','MarkerSize',8); hold on;
 yline(0.05,'LineStyle','-','Color','k','Linewidth',2,'DisplayName','0.05 Threshold');
 hold on; ylabel('Quality Value (# NaNs/# points in transect)'); xlabel('Timestep #');
-ylim([0 1]);xlim([0 numframes+1]); ax=gca; ax.XTick=unique(round(ax.XTick));
+ylim([0 1]);xlim([0 numframes+1]); ax=gca; ax.XTick=unique(round(ax.XTick));title('Quality Value for Transects');
 qualfigpath=append(figfolder,'/QualityofTransects');
 saveas(fig,qualfigpath,'png');
 matname=fullfile(qualfigpath,append('/quality','.mat'));

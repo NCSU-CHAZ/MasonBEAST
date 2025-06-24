@@ -1,9 +1,9 @@
 %% Script to split tiff files into CamA and CamB folders
 % Remember to change campath AND spec before running
 % epoch number
-epochnum='1726687801658'; % 1726504201906, 1726687801658
+epochnum='1726691401451'; % 1726504201906, 1726687801658 1726507801090
 % paths 
-genpath='/Volumes/kanarde/MasonBEAST/data';% path to Research storage /Volumes/kanarde-1/MasonBEAST/data /Volumes/rsstu/users/k/kanarde/MasonBEAST/data
+genpath='/Volumes/Elements';% path to external drive, path to Research storage /Volumes/kanarde-1/MasonBEAST/data /Volumes/rsstu/users/k/kanarde/MasonBEAST/data
 epochpath=append(genpath,'/RawImages/',epochnum); % path to folder with photos
 campath=append(epochpath,'/CamA'); % '/CamB' '/CamA'
 

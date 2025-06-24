@@ -49,23 +49,6 @@ RBR_dpress_filepath=fullfile(savepath,[append('RBR_dyn_09052024_09182024','.mat'
 save(RBR_dpress_filepath,"dyn_press") ;
 clear RBR_pressure;
 
-% Plot Pressure Head (m)
-time = datetime(RBR_structure.data.tstamp, 'ConvertFrom', 'datenum'); 
-format_in='yyyy-mm-dd-HH-MM-ss';
-start_time='2024-09-16-00-00-00';
-end_time='2024-09-17-00-00-00';
-start_time=datenum(start_time,format_in);
-end_time=datenum(end_time,format_in);
-
-xlabs=[datenum('2024-09-16-01-00-00',format_in),datenum('2024-09-16-03-00-00',format_in),datenum('2024-09-16-05-00-00',format_in),datenum('2024-09-16-07-00-00',format_in),datenum('2024-09-16-09-00-00',format_in),datenum('2024-09-16-11-00-00',format_in)datenum('2024-09-16-13-00-00',format_in),datenum('2024-09-16-15-00-00',format_in),datenum('2024-09-16-17-00-00',format_in),datenum('2024-09-16-19-00-00',format_in),datenum('2024-09-16-21-00-00',format_in),datenum('2024-09-16-23-00-00',format_in)];
-xlabs=datetime(xlabs,'ConvertFrom','datenum');
-
-fig=figure(1); plot(RBR_structure.data.tstamp,dyn_press./(rho*g),'Linewidth',2);datetick('x'); xlim([start_time end_time]); xlabel('Time');ylabel('Pressure Head (m)');
-hold on;hold on; yline(zbeg,'-','Before storm bed level','Linewidth',1.5); hold on;
-yline(zend,'-','Post storm bed level','Linewidth',1.5); set(gca,'Fontsize',16);%yline(MWL,':','Mean Water Level','Linewidth',1.5);
-title('Pressure Head Time Series');legend('Pressure Head', 'Before storm bed level', 'Post storm bed level');
-
-
 % Calculate pressure power spectra
 [P_window,nburst,NFFT]=window_data(fs,window_length,dyn_press); % window guage pressure data
 [pxx,f]=calc_spectra(P_window,nw,nburst,NFFT,fs,taper_type); % calculate power spectra (Pa^2/Hz)
@@ -74,10 +57,57 @@ title('Pressure Head Time Series');legend('Pressure Head', 'Before storm bed lev
 Snn=pxx2Snn(pxx,rho,nburst); % (m^2/Hz)
 [Snn_d,kp,ekz]=depth_att(Snn,f,zbeg,zend,h_inst,MWL,nburst,NFFT,savepath); % this is wrong NaNs after row 6
 
-% Plotting function (need to write)
-fig=figure(1); subplot(2,1,1);plot(Snn_d(2,:),'Linewidth',2);ylabel('Elevation spectra (m^2)'); 
-hold on; subplot(2,1,2); plot(dyn_press./(rho*g),'Linewidth',2); xlabel('Sample Number');ylabel('Dynamic Pressure (m)');
+% ---------------------------------------------------------------------------
+%% Plotting (NEEDS REFINED)
+% load data
+genpath='/Volumes/kanarde-1/MasonBEAST/data/';% path to Research storage /Volumes/kanarde-1/MasonBEAST/data /Volumes/rsstu/users/k/kanarde/MasonBEAST/data
+stormpath=append(genpath,'StormCHAZerz Data/'); % path to storm Chazers data
+dynPpath=append(stormpath,'TC8_processed/RBR_dyn_09052024_09182024.mat');
+guagePpath=append(stormpath,'TC8_processed/RBR_guage_09052024_09182024.mat');
+tidepath='/Users/bagaenzl/Downloads/CO-OPS_8658163_met.csv';
 
-fig=figure(2); plot(Snn_d(2,:),'Linewidth',2);ylabel('Elevation spectra (m^2)'); xlabel('Hours');
+dyn_press=load(dynPpath);
+dyn_press=dyn_press.dyn_press;
 
-fig=figure(3); plot(dyn_press./(rho*g),'Linewidth',2); xlabel('Sample Number');ylabel('Dynamic Pressure (m)');
+g_press=load(guagePpath);
+g_press=g_press.RBR_pressure;
+
+patmos_pa=Patmos*dbar2Pa;
+
+tide=readtable(tidepath);
+tidetime=append(table2array(tide(:,1)),'-',table2array(tide(:,2)));
+format_in='yyyy/MM/dd-HH-mm';
+tidetime=string(tidetime);
+for i=1:length(tidetime)
+    tidetimed(i)=datetime(tidetime(i),'InputFormat','uuuu/MM/dd-HH:mm');
+end
+tidetime=datenum(tidetime,format_in);
+tideWL=table2array(tide(:,5));
+
+% Plot Pressure Head (m) (Dynamic vs Guage and Atmospheric)
+time = datetime(RBR_structure.data.tstamp, 'ConvertFrom', 'datenum'); 
+format_in='uuuu-MM-dd-HH-mm-ss';
+start_time='2024-09-14-00-00-00';
+end_time='2024-09-19-00-00-00';
+start_time=datetime(start_time,'InputFormat',format_in);
+end_time=datetime(end_time,'InputFormat',format_in);
+
+%xlabs=[datenum('2024-09-16-01-00-00',format_in),datenum('2024-09-16-03-00-00',format_in),datenum('2024-09-16-05-00-00',format_in),datenum('2024-09-16-07-00-00',format_in),datenum('2024-09-16-09-00-00',format_in),datenum('2024-09-16-11-00-00',format_in)datenum('2024-09-16-13-00-00',format_in),datenum('2024-09-16-15-00-00',format_in),datenum('2024-09-16-17-00-00',format_in),datenum('2024-09-16-19-00-00',format_in),datenum('2024-09-16-21-00-00',format_in),datenum('2024-09-16-23-00-00',format_in)];
+%xlabs=datetime(xlabs,'ConvertFrom','datenum');
+
+fig=figure(1); subplot(2,1,1); plot(time,patmos_pa./(rho*g),'Linewidth',2); hold on; legend('Atmospheric Pressure Head');
+ylabel('Pressure Head (m)');
+subplot(2,1,2);
+plot(time,g_press./(rho*g),'Linewidth',2); hold on;
+plot(time,dyn_press./(rho*g),'Linewidth',2);hold on;
+datetick('x'); xlabel('Time');ylabel('Pressure Head (m)');
+hold on; yline(zbeg,'-','Before storm bed level','Linewidth',1.5); hold on;
+yline(zend,'-','Post storm bed level','Linewidth',1.5); set(gca,'Fontsize',16);%yline(MWL,':','Mean Water Level','Linewidth',1.5);
+title('Pressure Head Time Series');legend('Guage Pressure Head','Dynamic Pressure Head', 'Before storm bed level', 'Post storm bed level');
+
+fig=figure(2); ax(1)=subplot(2,1,1);plot(time,dyn_press./(rho*g),'Linewidth',2);hold on; xlim([start_time end_time]);
+hold on; yline(zbeg,'-','Before storm bed level','Linewidth',1.5); hold on; 
+yline(zend,'-','Post storm bed level','Linewidth',1.5); set(gca,'Fontsize',16); hold on;
+legend('Dynamic Pressure Head', 'Before storm bed level', 'Post storm bed level'); ylabel('Pressure Head (m)');
+ax(2)=subplot(2,1,2);plot(tidetimed,tideWL,'Linewidth',2); hold on; xlim([start_time end_time]);
+hold on; ylabel('MLLW NOAA');set(gca,'Fontsize',16); hold on; linkaxes(ax,'x');
