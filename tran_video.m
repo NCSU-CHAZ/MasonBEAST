@@ -1,4 +1,4 @@
-function[wave_video,quality_array]=tran_video(GEMpath,yavg,dxy,ypick,figpath)
+function[v,quality_array]=tran_video(GEMpath,yavg,dxy,ypick,figpath)
 %function[wave_video]=tran_video(ztranpath)
 % 
 % This function takes in a GEM and creates a video showing timesteps of 1 
@@ -17,7 +17,7 @@ function[wave_video,quality_array]=tran_video(GEMpath,yavg,dxy,ypick,figpath)
 % 
 % OUTPUTS: 
 % ----------
-% wave_video = video of wave by wave interactions with the bed
+% v = video of wave by wave interactions with the bed
 % quality_array = an array of quality values corresponding to each time
 % step (0 to 1, = (number of  NaNs/number of points))
 
@@ -47,7 +47,7 @@ gridX=0:dxy:110;
 gridY=-80:dxy:25;
 [x,y]=meshgrid(gridX,gridY);
 
-% extranct transect 1
+% extranct transect in all frames
 [~,iy] = min(abs(y(:,1)-ypick(1)));
 ztran = median(GEMz(iy-iyavg:iy+iyavg,:,:),1,'omitnan');
 ztran = squeeze(ztran);
@@ -102,7 +102,7 @@ for i = 1:numframes+1
     plot(x(1,ixon:ix),zbeach(ixon:ix),'LineWidth',3,'Color',[148, 116, 27]/256) % plots beach (minimum transect)
     hold on
     plot(x(1,ix:end),ztran(ix:end,i),'LineWidth',3,'Color','b') % plots water
-    plot(x(1,ixtran:ix),ztran_filt(ixtran:ix,i),'LineWidth',3,'Color','b') % plots water
+    plot(x(1,ixtran:ix),ztran(ixtran:ix,i),'LineWidth',3,'Color','b') % plots water
 
     box on
     ylim([0 4.5]);
@@ -118,13 +118,57 @@ close(v)
 
 % Possibly loop through plots again to save individually and calculate the
 % quality
-% create time step folder (if not created) and save individual time
+for i = 1:numframes+1
+    clf
+    fig=figure(2);
+    plot(x(1,ixon:ix),zbeach(ixon:ix),'LineWidth',3,'Color',[148, 116, 27]/256) % plots beach (minimum transect)
+    hold on
+    plot(x(1,ix:end),ztran(ix:end,i),'LineWidth',3,'Color','b') % plots water in swash
+    plot(x(1,ixtran:ix),ztran(ixtran:ix,i),'LineWidth',3,'Color','b') % plots water in uprush
+
+    box on
+    ylim([0 4.5]);
+    xlim([0 100]);
+    clim([0 (numframes-1)/2])
+    %colormap(cmap)
+    %h1 = plotstyleCMB(gca,xlab,ylab,ftsz,ticklen,lw,tickminor,tickdir);
+    title(['$t$ = ',num2str(round(i/2)),' s'],'interpreter','latex','fontsize',ftsz(1));
+
+    filename=append('timestep_',num2str(round(i/2)));
+    timefigpath=fullfile(timestepfolder, filename);
+    
+    nannum=sum(isnan(ztran(:,i)));
+    quality_array(i)=nannum/length(ztran(:,i));
+
+    % create time step folder (if not created) and save individual time
     % step
     if isfolder(timestepfolder) == true
-        
+        saveas(fig,timefigpath,'png');
+        fprintf(string(i)); % print number at 
+        close(fig);
     else
         mkdir(timestepfolder);
         fprintf('Created new folder for timestep photos');
-        
+        saveas(fig,timefigpath,'png');
+        fprintf(string(i)); % print number at 
+        close(fig);
     end
+   
+end
 
+fig=figure(3);clf;
+plot(quality_array,'o','Color','m','MarkerFaceColor','m','MarkerSize',8); hold on;
+yline(0.05,'LineStyle','-','Color','k','Linewidth',2,'DisplayName','0.05 Threshold');
+hold on; ylabel('Quality Value (# NaNs/# points in transect)'); xlabel('Timestep #');
+ylim([0 1]);xlim([0 numframes+1]); ax=gca; ax.XTick=unique(round(ax.XTick));
+qualfigpath=append(figfolder,'/QualityofTransects');
+saveas(fig,qualfigpath,'png');
+matname=fullfile(qualfigpath,append('/quality','.mat'));
+save(matname,'quality_array');
+close(fig);
+
+%% TEST
+% GEMpath='/Volumes/kanarde/MasonBEAST/data/GEMs/Camera_Location_Analysis/Measured/1708030441768/meanGEMz.mat';
+% yavg=1.2;
+% dxy=0.5;
+% ypick=[7.3 -20];
