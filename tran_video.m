@@ -63,7 +63,7 @@ ix2 = find(x(1,:) > 34 & x(1,:) < 36);
 [~,ixtran] = min(abs(x(1,:)-14));
 [~,ixon] = min(abs(x(1,:)-2));
 
-ztran(ztran-zbeach < 0.04)  = NaN; % NaN out z elevations if they're within 4 cm of beach elevation
+ztran(ztran-zbeach < 0.03)  = NaN; % NaN out z elevations if they're within 3 cm of beach elevation
 
 % remove values that are less than 5 indeces long (removes features that
 % are intermittant -- likely remove this in future. This is just to improve
