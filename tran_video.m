@@ -1,10 +1,11 @@
-function[wave_video]=tran_video(GEMpath,yavg,dxy,ypick,figpath)
+function[wave_video,quality_array]=tran_video(GEMpath,yavg,dxy,ypick,figpath)
 %function[wave_video]=tran_video(ztranpath)
 % 
 % This function takes in a GEM and creates a video showing timesteps of 1 
 % second a specified transect. The lowest transect values are used as 
 % the bed surface of the beach, whereas the rest are depicted as 
-% incoming waves.
+% incoming waves. Each frame of the wave video is saved as an individual
+% photo (.png) and evaluated for "fullness".
 % 
 % INPUTS:
 % ---------
@@ -12,18 +13,21 @@ function[wave_video]=tran_video(GEMpath,yavg,dxy,ypick,figpath)
 % yavg = width of transect in alongshore direction (m)
 % dxy = matrix bin size
 % ypick = transect location [x y] format
-% figpath = path to save video to
+% figpath = path to save video, photos, and quality array to
 % 
 % OUTPUTS: 
 % ----------
 % wave_video = video of wave by wave interactions with the bed
+% quality_array = an array of quality values corresponding to each time
+% step (0 to 1, = (number of  NaNs/number of points))
 
 % Constants
 xloc=239737;
 yloc=3784751;
 rotang=35;
 iyavg=round(yavg/dxy/2); % indices to pull out before and after transect to average over
-figfolder=figpath;
+figfolder=figpath; % path to save figures
+timestepfolder=append(figpath,'/Individual_timesteps'); % folder to save individual timestep pngs
 
 % Load GEM
 GEMz=load(GEMpath);
@@ -95,10 +99,10 @@ figure('units','inches','position',[1 1 10 3],'color','w');
 
 for i = 1:numframes+1
     clf
-    plot(x(1,ixon:ix),zbeach(ixon:ix),'LineWidth',3,'Color',[148, 116, 27]/256)
+    plot(x(1,ixon:ix),zbeach(ixon:ix),'LineWidth',3,'Color',[148, 116, 27]/256) % plots beach (minimum transect)
     hold on
-    plot(x(1,ix:end),ztran(ix:end,i),'LineWidth',3,'Color','b')
-    plot(x(1,ixtran:ix),ztran_filt(ixtran:ix,i),'LineWidth',3,'Color','b')
+    plot(x(1,ix:end),ztran(ix:end,i),'LineWidth',3,'Color','b') % plots water
+    plot(x(1,ixtran:ix),ztran_filt(ixtran:ix,i),'LineWidth',3,'Color','b') % plots water
 
     box on
     ylim([0 4.5]);
@@ -111,3 +115,16 @@ for i = 1:numframes+1
     writeVideo(v,getframe(gcf))
 end
 close(v)
+
+% Possibly loop through plots again to save individually and calculate the
+% quality
+% create time step folder (if not created) and save individual time
+    % step
+    if isfolder(timestepfolder) == true
+        
+    else
+        mkdir(timestepfolder);
+        fprintf('Created new folder for timestep photos');
+        
+    end
+
