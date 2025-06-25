@@ -4,7 +4,7 @@ function[density,region_fig]=GEM_region_density_calc(GEMpath,region,savepath);
 % This function takes in a GEM .mat file of gridded elevation values and
 % calculates the normalized density for the requested geographic region of
 % the GEM. The normalized density is defined as (# of points - # of NaNs)/#
-% of points. The GEMs are on a 0.2 m grid. 
+% of points. The GEMs are on a 0.5 m grid. 
 % 
 % 
 % INPUTS:
@@ -27,11 +27,11 @@ function[density,region_fig]=GEM_region_density_calc(GEMpath,region,savepath);
 format long g
 
 % Load GEM
-meanGEMz=load(fullfile(GEMmat_path,'meanGEMz.mat'));
+meanGEMz=load(fullfile(GEMpath,'meanGEMz.mat'));
 meanGEMz=[meanGEMz.meanGEMz];
 
 % GEM name and date
-GEMname=split(GEMmat_path,'/');
+GEMname=split(GEMpath,'/');
 GEMname=GEMname(10,1);
 GEMname=string(GEMname);
 
@@ -40,8 +40,8 @@ GEMdate=string(GEMdate);
 GEMtitle=append(GEMname,',',GEMdate);
 % ------------------------------------------
 % Constants
-dxy=0.2; % m
-numframes=length(meanGEMz,3);
+dxy=0.5; % m
+numframes=size(meanGEMz,3);
 
 % define local coordinate system origin and rotation angle
 Xloc = 239737;
@@ -54,20 +54,35 @@ gridY = -80:dxy:25;
 [Xgrid,Ygrid] = meshgrid(gridX,gridY);
 % --------------------------------------------
 % Set region indices
-if region == 'dune'
-        rows=1:9;
-        cols=1:9;
-        rect_x=3;
-        rect_y=3;
-        width=2;
-        height=2;
-    elseif region == 'upperbeachface'
-
-    elseif region == 'lowerbeachface'
-
-    elseif region == 'shoreline'
-
-    elseif region == 'RBR'
+GEMY=1:size(meanGEMz,2);
+GEMX=1:size(meanGEMz,1);
+if  strcmp(region, 'dune')
+        rows=-80:-38;
+        cols=1:20;
+        rows=interp1(gridX,GEMY,rows);
+        cols=interp1(gridY,GEMX,cols);
+        rect_x=0; % lower left corner
+        rect_y=0; % lower left corner
+        width=9; % 4.5 m
+        height=20; % 10 m
+    elseif strcmp(region, 'upperbeachface')
+        rows=10:45;
+        cols=9:33;
+        rect_x=9; % lower left corner
+        rect_y=-10; % lower left corner
+        width=24; % 12 m
+        height=35; % 17.5 m
+    elseif strcmp(region, 'lowerbeachface')
+        rect_x=9; % lower left corner
+        rect_y=-80; % lower left corner
+        width=24; % 12 m
+        height=70; % 35 m
+    elseif strcmp(region, 'shoreline')
+        rect_x=35; % lower left corner
+        rect_y=-80; % lower left corner
+        width=10; % 5 m
+        height=104; % 52 m
+    elseif strcmp(region,'RBR')
         rbrloc = [239779.25, 3784738.325]; % location of RBR in swash
         % rbr rotation and transformation
         [rbrx, rbry] = rotateCoordinates(rbrloc(1), rbrloc(2), Xloc, Yloc, rotang);
