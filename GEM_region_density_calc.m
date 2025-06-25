@@ -56,11 +56,13 @@ gridY = -80:dxy:25;
 % Set region indices
 GEMY=1:size(meanGEMz,2);
 GEMX=1:size(meanGEMz,1);
+x=Xgrid(1,:);
+y=Xgrid(:,1);
+y=1:size(Ygrid,2);
 if  strcmp(region, 'dune')
-        rows=-80:-38;
-        cols=1:20;
-        rows=interp1(gridX,GEMY,rows);
-        cols=interp1(gridY,GEMX,cols);
+        rows=1:21;
+        cols=1:10;
+        [row,col]=meshgrid(rows,cols);
         rect_x=0; % lower left corner
         rect_y=0; % lower left corner
         width=9; % 4.5 m
@@ -68,16 +70,23 @@ if  strcmp(region, 'dune')
     elseif strcmp(region, 'upperbeachface')
         rows=10:45;
         cols=9:33;
+        [row,col]=meshgrid(rows,cols);
         rect_x=9; % lower left corner
         rect_y=-10; % lower left corner
         width=24; % 12 m
         height=35; % 17.5 m
     elseif strcmp(region, 'lowerbeachface')
+        rows=-80:10;
+        cols=9:33;
+        [row,col]=meshgrid(rows,cols);
         rect_x=9; % lower left corner
         rect_y=-80; % lower left corner
         width=24; % 12 m
         height=70; % 35 m
     elseif strcmp(region, 'shoreline')
+        rows=-80:24;
+        cols=35:45;
+        [row,col]=meshgrid(rows,cols);
         rect_x=35; % lower left corner
         rect_y=-80; % lower left corner
         width=10; % 5 m
@@ -92,7 +101,7 @@ end
 % Calculate Normalized Density per Region and plot GEM with region outline
 for i=1:numframes
     % calculate normalized density
-    indexed_GEM=meanGEMz(rows,cols,i); % grab portion of GEM
+    indexed_GEM=interp2(Xgrid,Ygrid,meanGEMz(:,:,i),row,col);% meanGEMz(rows,cols,i); % grab portion of GEM
     numNans=nansum(indexed_GEM); % number of NaNs in section
     pts=sum(indexed_GEM)-numNans; % number of points resolved
     density=pts/sum(indexed_GEM); % normalized density of region
