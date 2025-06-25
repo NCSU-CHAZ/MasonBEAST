@@ -34,7 +34,6 @@ function[meanGEMz,medGEMz,Xrot,Yrot]=ptcld_to_GEM(camlocA,camlocB,rbrloc,dxy,num
 % Xrot = rotated x coords of GEM
 % Yrot = rotated y coords of GEM
 %
-% EDITS NEEDED: Need to save for each frame similar to GEM_compare
 % --------------------------------------------------------------------------
 format long g
 
