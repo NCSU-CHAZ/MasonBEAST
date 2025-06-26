@@ -1,4 +1,4 @@
-function[density,region_fig]=GEM_region_density_calc(GEMpath,region,savepath);
+function[density]=GEM_region_density_calc(GEMpath,region,savepath);
 % function[density,region_fig]=GEM_region_density_calc(GEMpath,region,savepath);
 % 
 % This function takes in a GEM .mat file of gridded elevation values and
@@ -20,8 +20,7 @@ function[density,region_fig]=GEM_region_density_calc(GEMpath,region,savepath);
 % 
 % OUTPUTS: 
 % ---------------------
-% density = array of density values per geomorphic region requested
-% region_fig = GEM with regions outlined 
+% density = density values of geomorphic region requested
 % 
 % ------------------------------------------
 format long g
@@ -60,32 +59,32 @@ x=Xgrid(1,:);
 y=Xgrid(:,1);
 y=1:size(Ygrid,2);
 if  strcmp(region, 'dune')
-        rows=1:21;
-        cols=1:10;
+        cols=1:21;
+        rows=1:10;
         [row,col]=meshgrid(rows,cols);
         rect_x=0; % lower left corner
         rect_y=0; % lower left corner
         width=9; % 4.5 m
         height=20; % 10 m
     elseif strcmp(region, 'upperbeachface')
-        rows=10:45;
-        cols=9:33;
+        cols=10:45;
+        rows=9:33;
         [row,col]=meshgrid(rows,cols);
         rect_x=9; % lower left corner
         rect_y=-10; % lower left corner
         width=24; % 12 m
         height=35; % 17.5 m
     elseif strcmp(region, 'lowerbeachface')
-        rows=-80:10;
-        cols=9:33;
+        cols=-80:10;
+        rows=9:33;
         [row,col]=meshgrid(rows,cols);
         rect_x=9; % lower left corner
         rect_y=-80; % lower left corner
         width=24; % 12 m
         height=70; % 35 m
     elseif strcmp(region, 'shoreline')
-        rows=-80:24;
-        cols=35:45;
+        cols=-80:24;
+        rows=35:45;
         [row,col]=meshgrid(rows,cols);
         rect_x=35; % lower left corner
         rect_y=-80; % lower left corner
@@ -102,9 +101,10 @@ end
 for i=1:numframes
     % calculate normalized density
     indexed_GEM=interp2(Xgrid,Ygrid,meanGEMz(:,:,i),row,col);% meanGEMz(rows,cols,i); % grab portion of GEM
-    numNans=nansum(indexed_GEM); % number of NaNs in section
-    pts=sum(indexed_GEM)-numNans; % number of points resolved
-    density=pts/sum(indexed_GEM); % normalized density of region
+    numNans=nnz(isnan(indexed_GEM)); % number of NaNs in section
+    pts=numel(indexed_GEM)-numNans; % number of points resolved
+    density=pts/numel(indexed_GEM); % normalized density of region
+    density_txt=num2str(density); density_txt=append('Normalized Density = ', density_txt);
 
     % plot
     xlab = 'Cross-Shore (m)';ylab = 'Alongshore (m)';
@@ -112,15 +112,27 @@ for i=1:numframes
     pcolor(Xgrid,Ygrid,meanGEMz(:,:,i)); grid off;box on;hold on
     scatter(rbrx,rbry,70,'fill','sq','g','MarkerEdgeColor','k'); hold on;
     rectangle('Position',[rect_x,rect_y,width,height],'EdgeColor','k','Linewidth',2); % plot region outline
-    hold on; text(rect_x+1,rect_y+1,region,'FontSize',16,'Color','k'); % label region
-    text(rbrx(1)+0.5, rbry(1), 'RBR', 'FontSize', 16, 'Color', 'g'); % label rbr
+    hold on; 
+    if strcmp(region, 'dune')
+        text(rect_x+1,rect_y+1,region,'FontSize',20,'Color','k'); % label region
+        text(rect_x-4,rect_y-2,density_txt,'FontSize',20,'Color','k'); hold on;
+    elseif strcmp(region,'upperbeachface')
+        text(rect_x+1,rect_y+1,region,'FontSize',20,'Color','k'); % label region
+        text(rect_x-4,rect_y-2,density_txt,'FontSize',20,'Color','k'); hold on;
+    elseif strcmp(region,'RBR')
+        text(rect_x+1,rect_y+1,region,'FontSize',20,'Color','k'); % label region
+        text(rect_x-4,rect_y-2,density_txt,'FontSize',20,'Color','k'); hold on;
+    else
+        text(rect_x+1,rect_y+50,region,'FontSize',20,'Color','k'); % label region
+        text(rect_x,rect_y+60,density_txt,'FontSize',20,'Color','k'); hold on;
+    end
+    text(rbrx(1)+0.5, rbry(1), 'RBR', 'FontSize', 20, 'Color', 'g'); % label rbr
     shading interp;
     axis equal;ylim([-60 30]); ylabel(ylab);xlabel(xlab);xlim([-10 90]);clim([0 3.8]);
     ftsz = [22 18]; lw = 1.2; hc = colorbar('Location','eastoutside','Position', [0.83 0.14 0.035 0.4],'orientation','vertical','YAxisLocation','right');
     set(hc,'fontsize',ftsz(2),'linewidth',lw);
     set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 1, 0.96]); % Enlarge figure to full screen
     title(GEMtitle);
-    density_txt=num2str(density); density_txt=append('Normalized Density = ', density_txt); annotation('textbox',[0.531589801274837,0.07001239157373,0.100000000000001,0.2],'String',density_txt,'EdgeColor','none','FontSize',28);
     filename=append('density_',region,'_',GEMname,'_',string(i));
     figpath=fullfile(figpath, filename);
     saveas(fig,figpath,'png');
