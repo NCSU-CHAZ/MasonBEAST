@@ -14,7 +14,7 @@ regions={'dune','upperbeachface','lowerbeachface','RBR','shoreline'}; % regions 
 
 % Process GEMs
 % ----------------
-path=measured_path; % or metashape_path
+path=metashape_path; % or measured_path
 % list of files in folder
 listofFiles=dir(path);
 filenames = cell(length(listofFiles), 1); % Preallocate cell array
@@ -60,5 +60,10 @@ z=density_wzeros;
 fig=figure(1);
 clf; pcolor(x,y,z); hold on; 
 a=colorbar; clim([0 1]);a.Label.String='Normalized Density (-)';
-xticks([0.5 1.5 2.5 3.5 4.5]); yticks([0.5 1.5 2.5 3.5 4.5 5.5 6.5 7.5 8.5 9.5 10.5]); % need to generalize this
-yticklabels([0,GEMnames,0]);xticklabels([0,regions,0]); title('GEM Region Density');
+xticks([0.5 1.5 2.5 3.5 4.5 5.5]); yticks([0.5 1.5 2.5 3.5 4.5 5.5 6.5 7.5 8.5 9.5 10.5 11.5]); % need to generalize this
+yticklabels([0,GEMnames]);xticklabels([0,regions]); title('GEM Region Density');fontsize(gcf,16,"points");
+
+figpath=fullfile(figpath,'GEMdensityplot');
+saveas(fig,figpath,'png');
+close(fig);
+
