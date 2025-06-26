@@ -94,6 +94,12 @@ if  strcmp(region, 'dune')
         rbrloc = [239779.25, 3784738.325]; % location of RBR in swash
         % rbr rotation and transformation
         [rbrx, rbry] = rotateCoordinates(rbrloc(1), rbrloc(2), Xloc, Yloc, rotang);
+        row=rbrx;
+        col=rbry;
+        rect_x=rbrx-1;
+        rect_y=rbry-1;
+        height=2;
+        width=2;
 
 end 
 
@@ -116,17 +122,20 @@ for i=1:numframes
     if strcmp(region, 'dune')
         text(rect_x+1,rect_y+1,region,'FontSize',20,'Color','k'); % label region
         text(rect_x-4,rect_y-2,density_txt,'FontSize',20,'Color','k'); hold on;
+        text(rbrx(1)+0.5, rbry(1), 'RBR', 'FontSize', 20, 'Color', 'g'); % label rbr
     elseif strcmp(region,'upperbeachface')
         text(rect_x+1,rect_y+1,region,'FontSize',20,'Color','k'); % label region
         text(rect_x-4,rect_y-2,density_txt,'FontSize',20,'Color','k'); hold on;
+        text(rbrx(1)+0.5, rbry(1), 'RBR', 'FontSize', 20, 'Color', 'g'); % label rbr
     elseif strcmp(region,'RBR')
-        text(rect_x+1,rect_y+1,region,'FontSize',20,'Color','k'); % label region
+        text(rect_x+3,rect_y+1,region,'FontSize',20,'Color','k'); % label region
         text(rect_x-4,rect_y-2,density_txt,'FontSize',20,'Color','k'); hold on;
     else
         text(rect_x+1,rect_y+50,region,'FontSize',20,'Color','k'); % label region
         text(rect_x,rect_y+60,density_txt,'FontSize',20,'Color','k'); hold on;
+        text(rbrx(1)+0.5, rbry(1), 'RBR', 'FontSize', 20, 'Color', 'g'); % label rbr
     end
-    text(rbrx(1)+0.5, rbry(1), 'RBR', 'FontSize', 20, 'Color', 'g'); % label rbr
+    
     shading interp;
     axis equal;ylim([-60 30]); ylabel(ylab);xlabel(xlab);xlim([-10 90]);clim([0 3.8]);
     ftsz = [22 18]; lw = 1.2; hc = colorbar('Location','eastoutside','Position', [0.83 0.14 0.035 0.4],'orientation','vertical','YAxisLocation','right');
