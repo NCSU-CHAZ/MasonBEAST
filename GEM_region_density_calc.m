@@ -31,7 +31,7 @@ meanGEMz=[meanGEMz.meanGEMz];
 
 % GEM name and date
 GEMname=split(GEMpath,'/');
-GEMname=GEMname(10,1);
+GEMname=GEMname(9,1);
 GEMname=string(GEMname);
 
 GEMdate=datetime(str2num(GEMname),'ConvertFrom','epochtime','TicksPerSecond',1000);
@@ -41,11 +41,15 @@ GEMtitle=append(GEMname,',',GEMdate);
 % Constants
 dxy=0.5; % m
 numframes=size(meanGEMz,3);
-
 % define local coordinate system origin and rotation angle
 Xloc = 239737;
 Yloc = 3784751;
 rotang = 35;
+
+rbrloc = [239779.25, 3784738.325]; % location of RBR in swash
+% rbr rotation and transformation
+[rbrx, rbry] = rotateCoordinates(rbrloc(1), rbrloc(2), Xloc, Yloc, rotang);
+
 
 % create grid
 gridX = 0:dxy:110;
@@ -91,9 +95,6 @@ if  strcmp(region, 'dune')
         width=10; % 5 m
         height=104; % 52 m
     elseif strcmp(region,'RBR')
-        rbrloc = [239779.25, 3784738.325]; % location of RBR in swash
-        % rbr rotation and transformation
-        [rbrx, rbry] = rotateCoordinates(rbrloc(1), rbrloc(2), Xloc, Yloc, rotang);
         row=rbrx;
         col=rbry;
         rect_x=rbrx-1;
