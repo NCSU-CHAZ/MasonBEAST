@@ -143,7 +143,7 @@ for i=1:numframes
     set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 1, 0.96]); % Enlarge figure to full screen
     title(GEMtitle);
     filename=append('density_',region,'_',GEMname,'_',string(i));
-    figpath=fullfile(figpath, filename);
+    figpath=fullfile(savepath, filename);
     saveas(fig,figpath,'png');
     close(fig);
 
