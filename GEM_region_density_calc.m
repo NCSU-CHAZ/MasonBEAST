@@ -40,7 +40,7 @@ GEMtitle=append(GEMname,',',GEMdate);
 % ------------------------------------------
 % Constants
 dxy=0.5; % m
-numframes=size(meanGEMz,3);
+numframes=1;%size(meanGEMz,3);
 % define local coordinate system origin and rotation angle
 Xloc = 239737;
 Yloc = 3784751;
