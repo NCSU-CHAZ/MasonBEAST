@@ -53,9 +53,9 @@ clear RBR_pressure;
 [P_window,nburst,NFFT]=window_data(fs,window_length,dyn_press); % window guage pressure data
 [pxx,f]=calc_spectra(P_window,nw,nburst,NFFT,fs,taper_type); % calculate power spectra (Pa^2/Hz)
 
-% Elevation spectra and depth attenuation
+% Elevation spectra and correction for burial of sensor
 Snn=pxx2Snn(pxx,rho,nburst); % (m^2/Hz)
-[Snn_d,kp,ekz]=depth_att(Snn,f,zbeg,zend,h_inst,MWL,nburst,NFFT,savepath); % this is wrong NaNs after row 6
+[Snn_d,ekz]=burial_correct(Snn,f,zbeg,zend,MWL,nburst,NFFT,savepath); 
 
 % ---------------------------------------------------------------------------
 %% Plotting (NEEDS REFINED)

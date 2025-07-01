@@ -1,6 +1,10 @@
 % GEM region density analysis
 % BG 6/26/25
 
+% EDITS NEEDED
+% ---------------
+% GEM names are plotted in reverse order, need to fix
+
 % Paths
 % ---------------
 genpath='/Volumes/kanarde/MasonBEAST/data';% path to Research storage /Volumes/kanarde-1/MasonBEAST/data /Volumes/rsstu/users/k/kanarde/MasonBEAST/data;
