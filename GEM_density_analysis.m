@@ -45,7 +45,9 @@ for k=1:length(epochstring)
     % save GEM name
     GEMname=split(GEMpath,'/');
     GEMname=GEMname(9,1);
-    GEMnames(k)=string(GEMname);
+    GEMnames=string(GEMname);
+    GEMdate=datetime(str2num(GEMname),'ConvertFrom','epochtime','TicksPerSecond',1000);
+    GEMdate(k)=string(GEMdate);
     for j=1:length(regions)
         region=regions(j);
         % calculate density and save for each GEM
