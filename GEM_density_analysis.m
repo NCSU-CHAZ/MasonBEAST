@@ -4,6 +4,8 @@
 % EDITS NEEDED
 % ---------------
 % GEM names are plotted in reverse order, need to fix
+% geomorphic region will change for each GEM - need to figure out how to
+% implement in function
 
 % Paths
 % ---------------
@@ -51,21 +53,43 @@ for k=1:length(epochstring)
     end
 end
 
-% plot density histogram
+% plot density histograms
 % --------------------------
 % add  row and column of zeros for plotting
-zc=zeros(size(density,1),1);
-density_wzeros=[density,zc];
-zr=zeros(1,size(density_wzeros,2));
-density_wzeros=[zr;density_wzeros];
+density_rbr=density(:,4); % grab RBR density
+density_norbr=density(:,[1:3,5]); % just densities of geomorphic locations
 
-[x,y]=meshgrid(1:length(regions)+1,1:length(epochstring)+1);
-z=density_wzeros;
+zc=zeros(size(density_rbr,1),1);
+density_wzeros=[density_rbr,zc];
+zr=zeros(1,size(density_wzeros,2));
+densityrbr_wzeros=[zr;density_wzeros];
+regions_rbr={'RBR'}; % regions w/ rbr for plotting
+
+% plot rbr density
+[x,y]=meshgrid(1:2,1:length(epochstring)+1);
+z=densityrbr_wzeros;
 fig=figure(1);
 clf; pcolor(x,y,z); hold on; 
 a=colorbar; clim([0 1]);a.Label.String='Normalized Density (-)';
-xticks([0.5 1.5 2.5 3.5 4.5 5.5]); yticks([0.5 1.5 2.5 3.5 4.5 5.5 6.5 7.5 8.5 9.5 10.5 11.5]); % need to generalize this
-yticklabels([0,GEMnames]);xticklabels([0,regions]); title('GEM Region Density');fontsize(gcf,16,"points");
+xticks([0.5 1.5]); yticks([0.5 1.5 2.5 3.5 4.5 5.5 6.5 7.5 8.5 9.5 10.5 11.5]); % need to generalize this
+yticklabels([0,flip(GEMnames)]);xticklabels([0,regions_rbr]); title('GEM RBR Density');fontsize(gcf,16,"points");
+
+
+% plot geomorphic region density
+zc=zeros(size(density_norbr,1),1);
+density_wzeros=[density_norbr,zc];
+zr=zeros(1,size(density_wzeros,2));
+density_norbr_wzeros=[zr;density_wzeros];
+
+regions_no_rbr={'dune','upperbeachface','lowerbeachface','shoreline'}; % regions w/o rbr for plotting
+
+[x,y]=meshgrid(1:length(regions_no_rbr)+1,1:length(epochstring)+1);
+z=density_norbr_wzeros;
+fig=figure(2);
+clf; pcolor(x,y,z); hold on; 
+a=colorbar; clim([0 1]);a.Label.String='Normalized Density (-)';
+xticks([0.5 1.5 2.5 3.5 4.5]); yticks([0.5 1.5 2.5 3.5 4.5 5.5 6.5 7.5 8.5 9.5 10.5 11.5]); % need to generalize this
+yticklabels([0,flip(GEMnames)]);xticklabels([0,regions_no_rbr]); title('GEM Region Density');fontsize(gcf,16,"points");
 
 figpath=fullfile(figpath,'GEMdensityplot');
 saveas(fig,figpath,'png');
