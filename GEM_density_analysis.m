@@ -7,6 +7,8 @@
 % geomorphic region will change for each GEM - need to figure out how to
 % implement in function
 
+% BG 07/28/25 
+
 % Paths
 % ---------------
 genpath='/Volumes/kanarde/MasonBEAST/data';% path to Research storage /Volumes/kanarde-1/MasonBEAST/data /Volumes/rsstu/users/k/kanarde/MasonBEAST/data;
@@ -47,7 +49,7 @@ for k=1:length(epochstring)
     GEMname=GEMname(9,1);
     GEMnames=string(GEMname);
     GEMdate=datetime(str2num(GEMname),'ConvertFrom','epochtime','TicksPerSecond',1000);
-    GEMdate(k)=string(GEMdate);
+    GEMdate(k)=string(GEMdate(1,1));
     for j=1:length(regions)
         region=regions(j);
         % calculate density and save for each GEM

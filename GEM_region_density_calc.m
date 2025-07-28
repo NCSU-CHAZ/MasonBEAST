@@ -1,4 +1,4 @@
-function[density]=GEM_region_density_calc(GEMpath,region,savepath);
+function[density]=GEM_region_density_calc(GEMpath,region,region_specs,savepath)
 % function[density,region_fig]=GEM_region_density_calc(GEMpath,region,savepath);
 % 
 % This function takes in a GEM .mat file of gridded elevation values and
@@ -10,12 +10,19 @@ function[density]=GEM_region_density_calc(GEMpath,region,savepath);
 % INPUTS:
 % --------------------
 % GEMpath = path to GEM .mat file
-% region = string of region of interest, the options are:
+% region= string of region of interest, the options are:
 %               - 'dune'
 %               - 'RBR'
 %               - 'upperbeachface'
 %               - 'lowerbeachface'
 %               - 'shoreline'
+% region_specs = array of region locations:
+%               [cols, rows, rect_x, rect_y, width, height]
+%               - cols and rows are grabbed from the original GEM
+%               - rect_x and rect_y are the lower left corner of plotted
+%               rectangle boundary
+%               - width and height are the width and height of the plotted
+%               rectangle boundary
 % savepath = path to save figures and files to
 % 
 % OUTPUTS: 
