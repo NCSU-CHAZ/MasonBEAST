@@ -16,8 +16,8 @@ function[density]=GEM_region_density_calc(GEMpath,region,region_specs,savepath)
 %               - 'upperbeachface'
 %               - 'lowerbeachface'
 %               - 'shoreline'
-% region_specs = array of region locations:
-%               [cols, rows, rect_x, rect_y, width, height]
+% region_specs = cell array of region locations:
+%               {cols, rows, rect_x, rect_y, width, height}
 %               - cols and rows are grabbed from the original GEM
 %               - rect_x and rect_y are the lower left corner of plotted
 %               rectangle boundary
@@ -69,47 +69,15 @@ GEMX=1:size(meanGEMz,1);
 x=Xgrid(1,:);
 y=Xgrid(:,1);
 y=1:size(Ygrid,2);
-if  strcmp(region, 'dune')
-        cols=1:21;
-        rows=1:10;
-        [row,col]=meshgrid(rows,cols);
-        rect_x=0; % lower left corner
-        rect_y=0; % lower left corner
-        width=9; % 4.5 m
-        height=20; % 10 m
-    elseif strcmp(region, 'upperbeachface')
-        cols=10:45;
-        rows=9:33;
-        [row,col]=meshgrid(rows,cols);
-        rect_x=9; % lower left corner
-        rect_y=-10; % lower left corner
-        width=24; % 12 m
-        height=35; % 17.5 m
-    elseif strcmp(region, 'lowerbeachface')
-        cols=-80:10;
-        rows=9:33;
-        [row,col]=meshgrid(rows,cols);
-        rect_x=9; % lower left corner
-        rect_y=-80; % lower left corner
-        width=24; % 12 m
-        height=70; % 35 m
-    elseif strcmp(region, 'shoreline')
-        cols=-80:24;
-        rows=35:45;
-        [row,col]=meshgrid(rows,cols);
-        rect_x=35; % lower left corner
-        rect_y=-80; % lower left corner
-        width=10; % 5 m
-        height=104; % 52 m
-    elseif strcmp(region,'RBR')
-        row=rbrx;
-        col=rbry;
-        rect_x=rbrx-1;
-        rect_y=rbry-1;
-        height=2;
-        width=2;
 
-end 
+% Grab region specs
+rows=region_specs{1,2};
+cols=region_specs{1,1};
+[row,col]=meshgrid(rows,cols);
+rect_x=region_specs{1,3};
+rect_y=region_specs{1,4};
+width=region_specs{1,5};
+height=region_specs{1,6};
 
 % Calculate Normalized Density per Region and plot GEM with region outline
 for i=1:numframes
