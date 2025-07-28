@@ -1,13 +1,11 @@
 % GEM region density analysis
-% BG 6/26/25
+% BG 07/28/2025
 
 % EDITS NEEDED
 % ---------------
 % GEM names are plotted in reverse order, need to fix
 % geomorphic region will change for each GEM - need to figure out how to
 % implement in function
-
-% BG 07/28/25 
 
 % Paths
 % ---------------
@@ -19,6 +17,9 @@ metashape_path=append(CAM_analysispath,'/Metashape/'); % metashape GEMs
 % Constants
 % ---------------
 regions={'dune','upperbeachface','lowerbeachface','RBR','shoreline'}; % regions to calculate density
+rbrloc = [239779.25, 3784738.325]; % location of RBR in swash
+% rbr rotation and transformation
+[rbrx, rbry] = rotateCoordinates(rbrloc(1), rbrloc(2), Xloc, Yloc, rotang);
 
 % Process GEMs
 % ----------------
@@ -38,7 +39,12 @@ epochfile=regexp(filenames,'\d','once');
 epochfile=~cellfun('isempty',epochfile);
 epochstring=filenames(epochfile);
 
-density=zeros(length(epochstring),length(regions)); % preallocate density matrix
+% Preallocate density array for each region
+density_dune=zeros(length(epochstring),1); % preallocate density matrix
+density_upper_shore=zeros(length(epochstring),1); % preallocate density matrix
+density_lower_shore=zeros(length(epochstring),1); % preallocate density matrix
+density_shoreline=zeros(length(epochstring),1); % preallocate density matrix
+density_RBR=zeros(length(epochstring),1); % preallocate density matrix
 
 for k=1:length(epochstring)
     % load GEM mat file
@@ -52,10 +58,55 @@ for k=1:length(epochstring)
     GEMdate(k)=string(GEMdate(1,1));
     for j=1:length(regions)
         region=regions(j);
-        % calculate density and save for each GEM
-        density(k,j)=GEM_region_density_calc(GEMpath,region,figpath);
+        if  strcmp(region, 'dune')
+            cols=1:21;
+            rows=1:10;
+            rect_x=0; % lower left corner
+            rect_y=0; % lower left corner
+            width=9; % 4.5 m
+            height=20; % 10 m
+            region_specs={cols,rows,rect_x,rect_y,width,height};
+            density_dune(k)=GEM_region_density_calc(GEMpath,region,region_specs,figpath);
+        elseif strcmp(region, 'upperbeachface')
+            cols=10:45;
+            rows=9:33;
+            rect_x=9; % lower left corner
+            rect_y=-10; % lower left corner
+            width=24; % 12 m
+            height=35; % 17.5 m
+            region_specs={cols,rows,rect_x,rect_y,width,height};
+            density_upper_shore(k)=GEM_region_density_calc(GEMpath,region,region_specs,figpath);
+        elseif strcmp(region, 'lowerbeachface')
+            cols=-80:10;
+            rows=9:33;
+            rect_x=9; % lower left corner
+            rect_y=-80; % lower left corner
+            width=24; % 12 m
+            height=70; % 35 m
+            region_specs={cols,rows,rect_x,rect_y,width,height};
+            density_lower_shore(k)=GEM_region_density_calc(GEMpath,region,region_specs,figpath);
+        elseif strcmp(region, 'shoreline')
+            cols=-80:24;
+            rows=35:45;
+            rect_x=35; % lower left corner
+            rect_y=-80; % lower left corner
+            width=10; % 5 m
+            height=104; % 52 m
+            region_specs={cols,rows,rect_x,rect_y,width,height};
+            density_shoreline(k)=GEM_region_density_calc(GEMpath,region,region_specs,figpath);
+        elseif strcmp(region,'RBR')
+            row=rbrx;
+            col=rbry;
+            rect_x=rbrx-1;
+            rect_y=rbry-1;
+            height=2;
+            width=2;
+            region_specs={cols,rows,rect_x,rect_y,width,height};
+            density_RBR(k)=GEM_region_density_calc(GEMpath,region,region_specs,figpath);
+        end 
     end
 end
+
 
 % plot density histograms
 % --------------------------
