@@ -3,9 +3,9 @@
 
 % EDITS NEEDED
 % ---------------
-% GEM names are plotted in reverse order, need to fix
-% geomorphic region will change for each GEM - need to figure out how to
-% implement in function
+% fix big in GEM name labeling in density plot
+% plot RBR density
+% fix bug in rbr density calculation
 
 % Paths
 % ---------------
@@ -17,16 +17,28 @@ metashape_path=append(CAM_analysispath,'/Metashape/'); % metashape GEMs
 % Constants
 % ---------------
 regions={'dune','upperbeachface','lowerbeachface','RBR','shoreline'}; % regions to calculate density
+% define local coordinate system origin and rotation angle
 Xloc = 239737;
 Yloc = 3784751;
 rotang = 35;
+% create grid
+dxy=0.5;
+gridX = 0:dxy:110;
+gridY = -80:dxy:25;
+[Xgrid,Ygrid] = meshgrid(gridX,gridY);
 rbrloc = [239779.25, 3784738.325]; % location of RBR in swash
 % rbr rotation and transformation
 [rbrx, rbry] = rotateCoordinates(rbrloc(1), rbrloc(2), Xloc, Yloc, rotang);
+% camera rotation and transformation
+camlocA = [239766.1, 3784761.9];%, 10.37
+camlocB = [239759.4, 3784755.0];%, 10.26];
+[CamAx, CamAy] = rotateCoordinates(camlocA(1), camlocA(2), Xloc, Yloc, rotang);
+[CamBx, CamBy] = rotateCoordinates(camlocB(1), camlocB(2), Xloc, Yloc, rotang);
+
 
 % Process GEMs
 % ----------------
-path=metashape_path; % or measured_path
+path=measured_path; % or measured_path metashape_path
 % list of files in folder
 listofFiles=dir(path);
 filenames = cell(length(listofFiles), 1); % Preallocate cell array
@@ -46,7 +58,7 @@ epochstring=filenames(epochfile);
 density=zeros(length(regions),1); % preallocate density matrix
 
 %for k=1:length(regions)
-k=1; % change for each GEM wanted
+k=7; % change for each GEM wanted
     % load GEM mat file
     GEMpath=string(epochstring(k));
     figpath=append(path,'Figures');
@@ -56,6 +68,24 @@ k=1; % change for each GEM wanted
     GEMnames=string(GEMname);
     GEMdate=datetime(str2num(GEMname),'ConvertFrom','epochtime','TicksPerSecond',1000);
     GEMdate(k)=string(GEMdate(1,1));
+
+    meanGEMz=load(fullfile(GEMpath,'meanGEMz.mat'));
+    meanGEMz=[meanGEMz.meanGEMz];
+
+    % Plot GEM to ID regions
+    xlab = 'Cross-Shore (m)';ylab = 'Alongshore (m)';
+    fig=figure('units','inches','position',[0 0 10 6],'color','w');
+    pcolor(Xgrid,Ygrid,meanGEMz(:,:,1)); grid off;%box on;hold on
+    %scatter(GCPx,GCPy,60,'fill','r','MarkerEdgeColor','k') (need to figure
+    %out how to specifiy GCPs/do we need?)
+    scatter(CamAx,CamAy,60,'fill','sq','m','MarkerEdgeColor','k');
+    text(CamAx(1)+0.5, CamAy(1), 'Cam A', 'FontSize', 12, 'Color', 'm');
+    scatter(CamBx,CamBy,60,'fill','sq','m','MarkerEdgeColor','k');
+    text(CamBx(1)+0.5, CamBy(1), 'Cam B', 'FontSize', 12, 'Color', 'm');
+    scatter(rbrx,rbry,60,'fill','sq','g','MarkerEdgeColor','k');
+    text(rbrx(1)+0.5, rbry(1), 'RBR', 'FontSize', 12, 'Color', 'g');
+    
+    % calculate density for regions
     for j=1:length(regions)
         region=regions(j);
         if  strcmp(region, 'dune')
@@ -68,27 +98,27 @@ k=1; % change for each GEM wanted
             region_specs={cols,rows,rect_x,rect_y,width,height};
         elseif strcmp(region, 'upperbeachface')
             cols=10:45;
-            rows=9:33;
-            rect_x=9; % lower left corner
+            rows=7:47;
+            rect_x=7; % lower left corner
             rect_y=-10; % lower left corner
-            width=24; % 12 m
-            height=35; % 17.5 m
+            width=47-7; % (divide by 2) m
+            height=35; 
             region_specs={cols,rows,rect_x,rect_y,width,height};
         elseif strcmp(region, 'lowerbeachface')
             cols=-80:10;
-            rows=9:33;
-            rect_x=9; % lower left corner
+            rows=7:47;
+            rect_x=7; % lower left corner
             rect_y=-80; % lower left corner
-            width=24; % 12 m
-            height=70; % 35 m
+            width=47-7; % 
+            height=70; % 
             region_specs={cols,rows,rect_x,rect_y,width,height};
         elseif strcmp(region, 'shoreline')
             cols=-80:24;
-            rows=35:45;
-            rect_x=35; % lower left corner
+            rows=47:52;
+            rect_x=47; % lower left corner
             rect_y=-80; % lower left corner
-            width=10; % 5 m
-            height=104; % 52 m
+            width=5; % 
+            height=104; % 
             region_specs={cols,rows,rect_x,rect_y,width,height};
         elseif strcmp(region,'RBR')
             row=rbrx;
@@ -99,13 +129,88 @@ k=1; % change for each GEM wanted
             width=2;
             region_specs={cols,rows,rect_x,rect_y,width,height};
         end 
-        density(j)=GEM_region_density_calc(GEMpath,region,region_specs,figpath);
+        density(j)=GEM_region_density_calc(GEMpath,region,region_specs,figpath); % dune, upper, lower, RBR, shoreline
     end
 %end
 
+% save density to pull later
+matname=fullfile(GEMpath,append('Density','.mat')); % append(GEMpath,'/Density.mat') to load later
+save(matname,'density')
+
+% calculatae rbr density seperate 
+% need to add in
 
 % plot density histograms
-% --------------------------
+% ------------------------------------
+path=measured_path; % or measured_path metashape_path
+% list of files in folder
+listofFiles=dir(path);
+filenames = cell(length(listofFiles), 1); % Preallocate cell array
+% grab file names 
+for i=1:length(listofFiles)
+    baseFilename=listofFiles(i).name;
+    fullFilename=fullfile(listofFiles(i).folder,baseFilename);
+    filenames{i}=fullFilename;
+end
+
+% grab only GEM files (have at least one number in name)
+epochfile=regexp(filenames,'\d','once'); 
+epochfile=~cellfun('isempty',epochfile);
+epochstring=filenames(epochfile);
+
+% preallocate density arrays
+dune_density=zeros(length(epochstring),1);
+upper_density=zeros(length(epochstring),1);
+lower_density=zeros(length(epochstring),1);
+shore_density=zeros(length(epochstring),1);
+
+for j=1:length(epochstring)
+    GEMpath=string(epochstring(j));
+    figpath=append(path,'Figures');
+    % save GEM name
+    GEMname=split(GEMpath,'/');
+    GEMname=GEMname(9,1);
+    GEMnames(j)=string(GEMname);
+    GEMdate=datetime(str2num(GEMname),'ConvertFrom','epochtime','TicksPerSecond',1000);
+    GEMdate(j)=string(GEMdate(1,1));
+
+    % grab densities
+    densitypath=append(GEMpath,'/Density.mat');
+    density=load(densitypath);
+    density=density.density;
+
+    dune_density(j)=density(1,1);
+    upper_density(j)=density(2,1);
+    lower_density(j)=density(3,1);
+    shore_density(j)=density(5,1);
+end
+
+% array of densities with zeros for plotting
+zc=zeros(size(shore_density,1),1);
+density_wzeros=[dune_density,upper_density,lower_density,shore_density,zc];
+zr=zeros(1,5);
+density_wzeros=[density_wzeros;zr];
+% bug here in naming
+for i=1:length(GEMnames)
+GEMdates(i)=datetime(str2num(GEMnames(i)),'ConvertFrom','epochtime','TicksPerSecond',1000);
+GEMchar=char(GEMdates(i));
+GEMmonth=split(GEMchar,'-');
+GEMmonth(i)=GEMmonth(2,1);
+end 
+
+% plot 
+[x,y]=meshgrid(1:5,1:12);
+z=density_wzeros;
+regions={'Dune','UpperBeachFace','LowerBeachFace','Shoreline'};
+fig=figure(3);
+clf; pcolor(x,y,z); hold on;
+a=colorbar; clim([0 0.5]);a.Label.String='Normalized Density (-)';
+xticks([0.5 1.5 2.5 3.5 4.5]); yticks([0.5 1.5 2.5 3.5 4.5 5.5 6.5 7.5 8.5 9.5 10.5 11.5]); % need to generalize this
+yticklabels([0,GEMdates]);xticklabels([0,regions]); title('GEM Region Density');fontsize(gcf,16,"points");
+
+
+
+% OLD _____________________________________
 % add  row and column of zeros for plotting
 density_rbr=density(:,4); % grab RBR density
 density_norbr=density(:,[1:3,5]); % just densities of geomorphic locations
