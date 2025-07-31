@@ -27,3 +27,5 @@ for i=1:nbursts
     [pxx(:,i),f(:,i)]=pmtm(win_data(:,i),nw,NFFT,fs,'Tapers',taper_type);
 end
 
+Snn_filepath=fullfile(savepath,[append('Snn_09052024_09182024','.mat')]);
+save(Snn_filepath,"pxx") ;
