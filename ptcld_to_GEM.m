@@ -115,13 +115,6 @@ ptcld_struct=struct(); % structure to store wanted ptclds in
     GEMtitle=append(GEMname,',',GEMdate);
     GEMfilepath=append(GEMsavepath,'GEM_',num2str(i));
 
-    % check if folder exists and save
-    if isfolder(GEMfilepath) == true
-        save GEMfilepath meanGEMz medGEMz;
-    else
-        mkdir(GEMfilepath);
-    end
-
     matname=fullfile(GEMsavepath,append('meanGEMz_',num2str(i),'.mat'));
     save(matname,'meanGEMz')
     matname=fullfile(GEMsavepath,append('medGEMz_',num2str(i),'.mat'));
