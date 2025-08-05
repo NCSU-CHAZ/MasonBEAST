@@ -70,32 +70,20 @@ filePattern=fullfile(pcpath,spec);
 listofFiles=dir(filePattern);
 ptcld_struct=struct(); % structure to store wanted ptclds in
 
-for k=1:length(listofFiles)
-    baseFilename=listofFiles(k).name;
-    fullFilename=fullfile(listofFiles(k).folder,baseFilename);
-    fprintf(1, 'Now reading %s\n', fullFilename);
-    % for i=1:length(dates_wanted)
-    %     transectFilename=[tranfolderpath,transects_wanted(i)];
-    %     TF=contains(baseFilename,dates_wanted(i));
-    %     if TF==1
-    %         ptcld_struct(k).ptclds=fullFilename; % This adds ptclouds we want into a structure
-    %         listofFiles(k).transects=transectFilename; % Adds the path to the hand survey transects (transect
-    %     end
-    % end
-end
-
 %
 % Create median and mean GEM using the Pointcloud (Modified from CM Baker)
 % point cloud is in NAVD83 (2011) UTM Zone 18 N EPSG 6347
 
-for j=1:length(listofFiles)
     for i = 1:numframes
     % read point cloud
-        if i == 25
+    baseFilename=listofFiles(i).name;
+    fullFilename=fullfile(listofFiles(i).folder,baseFilename);
+    fprintf(1, 'Now reading %s\n', fullFilename);
+        if i == 25 % because this is a null pointcloud from metashape
             ptcl = [0 0 0];
         else
             %ptcld_toread=load(ptcld_struct(j).ptclds);
-            ptcl = readmatrix(append(listofFiles(j).folder,'/',listofFiles(j).name)); % columns x,y,z
+            ptcl = readmatrix(append(listofFiles(i).folder,'/',listofFiles(i).name)); % columns x,y,z
         end
         % pt cloud coordinate rotation and transformation x,y to cross- and alongshore
         [Xrot, Yrot] = rotateCoordinates(ptcl(:,1), ptcl(:,2), Xloc, Yloc, rotang);
@@ -119,13 +107,13 @@ for j=1:length(listofFiles)
         clear ztemp ntemp 
 
             % save mean and median elevation values
-    GEMname=split(listofFiles(j).name,'_');
+    GEMname=split(listofFiles(i).name,'_');
     GEMname=GEMname(1,1);
     GEMname=string(GEMname);
     GEMdate=datetime(str2num(GEMname),'ConvertFrom','epochtime','TicksPerSecond',1000);
     GEMdate=string(GEMdate);
     GEMtitle=append(GEMname,',',GEMdate);
-    GEMfilepath=append(GEMsavepath,GEMname,'/');
+    GEMfilepath=append(GEMsavepath,'GEM_',num2str(i));
 
     % check if folder exists and save
     if isfolder(GEMfilepath) == true
@@ -134,9 +122,9 @@ for j=1:length(listofFiles)
         mkdir(GEMfilepath);
     end
 
-    matname=fullfile(GEMfilepath,append('meanGEMz','.mat'));
+    matname=fullfile(GEMsavepath,append('meanGEMz_',num2str(i),'.mat'));
     save(matname,'meanGEMz')
-    matname=fullfile(GEMfilepath,append('medGEMz','.mat'));
+    matname=fullfile(GEMsavepath,append('medGEMz_',num2str(i),'.mat'));
     save(matname,'medGEMz')
     
 % Plotting GEM with mean elevation
@@ -189,8 +177,6 @@ for j=1:length(listofFiles)
     
     end
   
-    
-end
 
 
 %% TEST
