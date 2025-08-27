@@ -33,6 +33,9 @@ function[meanGEMz,medGEMz,Xrot,Yrot]=ptcld_to_GEM(camlocA,camlocB,rbrloc,dxy,num
 % pointcloud as a mat file
 % Xrot = rotated x coords of GEM
 % Yrot = rotated y coords of GEM
+
+% EDITS NEEDED - 
+%       save GEMs in a matrix
 %
 % --------------------------------------------------------------------------
 format long g
@@ -74,7 +77,7 @@ ptcld_struct=struct(); % structure to store wanted ptclds in
 % Create median and mean GEM using the Pointcloud (Modified from CM Baker)
 % point cloud is in NAVD83 (2011) UTM Zone 18 N EPSG 6347
 
-    for i = 1:numframes
+    for i = 1:length(listofFiles)
     % read point cloud
     baseFilename=listofFiles(i).name;
     fullFilename=fullfile(listofFiles(i).folder,baseFilename);
@@ -110,7 +113,7 @@ ptcld_struct=struct(); % structure to store wanted ptclds in
     GEMname=split(listofFiles(i).name,'_');
     GEMname=GEMname(1,1);
     GEMname=string(GEMname);
-    GEMdate=datetime(str2num(GEMname),'ConvertFrom','epochtime','TicksPerSecond',1000);
+    GEMdate=datetime(str2num(GEMname),'ConvertFrom','epochtime','TicksPerSecond',1000); % epochs in milliseconds
     GEMdate=string(GEMdate);
     GEMtitle=append(GEMname,',',GEMdate);
     GEMfilepath=append(GEMsavepath,'GEM_',num2str(i));
@@ -123,7 +126,7 @@ ptcld_struct=struct(); % structure to store wanted ptclds in
 % Plotting GEM with mean elevation
     xlab = 'Cross-Shore (m)';ylab = 'Alongshore (m)';
     fig=figure('units','inches','position',[0 0 10 6],'color','w');
-    pcolor(Xgrid,Ygrid,meanGEMz(:,:,1)); grid off;box on;hold on
+    pcolor(Xgrid,Ygrid,meanGEMz(:,:,i)); grid off;box on;hold on
     %scatter(GCPx,GCPy,60,'fill','r','MarkerEdgeColor','k') (need to figure
     %out how to specifiy GCPs/do we need?)
     scatter(CamAx,CamAy,60,'fill','sq','m','MarkerEdgeColor','k');
@@ -147,7 +150,7 @@ ptcld_struct=struct(); % structure to store wanted ptclds in
     % Plotting GEM with median elevation
     xlab = 'Cross-Shore (m)';ylab = 'Alongshore (m)';
     fig=figure('units','inches','position',[0 0 10 6],'color','w');
-    pcolor(Xgrid,Ygrid,medGEMz(:,:,1)); grid off;box on;hold on
+    pcolor(Xgrid,Ygrid,medGEMz(:,:,i)); grid off;box on;hold on
     %scatter(GCPx,GCPy,60,'fill','r','MarkerEdgeColor','k') (need to figure
     %out how to specifiy GCPs/do we need?)
     scatter(CamAx,CamAy,60,'fill','sq','m','MarkerEdgeColor','k');
