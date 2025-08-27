@@ -1,7 +1,7 @@
 %% Script to process monthly GEMs (camera location comparison)
 
 % paths 
-genpath='/Volumes/kanarde-1/MasonBEAST/data';% path to Research storage /Volumes/kanarde-1/MasonBEAST/data /Volumes/rsstu/users/k/kanarde/MasonBEAST/data
+genpath='/Volumes/kanarde/MasonBEAST/data';% path to Research storage /Volumes/kanarde-1/MasonBEAST/data /Volumes/rsstu/users/k/kanarde/MasonBEAST/data
 pcpath=append(genpath,'/PointClouds/'); % path to pointclouds
 CAM_analysispath=append(genpath,'/GEMs/Camera_Location_Analysis'); % path to camera analysis files  
 measured_path=append(CAM_analysispath,'/Measured/'); % save measured GEMs
@@ -18,6 +18,7 @@ numframes=2;
 spec='*meta_ptcld*';
 figpath=append(metashape_path,'Figures');
 [meanGEMz,medGEMz,Xrot,Yrot]=ptcld_to_GEM(camlocA,camlocB,rbrloc,dxy,numframes,pcpath,metashape_path,figpath,spec);
+
 
 % compare to hand surveys (need to figure out how to grab surveys through
 % loop) 
@@ -45,21 +46,22 @@ HS_savepath=append(genpath,'/Surveys/rotated_surveys');
 surveypath=append(CAM_analysispath,'/Surveys');
 % epoch nums: 1708030441768, 1711479601066,1713452401874, 1717156801902,
 % 1719428401397,1721934001780, 1723489201189, 1726772401770, 1728561601419,
-% 1730736001873, 1734181201371
+% 1730736001873, 1734181201371, 173584001721, 1738526401587, 1741978801668
 % survey names: '2024_03_26_Transects_UTM.xlsx'
 % '2024_05_31_Transects_UTM.xlsx' '2024_06_26_Transects_UTM.xlsx'
 % '2024_07_25_transects_UTM.xlsx' '2024_08_12_Transects_UTM.xlsx'
 % '2024_09_18_Transects_UTM.xlsx' '2024_10_01_Transects_UTM.xlsx'
 % '2024_11_04_Transects_UTM.xlsx' '2025_01_29_Transects_UTM.xlsx'
+% '2025_03_14_Transects_UTM.xlsx'
 
 % survey path
-hand_survey_path=append(surveypath,'/2024_03_26_Transects_UTM.xlsx');
+hand_survey_path=append(surveypath,'/2025_03_14_Transects_UTM.xlsx');
 % metashape
-GEMmat_path=append(metashape_path,'/1713452401874/');
+GEMmat_path=append(metashape_path,'1741978801668/');
 figpath=append(metashape_path,'Figures');
 [handsurvey_grid_mean,handsurvey_grid_med]=GEM_compare(GEMmat_path,camlocA,camlocB,dxy,hand_survey_path,HS_savepath,figpath);
 % measured
-GEMmat_path=append(measured_path,'/1713452401874/');
+GEMmat_path=append(measured_path,'1741978801668/');
 figpath=append(measured_path,'Figures');
 [handsurvey_grid_mean,handsurvey_grid_med]=GEM_compare(GEMmat_path,camlocA,camlocB,dxy,hand_survey_path,HS_savepath,figpath);
 
