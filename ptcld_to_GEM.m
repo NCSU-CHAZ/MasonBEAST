@@ -77,7 +77,7 @@ ptcld_struct=struct(); % structure to store wanted ptclds in
 % Create median and mean GEM using the Pointcloud (Modified from CM Baker)
 % point cloud is in NAVD83 (2011) UTM Zone 18 N EPSG 6347
 
-    for i = 23:length(listofFiles)
+    for i = 1:length(listofFiles)
     % read point cloud
     baseFilename=listofFiles(i).name;
     fullFilename=fullfile(listofFiles(i).folder,baseFilename);
@@ -144,7 +144,7 @@ ptcld_struct=struct(); % structure to store wanted ptclds in
     title(GEMtitle);
     filename=append('mean',GEMname,'_',string(i));
     %meanfigpath=fullfile(figpath, filename);
-    meanfigpath=append(figpath,"/mean",GEMname,num2str(j));
+    meanfigpath=append(figpath,"/mean",GEMname,'_',num2str(j));
     saveas(fig,meanfigpath,'png');
     close(fig);
 
@@ -168,7 +168,7 @@ ptcld_struct=struct(); % structure to store wanted ptclds in
     title(GEMtitle);
     filename=append('med',GEMname,'_',string(i));
     %medfigpath=fullfile(figpath, filename);
-    medfigpath=append(figpath,"/med",GEMname,num2str(j));
+    medfigpath=append(figpath,"/med",GEMname,'_',num2str(j));
     saveas(fig,medfigpath,'png');
     close(fig);
 
