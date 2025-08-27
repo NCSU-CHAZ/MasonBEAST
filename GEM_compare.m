@@ -60,9 +60,9 @@ gridY = -80:dxy:25;
 %-------------------------------------------------------------------------------
 
 % Load in GEM med and mean
-medGEMz=load(fullfile(GEMmat_path,'medGEMz.mat'));
+medGEMz=load(fullfile(GEMmat_path,'medGEMz_1.mat'));
 medGEMz=[medGEMz.medGEMz];
-meanGEMz=load(fullfile(GEMmat_path,'meanGEMz.mat'));
+meanGEMz=load(fullfile(GEMmat_path,'meanGEMz_1.mat'));
 meanGEMz=[meanGEMz.meanGEMz];
 
 % GEM name and date
