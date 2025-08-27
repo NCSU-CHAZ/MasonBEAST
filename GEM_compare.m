@@ -144,6 +144,7 @@ for i=1:numframes
     set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 1, 0.96]);% Enlarge figure to full screen
     rmse_txt=num2str(rmse_mean(i)); rmse_txt=append('RMSE = ', rmse_txt); annotation('textbox',[0.531589801274837,0.07001239157373,0.100000000000001,0.2],'String',rmse_txt,'EdgeColor','none','FontSize',28);
     saveas(t,meanfigpath,'png');
+    close(fig);
 
     % Median
     medfigpath=append(figpath,"/med_comp_",GEMname,'_',string(i));
@@ -161,4 +162,5 @@ for i=1:numframes
     set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 1, 0.96]);% Enlarge figure to full screen
     rmse_txt=num2str(rmse_med(i)); rmse_txt=append('RMSE = ', rmse_txt); annotation('textbox',[0.531589801274837,0.07001239157373,0.100000000000001,0.2],'String',rmse_txt,'EdgeColor','none','FontSize',28);
     saveas(t,medfigpath,'png');
+    close(fig);
 end
