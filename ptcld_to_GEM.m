@@ -77,12 +77,13 @@ ptcld_struct=struct(); % structure to store wanted ptclds in
 % Create median and mean GEM using the Pointcloud (Modified from CM Baker)
 % point cloud is in NAVD83 (2011) UTM Zone 18 N EPSG 6347
 
-    for i = 1:length(listofFiles)
+    for i = 23:length(listofFiles)
     % read point cloud
     baseFilename=listofFiles(i).name;
     fullFilename=fullfile(listofFiles(i).folder,baseFilename);
     fprintf(1, 'Now reading %s\n', fullFilename);
-        if i == 25 % because this is a null pointcloud from metashape
+    for j=1:numframes
+        if j == 25 % because this is a null pointcloud from metashape (25 for dec noreaster)
             ptcl = [0 0 0];
         else
             %ptcld_toread=load(ptcld_struct(j).ptclds);
@@ -118,9 +119,9 @@ ptcld_struct=struct(); % structure to store wanted ptclds in
     GEMtitle=append(GEMname,',',GEMdate);
     GEMfilepath=append(GEMsavepath,'GEM_',num2str(i));
 
-    matname=fullfile(GEMsavepath,append('meanGEMz_',num2str(i),'.mat'));
+    matname=fullfile(GEMsavepath,append(GEMname,'/meanGEMz_',num2str(j),'.mat'));%fullfile(GEMsavepath,append('meanGEMz_',num2str(i),'.mat'));
     save(matname,'meanGEMz')
-    matname=fullfile(GEMsavepath,append('medGEMz_',num2str(i),'.mat'));
+    matname=fullfile(GEMsavepath,append(GEMname,'/medGEMz_',num2str(j),'.mat'));%fullfile(GEMsavepath,append('medGEMz_',num2str(i),'.mat'));
     save(matname,'medGEMz')
     
 % Plotting GEM with mean elevation
@@ -142,8 +143,8 @@ ptcld_struct=struct(); % structure to store wanted ptclds in
     set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 1, 0.96]); % Enlarge figure to full screen
     title(GEMtitle);
     filename=append('mean',GEMname,'_',string(i));
-    meanfigpath=fullfile(figpath, filename);
-    %meanfigpath=append(figpath,"/mean",GEMname);
+    %meanfigpath=fullfile(figpath, filename);
+    meanfigpath=append(figpath,"/mean",GEMname,num2str(j));
     saveas(fig,meanfigpath,'png');
     close(fig);
 
@@ -166,10 +167,12 @@ ptcld_struct=struct(); % structure to store wanted ptclds in
     set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 1, 0.96]); % Enlarge figure to full screen
     title(GEMtitle);
     filename=append('med',GEMname,'_',string(i));
-    medfigpath=fullfile(figpath, filename);
-    %meanfigpath=append(figpath,"/mean",GEMname);
+    %medfigpath=fullfile(figpath, filename);
+    medfigpath=append(figpath,"/med",GEMname,num2str(j));
     saveas(fig,medfigpath,'png');
     close(fig);
+
+    end
     
     end
   
