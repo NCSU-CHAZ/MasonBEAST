@@ -38,7 +38,7 @@ camlocB = [239759.4, 3784755.0];%, 10.26];
 
 % Process GEMs
 % ----------------
-path=measured_path; % or measured_path metashape_path
+path=metashape_path; % or measured_path metashape_path
 % list of files in folder
 listofFiles=dir(path);
 filenames = cell(length(listofFiles), 1); % Preallocate cell array
@@ -58,7 +58,7 @@ epochstring=filenames(epochfile);
 density=zeros(length(regions),1); % preallocate density matrix
 
 %for k=1:length(regions)
-k=7; % change for each GEM wanted
+k=14; % change for each GEM wanted
     % load GEM mat file
     GEMpath=string(epochstring(k));
     figpath=append(path,'Figures');
@@ -69,7 +69,7 @@ k=7; % change for each GEM wanted
     GEMdate=datetime(str2num(GEMname),'ConvertFrom','epochtime','TicksPerSecond',1000);
     GEMdate(k)=string(GEMdate(1,1));
 
-    meanGEMz=load(fullfile(GEMpath,'meanGEMz.mat'));
+    meanGEMz=load(fullfile(GEMpath,'meanGEMz_1.mat'));
     meanGEMz=[meanGEMz.meanGEMz];
 
     % Plot GEM to ID regions
@@ -98,24 +98,24 @@ k=7; % change for each GEM wanted
             region_specs={cols,rows,rect_x,rect_y,width,height};
         elseif strcmp(region, 'upperbeachface')
             cols=10:45;
-            rows=7:47;
+            rows=7:70;
             rect_x=7; % lower left corner
             rect_y=-10; % lower left corner
-            width=47-7; % (divide by 2) m
+            width=70-7; % (divide by 2) m
             height=35; 
             region_specs={cols,rows,rect_x,rect_y,width,height};
         elseif strcmp(region, 'lowerbeachface')
             cols=-80:10;
-            rows=7:47;
+            rows=7:70;
             rect_x=7; % lower left corner
             rect_y=-80; % lower left corner
-            width=47-7; % 
+            width=70-7; % 
             height=70; % 
             region_specs={cols,rows,rect_x,rect_y,width,height};
         elseif strcmp(region, 'shoreline')
             cols=-80:24;
-            rows=47:52;
-            rect_x=47; % lower left corner
+            rows=70:75;
+            rect_x=76; % lower left corner
             rect_y=-80; % lower left corner
             width=5; % 
             height=104; % 
@@ -199,16 +199,18 @@ GEMmonth(i)=GEMmonth(2,1);
 end 
 
 % plot 
-[x,y]=meshgrid(1:5,1:12);
+[x,y]=meshgrid(1:5,1:15);
 z=density_wzeros;
 regions={'Dune','UpperBeachFace','LowerBeachFace','Shoreline'};
 fig=figure(3);
-clf; pcolor(x,y,z); hold on;
-a=colorbar; clim([0 0.5]);a.Label.String='Normalized Density (-)';
-xticks([0.5 1.5 2.5 3.5 4.5]); yticks([0.5 1.5 2.5 3.5 4.5 5.5 6.5 7.5 8.5 9.5 10.5 11.5]); % need to generalize this
-yticklabels([0,GEMdates]);xticklabels([0,regions]); title('GEM Region Density');fontsize(gcf,16,"points");
+clf; pcolor(x,y,z); hold on; colormap('summer');
+a=colorbar; clim([0 0.7]);a.Label.String='Normalized Density (-)';
+xticks([0.5 1.5 2.5 3.5 4.5]); yticks([0.5 1.5 2.5 3.5 4.5 5.5 6.5 7.5 8.5 9.5 10.5 11.5 12.5 13.5 14.5]); % need to generalize this
+xticklabels([0,regions]); title('GEM Region Density');fontsize(gcf,16,"points"); %yticklabels([0,GEMdates])
 
-
+figpath=fullfile(figpath,'GEMdensityplot');
+saveas(fig,figpath,'png');
+close(fig);
 
 % OLD _____________________________________
 % add  row and column of zeros for plotting
