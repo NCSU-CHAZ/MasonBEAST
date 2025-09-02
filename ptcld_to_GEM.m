@@ -81,12 +81,12 @@ listofFiles=dir(filePattern);
     fullFilename=fullfile(listofFiles(i).folder,baseFilename);
     fprintf(1, 'Now reading %s\n', fullFilename);
     for j=1:numframes
-        if j == 25 % because this is a null pointcloud from metashape (25 for dec noreaster)
-            ptcl = [0 0 0];
-        else
+        %if j == 25 % because this is a null pointcloud from metashape (25 for dec noreaster)
+            %ptcl = [0 0 0];
+        %else
             %ptcld_toread=load(ptcld_struct(j).ptclds);
             ptcl = readmatrix(append(listofFiles(i).folder,'/',listofFiles(i).name)); % columns x,y,z
-        end
+        %end
         % pt cloud coordinate rotation and transformation x,y to cross- and alongshore
         [Xrot, Yrot] = rotateCoordinates(ptcl(:,1), ptcl(:,2), Xloc, Yloc, rotang);
 
@@ -96,16 +96,16 @@ listofFiles=dir(filePattern);
         ztemp(ztemp == 0) = NaN; % z is the gridded elevations, rounding grid function sets locations without points equal to zero, switching to nan
         ntemp(ntemp == 0) = NaN; % n is the number of points per bin, rounding grid function sets locations without points equal to zero, switching to nan
         % store output into a matrix
-        meanGEMz(:,:,i) = ztemp; % median (or mean) values of all of the point cloud frames
-        numpts(:,:,i) = ntemp;
+        meanGEMz(:,:,j) = ztemp; % median (or mean) values of all of the point cloud frames
+        numpts(:,:,j) = ntemp;
         clear ztemp ntemp
     % Median
         [ztemp,ntemp]  = roundgridfun(Xrot,Yrot,ptcl(:,3),Xgrid,Ygrid,@median); % computes median or mean of binned point cloud with xpt, ypt, zpt values at resolution of xgrid, ygrid
         ztemp(ztemp == 0) = NaN; % z is the gridded elevations, rounding grid function sets locations without points equal to zero, switching to nan
         ntemp(ntemp == 0) = NaN; % n is the number of points per bin, rounding grid function sets locations without points equal to zero, switching to nan
         % store output into a matrix
-        medGEMz(:,:,i) = ztemp; % median (or mean) values of all of the point cloud frames
-        numpts(:,:,i) = ntemp;
+        medGEMz(:,:,j) = ztemp; % median (or mean) values of all of the point cloud frames
+        numpts(:,:,j) = ntemp;
         clear ztemp ntemp 
 
             % save mean and median elevation values
@@ -125,7 +125,7 @@ listofFiles=dir(filePattern);
 % Plotting GEM with mean elevation
     xlab = 'Cross-Shore (m)';ylab = 'Alongshore (m)';
     fig=figure('units','inches','position',[0 0 10 6],'color','w');
-    pcolor(Xgrid,Ygrid,meanGEMz(:,:,i)); grid off;box on;hold on
+    pcolor(Xgrid,Ygrid,meanGEMz(:,:,j)); grid off;box on;hold on
     %scatter(GCPx,GCPy,60,'fill','r','MarkerEdgeColor','k') (need to figure
     %out how to specifiy GCPs/do we need?)
     scatter(CamAx,CamAy,60,'fill','sq','m','MarkerEdgeColor','k');
@@ -149,7 +149,7 @@ listofFiles=dir(filePattern);
     % Plotting GEM with median elevation
     xlab = 'Cross-Shore (m)';ylab = 'Alongshore (m)';
     fig=figure('units','inches','position',[0 0 10 6],'color','w');
-    pcolor(Xgrid,Ygrid,medGEMz(:,:,i)); grid off;box on;hold on
+    pcolor(Xgrid,Ygrid,medGEMz(:,:,j)); grid off;box on;hold on
     %scatter(GCPx,GCPy,60,'fill','r','MarkerEdgeColor','k') (need to figure
     %out how to specifiy GCPs/do we need?)
     scatter(CamAx,CamAy,60,'fill','sq','m','MarkerEdgeColor','k');
