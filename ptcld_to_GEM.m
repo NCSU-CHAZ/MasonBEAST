@@ -71,9 +71,7 @@ gridY = -80:dxy:25;
 % Loop through given pointclouds
 filePattern=fullfile(pcpath,spec);
 listofFiles=dir(filePattern);
-ptcld_struct=struct(); % structure to store wanted ptclds in
 
-%
 % Create median and mean GEM using the Pointcloud (Modified from CM Baker)
 % point cloud is in NAVD83 (2011) UTM Zone 18 N EPSG 6347
 
