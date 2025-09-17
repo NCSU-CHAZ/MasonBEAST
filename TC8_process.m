@@ -12,7 +12,7 @@ RBRpath=append(stormpath,'RBRs/','209244_20240918_1723.rsk'); % path to RBR data
 savepath=append(stormpath,'TC8_processed');
 
 % Constants
-dbar2Pa = 1000; % conversion from dbar to Pa
+dbar2Pa = 10000; % conversion from dbar to Pa
 fs=16; % sampling frequency
 window_length=3600; % one hour windows (s)
 nw = 6; % bandwidth product
@@ -55,7 +55,7 @@ clear RBR_pressure;
 
 % Elevation spectra and correction for burial of sensor
 Snn=pxx2Snn(pxx,rho,nburst); % (m^2/Hz)
-[Snn_d,ekz]=burial_correct(Snn,f,zbeg,zend,MWL,nburst,NFFT,savepath); 
+[Snn_d,ekz]=burial_correct(Snn,f,zbeg,zend,MWL,nburst,NFFT,savepath); % getting stuck here
 
 % ---------------------------------------------------------------------------
 %% Plotting (NEEDS REFINED)
@@ -84,7 +84,6 @@ end
 tidetime=datenum(tidetime,format_in);
 tideWL=table2array(tide(:,5));
 
-% Plot Pressure Head (m) (Dynamic vs Guage and Atmospheric)
 time = datetime(RBR_structure.data.tstamp, 'ConvertFrom', 'datenum'); 
 format_in='uuuu-MM-dd-HH-mm-ss';
 start_time='2024-09-14-00-00-00';
@@ -92,6 +91,18 @@ end_time='2024-09-19-00-00-00';
 start_time=datetime(start_time,'InputFormat',format_in);
 end_time=datetime(end_time,'InputFormat',format_in);
 
+%% Plot dynamic pressure head with raw pressure (dbar)
+raw_pressure = RBR_structure.data.values(:,2);
+
+fig=figure(1); plot(time,raw_pressure,'Linewidth',2); hold on; 
+plot(time,dyn_press./(rho*g),'Linewidth',2); hold on;
+datetick('x'); xlabel('Time');ylabel('Pressure Head');
+hold on; yline(zbeg,'-','Before storm bed level','Linewidth',1.5); hold on;
+yline(zend,'-','Post storm bed level','Linewidth',1.5); set(gca,'Fontsize',18);
+title('Pressure Head Time Series');legend('Raw Pressure (dBar)','Dynamic Pressure Head (m)', 'Before storm bed level', 'Post storm bed level');
+
+
+%% Plot Pressure Head (m) (Dynamic vs Guage and Atmospheric)
 %xlabs=[datenum('2024-09-16-01-00-00',format_in),datenum('2024-09-16-03-00-00',format_in),datenum('2024-09-16-05-00-00',format_in),datenum('2024-09-16-07-00-00',format_in),datenum('2024-09-16-09-00-00',format_in),datenum('2024-09-16-11-00-00',format_in)datenum('2024-09-16-13-00-00',format_in),datenum('2024-09-16-15-00-00',format_in),datenum('2024-09-16-17-00-00',format_in),datenum('2024-09-16-19-00-00',format_in),datenum('2024-09-16-21-00-00',format_in),datenum('2024-09-16-23-00-00',format_in)];
 %xlabs=datetime(xlabs,'ConvertFrom','datenum');
 

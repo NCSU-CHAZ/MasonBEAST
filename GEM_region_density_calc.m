@@ -33,7 +33,7 @@ function[density]=GEM_region_density_calc(GEMpath,region,region_specs,savepath)
 format long g
 
 % Load GEM
-meanGEMz=load(fullfile(GEMpath,'meanGEMz.mat'));
+meanGEMz=load(fullfile(GEMpath,'meanGEMz_1.mat'));
 meanGEMz=[meanGEMz.meanGEMz];
 
 % GEM name and date
@@ -52,7 +52,6 @@ numframes=1;%size(meanGEMz,3);
 Xloc = 239737;
 Yloc = 3784751;
 rotang = 35;
-
 rbrloc = [239779.25, 3784738.325]; % location of RBR in swash
 % rbr rotation and transformation
 [rbrx, rbry] = rotateCoordinates(rbrloc(1), rbrloc(2), Xloc, Yloc, rotang);

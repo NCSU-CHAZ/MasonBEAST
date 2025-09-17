@@ -46,7 +46,7 @@ HS_savepath=append(genpath,'/Surveys/rotated_surveys');
 surveypath=append(CAM_analysispath,'/Surveys');
 % epoch nums: 1708030441768, 1711479601066,1713452401874, 1717156801902,
 % 1719428401397,1721934001780, 1723489201189, 1726772401770, 1728561601419,
-% 1730736001873, 1734181201371, 173584001721, 1738526401587, 1741978801668
+% 1730736001873, 1734181201371, 1735848001721, 1738526401587, 1741978801668
 % survey names: '2024_03_26_Transects_UTM.xlsx'
 % '2024_05_31_Transects_UTM.xlsx' '2024_06_26_Transects_UTM.xlsx'
 % '2024_07_25_transects_UTM.xlsx' '2024_08_12_Transects_UTM.xlsx'
@@ -72,3 +72,4 @@ yavg=1.2; % width (m)
 savepath=append(metashape_path,'/Transects');
 figpath=append(savepath,'/Figures');
 [ztran]=transect_pull(GEMpath,numframes,yavg,dxy,ypick,savepath,figpath);
+

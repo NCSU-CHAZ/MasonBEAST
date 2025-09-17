@@ -115,7 +115,7 @@ k=14; % change for each GEM wanted
         elseif strcmp(region, 'shoreline')
             cols=-80:24;
             rows=70:75;
-            rect_x=76; % lower left corner
+            rect_x=70; % lower left corner
             rect_y=-80; % lower left corner
             width=5; % 
             height=104; % 
@@ -142,7 +142,7 @@ save(matname,'density')
 
 % plot density histograms
 % ------------------------------------
-path=measured_path; % or measured_path metashape_path
+path=metashape_path; % or measured_path metashape_path
 % list of files in folder
 listofFiles=dir(path);
 filenames = cell(length(listofFiles), 1); % Preallocate cell array
@@ -204,7 +204,7 @@ z=density_wzeros;
 regions={'Dune','UpperBeachFace','LowerBeachFace','Shoreline'};
 fig=figure(3);
 clf; pcolor(x,y,z); hold on; colormap('summer');
-a=colorbar; clim([0 0.7]);a.Label.String='Normalized Density (-)';
+a=colorbar; clim([0 0.5]);a.Label.String='Normalized Density (-)';
 xticks([0.5 1.5 2.5 3.5 4.5]); yticks([0.5 1.5 2.5 3.5 4.5 5.5 6.5 7.5 8.5 9.5 10.5 11.5 12.5 13.5 14.5]); % need to generalize this
 xticklabels([0,regions]); title('GEM Region Density');fontsize(gcf,16,"points"); %yticklabels([0,GEMdates])
 
@@ -212,6 +212,13 @@ figpath=fullfile(figpath,'GEMdensityplot');
 saveas(fig,figpath,'png');
 close(fig);
 
+%% Plot Histograms of density
+fig=figure(8);
+subplot(4,1,1); hist(dune_density); title("Dune"); ylabel( "# of GEMs"); xlim([0,1]);ylim([0,6]);
+subplot(4,1,2); hist(upper_density); title("Upper Beach Face"); ylabel( "# of GEMs"); xlim([0,1]);ylim([0,6]);
+subplot(4,1,3); hist(lower_density); title("Lower Beach Face"); ylabel( "# of GEMs"); xlim([0,1]); ylim([0,6]);
+subplot(4,1,4); hist(shore_density); title("Shore");ylabel( "# of GEMs");ylim([0,6]);
+xlabel("Density"); xlim([0,1]);
 % OLD _____________________________________
 % add  row and column of zeros for plotting
 density_rbr=density(:,4); % grab RBR density
