@@ -91,7 +91,7 @@ sortfilenames=natsortfiles({listofFiles.name});
             %ptcl = [0 0 0];
         %else
             %ptcld_toread=load(ptcld_struct(j).ptclds);
-            ptcl = readmatrix(append(listofFiles(i).folder,'/',listofFiles(i).name)); % columns x,y,z
+            ptcl = readmatrix(append(listofFiles(i).folder,'/',baseFilename)); % columns x,y,z
         %end
         % pt cloud coordinate rotation and transformation x,y to cross- and alongshore
         [Xrot, Yrot] = rotateCoordinates(ptcl(:,1), ptcl(:,2), Xloc, Yloc, rotang);
@@ -113,6 +113,14 @@ sortfilenames=natsortfiles({listofFiles.name});
         medGEMz(:,:,i) = ztemp; % median (or mean) values of all of the point cloud frames
         numpts(:,:,i) = ntemp;
         clear ztemp ntemp 
+
+    GEMname=split(listofFiles(1).name,'_');
+    GEMname=GEMname(1,1);
+    GEMname=string(GEMname);
+    GEMdate=datetime(str2num(GEMname),'ConvertFrom','epochtime','TicksPerSecond',1000); % epochs in milliseconds
+    GEMdate=string(GEMdate);
+    GEMtitle=append(GEMname,',',GEMdate);
+    GEMfilepath=append(GEMsavepath,'GEMz_matrix');
     
 % Plotting GEM with mean elevation
     xlab = 'Cross-Shore (m)';ylab = 'Alongshore (m)';
@@ -165,13 +173,6 @@ sortfilenames=natsortfiles({listofFiles.name});
     end
 
  % save mean and median elevation values
-    GEMname=split(listofFiles(1).name,'_');
-    GEMname=GEMname(1,1);
-    GEMname=string(GEMname);
-    GEMdate=datetime(str2num(GEMname),'ConvertFrom','epochtime','TicksPerSecond',1000); % epochs in milliseconds
-    GEMdate=string(GEMdate);
-    GEMtitle=append(GEMname,',',GEMdate);
-    GEMfilepath=append(GEMsavepath,'GEMz_matrix');
 
     matname=fullfile(GEMsavepath,append('/meanGEMz','.mat'));%fullfile(GEMsavepath,append('meanGEMz_',num2str(i),'.mat'));
     save(matname,'meanGEMz')
