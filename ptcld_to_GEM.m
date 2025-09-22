@@ -113,20 +113,6 @@ sortfilenames=natsortfiles({listofFiles.name});
         medGEMz(:,:,i) = ztemp; % median (or mean) values of all of the point cloud frames
         numpts(:,:,i) = ntemp;
         clear ztemp ntemp 
-    end
-    % save mean and median elevation values
-    GEMname=split(listofFiles(1).name,'_');
-    GEMname=GEMname(1,1);
-    GEMname=string(GEMname);
-    GEMdate=datetime(str2num(GEMname),'ConvertFrom','epochtime','TicksPerSecond',1000); % epochs in milliseconds
-    GEMdate=string(GEMdate);
-    GEMtitle=append(GEMname,',',GEMdate);
-    GEMfilepath=append(GEMsavepath,'GEMz_matrix');
-
-    matname=fullfile(GEMsavepath,append('/meanGEMz','.mat'));%fullfile(GEMsavepath,append('meanGEMz_',num2str(i),'.mat'));
-    save(matname,'meanGEMz')
-    matname=fullfile(GEMsavepath,append('/medGEMz','.mat'));%fullfile(GEMsavepath,append('medGEMz_',num2str(i),'.mat'));
-    save(matname,'medGEMz')
     
 % Plotting GEM with mean elevation
     xlab = 'Cross-Shore (m)';ylab = 'Alongshore (m)';
@@ -177,8 +163,22 @@ sortfilenames=natsortfiles({listofFiles.name});
     close(fig);
 
     end
+
+ % save mean and median elevation values
+    GEMname=split(listofFiles(1).name,'_');
+    GEMname=GEMname(1,1);
+    GEMname=string(GEMname);
+    GEMdate=datetime(str2num(GEMname),'ConvertFrom','epochtime','TicksPerSecond',1000); % epochs in milliseconds
+    GEMdate=string(GEMdate);
+    GEMtitle=append(GEMname,',',GEMdate);
+    GEMfilepath=append(GEMsavepath,'GEMz_matrix');
+
+    matname=fullfile(GEMsavepath,append('/meanGEMz','.mat'));%fullfile(GEMsavepath,append('meanGEMz_',num2str(i),'.mat'));
+    save(matname,'meanGEMz')
+    matname=fullfile(GEMsavepath,append('/medGEMz','.mat'));%fullfile(GEMsavepath,append('medGEMz_',num2str(i),'.mat'));
+    save(matname,'medGEMz')
+end
     
-    end
   
 
 
