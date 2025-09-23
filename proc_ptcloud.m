@@ -3,7 +3,6 @@ clc
 clear all
 close all
 format long g
-
 addpath(genpath('/Users/bagaenzl/Desktop/CIRN-Quantitative-Coastal-Imaging-Toolbox'))
 %addpath(genpath('/Users/cmbaker9/Documents/Programs/MTOOLS'))
 %addpath('/Users/cmbaker9/Documents/Research/MasonBEAST/code/imagery/support_routines')
@@ -12,8 +11,8 @@ addpath(genpath('/Users/bagaenzl/Desktop/CIRN-Quantitative-Coastal-Imaging-Toolb
 
 % general path and names
 datapath    = '/Users/bagaenzl/Desktop/MasonBEAST Data/';
-trialname   = '1722524460162';%'1702827001820';%'1699459201959';%'1702827001820';%'1698951602001';
-tempname   = '1722524460162';
+trialname   = '1702827001820';%'1702827001820';%'1699459201959';%'1702827001820';%'1698951602001';
+tempname   = '1702827001820';
 gcpname = [datapath,'GCP Locations txts/gcps/GCPs_08_01_2024.txt'];
 
 %orthopath = [datapath,'stereo/'];
@@ -22,6 +21,21 @@ pcpath = [datapath,'PointClouds/',trialname]; % need to make this a bit more con
 numframes=2;
 
 figfolder = [genpath,'/Figures'];
+%% BG
+genpath='/Volumes/kanarde-1/MasonBEAST/data';% path to Research storage /Volumes/kanarde-1/MasonBEAST/data /Volumes/rsstu/users/k/kanarde/MasonBEAST/data;
+stormCHAZerspath=append(genpath,'/StormCHAZerz Data');
+decNoreastherpath=append(stormCHAZerspath,'/Dec2023Noreaster_Processed');
+
+epochnum='1702827001820'; % epoch number 
+
+ptcldpath=append(decNoreastherpath,'/',epochnum); % path to pointclouds
+
+spec='*_ptcld*';
+GEMsavepath=append(ptcldpath,'/GEMs/');
+figpath=append(ptcldpath,'/Figures');
+
+numframes = 120;
+
 
 %% STEP 2: Define variables
 
@@ -85,7 +99,7 @@ for i = 1:numframes
     if i == 25
         ptcl = [0 0 0];
     else
-        ptcl = readmatrix([pcpath,'_ptcld',num2str(i),'.txt']); % columns x,y,z (This file path is not working FIGURE OUT WHY!!) Possibly rewrite code with own file naming on seperate file.
+        ptcl = readmatrix([pcpath,'/',epochnum,'_ptcld',num2str(i),'.txt']); % columns x,y,z (This file path is not working FIGURE OUT WHY!!) Possibly rewrite code with own file naming on seperate file.
     end
 
     % % read point cloud
@@ -174,11 +188,11 @@ cmap = cmocean('thermal',numframes);
 
 figure('units','inches','position',[1 1 10 3],'color','w');
 hold on
-for i = 1:numframes
-    plot(x(1,:),ztran(:,i),'LineWidth',1.5,'Color',cmap(i,:))
+for i = 1:10 %numframes
+    plot(x(1,:),ztran(:,i),'LineWidth',1.5) %Color',cmap(i,:)
 end
 box on
-clim([0 (numframes-1)/2])
+clim([0 (10-1)/2]) %clim([0 (numframes-1)/2])
 colormap(cmap)
 h1 = plotstyleCMB(gca,xlab,ylab,ftsz,ticklen,lw,tickminor,tickdir);
 hc = colorbar('Location','eastoutside','Position', [0.93 0.225 0.03 0.4],'orientation','vertical','YAxisLocation','right');
@@ -247,14 +261,14 @@ for i = 1:numframes+1
     plot(x(1,ixon:ix),zbeach(ixon:ix),'LineWidth',3,'Color',[148, 116, 27]/256)
     hold on
     plot(x(1,ix:end),ztran(ix:end,i),'LineWidth',3,'Color','b')
-    plot(x(1,ixtran:ix),ztran_filt(ixtran:ix,i),'LineWidth',3,'Color','b')
+    %plot(x(1,ixtran:ix),ztran_filt(ixtran:ix,i),'LineWidth',3,'Color','b')
 
     box on
     ylim([0 4.5]);
     xlim([0 100]);
     clim([0 (numframes-1)/2])
-    colormap(cmap)
-    h1 = plotstyleCMB(gca,xlab,ylab,ftsz,ticklen,lw,tickminor,tickdir);
+    %colormap(cmap)
+    %h1 = plotstyleCMB(gca,xlab,ylab,ftsz,ticklen,lw,tickminor,tickdir);
     title(['$t$ = ',num2str(round(i/2)),' s'],'interpreter','latex','fontsize',ftsz(1));
     pause(0.1)
     writeVideo(v,getframe(gcf))

@@ -1,7 +1,7 @@
 %% Script to process monthly GEMs (camera location comparison)
 
 % paths 
-genpath='/Volumes/kanarde/MasonBEAST/data';% path to Research storage /Volumes/kanarde-1/MasonBEAST/data /Volumes/rsstu/users/k/kanarde/MasonBEAST/data
+genpath='/Volumes/kanarde-1/MasonBEAST/data';% path to Research storage /Volumes/kanarde-1/MasonBEAST/data /Volumes/rsstu/users/k/kanarde/MasonBEAST/data
 pcpath=append(genpath,'/PointClouds/'); % path to pointclouds
 CAM_analysispath=append(genpath,'/GEMs/Camera_Location_Analysis'); % path to camera analysis files  
 measured_path=append(CAM_analysispath,'/Measured/'); % save measured GEMs
@@ -11,7 +11,7 @@ metashape_path=append(CAM_analysispath,'/Metashape/'); % save metashape GEMs
 camlocA = [239766.1, 3784761.9];%, 10.37
 camlocB = [239759.4, 3784755.0];%, 10.26];
 rbrloc = [239779.25, 3784738.325];
-dxy = 0.5; % meter
+dxy = 0.2; % meter
 numframes=2;
 
 % Loop through Metashape pointclouds

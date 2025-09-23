@@ -23,7 +23,7 @@ function[v,quality_array]=tran_video(GEMmatrixpath,yavg,dxy,ypick,figpath)
 
 % EDITS NEEDED
 % -------------
-%   beach surface not being plotted, along with swash rununp
+% 
 
 % Constants
 xloc=239737;
