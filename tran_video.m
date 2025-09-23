@@ -1,4 +1,4 @@
-function[v,quality_array]=tran_video(GEMpath,yavg,dxy,ypick,figpath)
+function[v,quality_array]=tran_video(GEMmatrixpath,yavg,dxy,ypick,figpath)
 %function[wave_video]=tran_video(ztranpath)
 % 
 % This function takes in a GEM and creates a video showing timesteps of 1 
@@ -9,7 +9,7 @@ function[v,quality_array]=tran_video(GEMpath,yavg,dxy,ypick,figpath)
 % 
 % INPUTS:
 % ---------
-% GEMpath = path to GEM mat files 
+% GEMmatrixpath = path to GEM mat files 
 % yavg = width of transect in alongshore direction (m)
 % dxy = matrix bin size
 % ypick = transect location [x y] format
@@ -21,6 +21,10 @@ function[v,quality_array]=tran_video(GEMpath,yavg,dxy,ypick,figpath)
 % quality_array = an array of quality values corresponding to each time
 % step (0 to 1, = (number of  NaNs/number of points))
 
+% EDITS NEEDED
+% -------------
+%   beach surface not being plotted, along with swash rununp
+
 % Constants
 xloc=239737;
 yloc=3784751;
@@ -30,17 +34,17 @@ figfolder=figpath; % path to save figures
 timestepfolder=append(figpath,'/Individual_timesteps'); % folder to save individual timestep pngs
 
 % Load GEM
-GEMz=load(GEMpath);
+
+GEMz=load(GEMmatrixpath);
 GEMz=GEMz.meanGEMz;
 
 % GEM name
-GEMname=split(GEMpath,'/');
-GEMname=GEMname(9,1);
+GEMname=split(GEMmatrixpath,'/');
+GEMname=GEMname(8,1);
 GEMname=string(GEMname);
 GEMdate=datetime(str2num(GEMname),'ConvertFrom','epochtime','TicksPerSecond',1000);
 GEMdate=string(GEMdate);
 GEMtitle=append(GEMname,',',GEMdate);
-
 
 % create and rotate grid 
 gridX=0:dxy:110;
@@ -50,7 +54,7 @@ gridY=-80:dxy:25;
 % extranct transect in all frames
 [~,iy] = min(abs(y(:,1)-ypick(1)));
 ztran = median(GEMz(iy-iyavg:iy+iyavg,:,:),1,'omitnan');
-ztran = squeeze(ztran);
+ztran = squeeze(ztran); % one matrix
 ztran = movmean(ztran,2,1,'omitnan');
 
 % compute beach as minimum (THIS CAN BE IMPROVED)
@@ -63,7 +67,7 @@ ix2 = find(x(1,:) > 34 & x(1,:) < 36);
 [~,ixtran] = min(abs(x(1,:)-14));
 [~,ixon] = min(abs(x(1,:)-2));
 
-ztran(ztran-zbeach < 0.03)  = NaN; % NaN out z elevations if they're within 3 cm of beach elevation
+%ztran(ztran-zbeach < 0.03)  = NaN; % NaN out z elevations if they're within 3 cm of beach elevation
 
 % remove values that are less than 5 indeces long (removes features that
 % are intermittant -- likely remove this in future. This is just to improve
@@ -97,12 +101,12 @@ open(v)
 
 figure('units','inches','position',[1 1 10 3],'color','w');
 
-for i = 1:numframes+1
+for i = 1:numframes %+1
     clf
     plot(x(1,ixon:ix),zbeach(ixon:ix),'LineWidth',3,'Color',[148, 116, 27]/256) % plots beach (minimum transect)
     hold on
-    plot(x(1,ix:end),ztran(ix:end,i),'LineWidth',3,'Color','b') % plots water
-    plot(x(1,ixtran:ix),ztran(ixtran:ix,i),'LineWidth',3,'Color','b') % plots water
+    plot(x(1,ix:end),ztran(ix:end,i),'LineWidth',3,'Color','b') % plots water in swash
+    plot(x(1,ixtran:ix),ztran(ixtran:ix,i),'LineWidth',3,'Color','b') % plots water in uprush
 
     box on
     ylim([0 4.5]);
@@ -118,9 +122,9 @@ close(v)
 
 % Possibly loop through plots again to save individually and calculate the
 % quality
-for i = 1:numframes+1
+for i = 1:numframes%+1
     clf
-    fig=figure(2);
+    fig=figure(1);
     plot(x(1,ixon:ix),zbeach(ixon:ix),'LineWidth',3,'Color',[148, 116, 27]/256) % plots beach (minimum transect)
     hold on
     plot(x(1,ix:end),ztran(ix:end,i),'LineWidth',3,'Color','b') % plots water in swash
@@ -144,13 +148,13 @@ for i = 1:numframes+1
     % step
     if isfolder(timestepfolder) == true
         saveas(fig,timefigpath,'png');
-        fprintf(string(i)); % print number at 
+        %fprintf(string(i)); % print number at 
         close(fig);
     else
         mkdir(timestepfolder);
         fprintf('Created new folder for timestep photos');
         saveas(fig,timefigpath,'png');
-        fprintf(string(i)); % print number at 
+        %fprintf(string(i)); % print number at 
         close(fig);
     end
    
@@ -159,7 +163,7 @@ end
 fig=figure(3);clf;
 plot(quality_array,'o','Color','m','MarkerFaceColor','m','MarkerSize',8); hold on;
 yline(0.05,'LineStyle','-','Color','k','Linewidth',2,'DisplayName','0.05 Threshold');
-hold on; ylabel('Quality Value (# NaNs/# points in transect)'); xlabel('Timestep #');
+hold on; legend('Quality Value (# NaNs/# points in transect)','0.05 Threshold'); xlabel('Timestep #');
 ylim([0 1]);xlim([0 numframes+1]); ax=gca; ax.XTick=unique(round(ax.XTick));title('Quality Value for Transects');
 qualfigpath=append(figfolder,'/QualityofTransects');
 saveas(fig,qualfigpath,'png');
