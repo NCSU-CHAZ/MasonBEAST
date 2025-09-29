@@ -63,3 +63,21 @@ filename=append('timeseries_plot_',pt_valsave,'_',string(numframes));
 figpath=append(savepath,'/Plots/',filename);
 saveas(fig,figpath,'png');
 close(fig);
+
+% Plot location of point with GEM
+xlab = 'Cross-Shore (m)';ylab = 'Alongshore (m)';
+fig=figure('units','inches','position',[0 0 10 6],'color','w');
+pcolor(x,y,GEMz(:,:,1)); grid off;box on;hold on
+shading interp;
+axis equal;ylim([-60 30]); ylabel(ylab);xlabel(xlab);xlim([-10 90]);clim([0 3.8]);
+ftsz = [22 18]; lw = 1.2; hc = colorbar('Location','eastoutside','Position', [0.83 0.14 0.035 0.4],'orientation','vertical','YAxisLocation','right');
+set(hc,'fontsize',ftsz(2),'linewidth',lw);
+set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 1, 0.96]); % Enlarge figure to full screen
+title(GEMtitle);
+hold on; yline(ypick(1),'k--','LineWidth',3);hold on,
+scatter(pt*dxy,ypick(1),140,'fill','sq','m','MarkerEdgeColor','k');
+filename=append('GEM_pt_plot_',pt_valsave,'_',string(numframes));
+figpath=append(savepath,'/Plots/',filename);
+saveas(fig,figpath,'png');
+close(fig);
+
