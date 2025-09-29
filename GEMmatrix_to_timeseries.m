@@ -1,4 +1,4 @@
-function[timeseries]=GEMmatrix_to_timeseries(GEMmatrixpath,pt,dxy,savepath)
+function[timeseries]=GEMmatrix_to_timeseries(GEMmatrixpath,pt,dxy,ypick,yavg,savepath)
 % function[timeseries,plot]=GEMmatrix_to_timeseries(GEMmatrixpath,pt,transect)
 % -------------------------------------------------------------------------
 % This function takes in a matrix of GEM elevation values (in sequential
@@ -10,6 +10,8 @@ function[timeseries]=GEMmatrix_to_timeseries(GEMmatrixpath,pt,dxy,savepath)
 % GEMmatrixpath = path to GEM matrix
 % pt = point where to take time series
 % dxy = resolution of GEM
+% ypick = transect locations
+% yavg = alongshore avg of transect
 % savepath = path to save timeseries .mat file and plots
 % 
 % OUTPUTS:
@@ -22,6 +24,7 @@ function[timeseries]=GEMmatrix_to_timeseries(GEMmatrixpath,pt,dxy,savepath)
 % Load GEMz matrix
 GEMz=load(GEMmatrixpath);
 GEMz=GEMz.meanGEMz;
+numframes=size(GEMz,3);
 
 % GEM name
 GEMname=split(GEMmatrixpath,'/');
@@ -35,6 +38,7 @@ GEMtitle=append(GEMname,',',GEMdate);
 gridX=0:dxy:110;
 gridY=-80:dxy:25;
 [x,y]=meshgrid(gridX,gridY);
+iyavg=round(yavg/dxy/2); % indices to pull out before and after transect to average over
 
 % extranct transect in all frames
 [~,iy] = min(abs(y(:,1)-ypick(1)));
