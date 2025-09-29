@@ -29,7 +29,8 @@ figpath=append(ptcldpath,'/Figures');
 
 % Create Transect Video
 % ------------------------
-ypick = [7.3 -20]; % in m, define locations to pick transects
+%ypick = [7.3 -20]; % in m, define locations to pick transects
+ypick = [10 -20];
 yavg = 1.2; % in m, defining how wide in the alongshore to average over
 %GEMpath=append(GEMsavepath,'meanGEMz_',num2str(1),'.mat');
 GEMmatrixpath=append(GEMsavepath,'/meanGEMz.mat');

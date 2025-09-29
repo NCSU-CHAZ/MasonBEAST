@@ -17,7 +17,7 @@ function[wavetimeseries]=GEMmatrix_to_timeseries(GEMmatrixpath,pt,dxy,ypick,yavg
 % OUTPUTS:
 % --------
 % wavetimeseries = .mat file of water elevation values at a single point over
-% time (saved as savepath/timeseries_ptval_numframes.mat, pt_val is rounded
+% time (saved as savepath/timeseries_ypick(1)_ptval_numframes.mat, pt_val is rounded
 % down for no decimals)
 %
 
@@ -59,7 +59,7 @@ wavetimeseries=wavetimeseries(1,:);
 pt_val=pt*dxy; 
 pt_val=string(pt_val);
 pt_valsave=string(floor(pt*dxy));
-matname=fullfile(savepath,append('/Matfiles/timeseries_',pt_valsave,'_',string(numframes),'.mat'));
+matname=fullfile(savepath,append('/Matfiles/timeseries_',string(ypick(1)),'_',pt_valsave,'_',string(numframes),'.mat'));
 save(matname,'wavetimeseries')
 
 % plot water elevation time series (subtract beach)
@@ -68,7 +68,7 @@ hold on
 plot(wavetimeseries,'LineWidth',3); hold on; ylabel("Elevation (m)");
 xlabel("Time (s)"); title(append("GEM Derived Wave Time Series at ",pt_val,"m From Camera System"));
 ylim([0 0.5]);
-filename=append('timeseries_plot_',pt_valsave,'_',string(numframes));
+filename=append('timeseries_plot_',,string(ypick(1)),'_',pt_valsave,'_',string(numframes));
 figpath=append(savepath,'/Plots/',filename);
 saveas(fig,figpath,'png');
 close(fig);
