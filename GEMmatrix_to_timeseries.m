@@ -62,13 +62,15 @@ pt_valsave=string(floor(pt*dxy));
 matname=fullfile(savepath,append('/Matfiles/timeseries_',string(ypick(1)),'_',pt_valsave,'_',string(numframes),'.mat'));
 save(matname,'wavetimeseries')
 
+time=0.5:0.5:(numframes/2);
+
 % plot water elevation time series (subtract beach)
 fig=figure('units','inches','position',[1 1 10 3],'color','w');
 hold on
-plot(wavetimeseries,'LineWidth',3); hold on; ylabel("Elevation (m)");
+plot(time,wavetimeseries,'LineWidth',3); hold on; ylabel("Elevation (m)");
 xlabel("Time (s)"); title(append("GEM Derived Wave Time Series at ",pt_val,"m From Camera System"));
 ylim([0 0.5]);
-filename=append('timeseries_plot_',,string(ypick(1)),'_',pt_valsave,'_',string(numframes));
+filename=append('timeseries_plot_',string(ypick(1)),'_',pt_valsave,'_',string(numframes));
 figpath=append(savepath,'/Plots/',filename);
 saveas(fig,figpath,'png');
 close(fig);
