@@ -42,6 +42,8 @@ pt=73;
 timeseries73=GEMmatrix_to_timeseries(GEMmatrixpath,pt,dxy,ypick,yavg,TS_path);
 pt=76;
 timeseries76=GEMmatrix_to_timeseries(GEMmatrixpath,pt,dxy,ypick,yavg,TS_path);
+pt=170;
+timeseries170=GEMmatrix_to_timeseries(GEMmatrixpath,pt,dxy,ypick,yavg,TS_path);
 % plot GEM and points on it (NEED TO ADD TO FUNCTION)
 
 

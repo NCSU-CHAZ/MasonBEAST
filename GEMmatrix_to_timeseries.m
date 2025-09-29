@@ -1,4 +1,4 @@
-function[timeseries]=GEMmatrix_to_timeseries(GEMmatrixpath,pt,dxy,ypick,yavg,savepath)
+function[wavetimeseries]=GEMmatrix_to_timeseries(GEMmatrixpath,pt,dxy,ypick,yavg,savepath)
 % function[timeseries,plot]=GEMmatrix_to_timeseries(GEMmatrixpath,pt,transect)
 % -------------------------------------------------------------------------
 % This function takes in a matrix of GEM elevation values (in sequential
@@ -16,7 +16,7 @@ function[timeseries]=GEMmatrix_to_timeseries(GEMmatrixpath,pt,dxy,ypick,yavg,sav
 % 
 % OUTPUTS:
 % --------
-% timeseries = .mat file of water elevation values at a single point over
+% wavetimeseries = .mat file of water elevation values at a single point over
 % time (saved as savepath/timeseries_ptval_numframes.mat, pt_val is rounded
 % down for no decimals)
 %
@@ -45,20 +45,29 @@ iyavg=round(yavg/dxy/2); % indices to pull out before and after transect to aver
 ztran = median(GEMz(iy-iyavg:iy+iyavg,:,:),1,'omitnan');
 ztran = squeeze(ztran); % one matrix
 ztran = movmean(ztran,2,1,'omitnan');
+zbeach = min(ztran,[],2,'omitnan'); % beach elevation
 
 % extract one point over time
 timeseries=ztran(pt,:);
+zbeachts=ones(numframes);
+zbeachts=zbeachts(:,1);
+zbeachts=zbeachts*zbeach(pt,:);
+
+wavetimeseries=timeseries-zbeachts;
+wavetimeseries=wavetimeseries(1,:);
+
 pt_val=pt*dxy; 
 pt_val=string(pt_val);
 pt_valsave=string(floor(pt*dxy));
 matname=fullfile(savepath,append('/Matfiles/timeseries_',pt_valsave,'_',string(numframes),'.mat'));
-save(matname,'timeseries')
+save(matname,'wavetimeseries')
 
-% plot time series
+% plot water elevation time series (subtract beach)
 fig=figure('units','inches','position',[1 1 10 3],'color','w');
 hold on
-plot(timeseries,'LineWidth',3); hold on; ylabel("Elevation (m)");
+plot(wavetimeseries,'LineWidth',3); hold on; ylabel("Elevation (m)");
 xlabel("Time (s)"); title(append("GEM Derived Wave Time Series at ",pt_val,"m From Camera System"));
+ylim([0 0.5]);
 filename=append('timeseries_plot_',pt_valsave,'_',string(numframes));
 figpath=append(savepath,'/Plots/',filename);
 saveas(fig,figpath,'png');
