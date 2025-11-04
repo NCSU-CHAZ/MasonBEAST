@@ -164,8 +164,6 @@ for i = 1:numframes%+1
    
 end
 
-matname=fullfile(qualfigpath,append('/quality','_',string(ypick(1)),'_',string(yavg),'.mat'));
-save(matname,'quality_array');
 
 fig=figure('units','inches','position',[1 1 7 5],'color','w');clf;
 plot(quality_array,'o','Color','m','MarkerFaceColor','m','MarkerSize',6); hold on;
@@ -177,6 +175,9 @@ qualfigpath=append(figfolder,'/Quality_of_Transects');
 qualname=append(qualfigpath,'/qaulity');
 saveas(fig,qualname,'png');
 close(fig);
+
+matname=fullfile(qualfigpath,append('/quality','_',string(ypick(1)),'_',string(yavg),'.mat'));
+save(matname,'quality_array');
 
 %% TEST
 % GEMpath='/Volumes/kanarde/MasonBEAST/data/GEMs/Camera_Location_Analysis/Measured/1708030441768/meanGEMz.mat';
