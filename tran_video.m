@@ -96,7 +96,7 @@ sname =append(MAPname,'_',string(ypick(1)),'_timeseries_',string(yavg));
 % this is epochnum_transect y location_timeseries_yavg
 
 % need to test this
-v = VideoWriter(append(figfolder,'\',sname), 'MPEG-4');
+v = VideoWriter(append(figfolder,'/',sname), 'MPEG-4');
 v.FrameRate=2;%12;
 v.Quality = 100;
 open(v)
@@ -164,18 +164,19 @@ for i = 1:numframes%+1
    
 end
 
+matname=fullfile(qualfigpath,append('/quality','_',string(ypick(1)),'_',string(yavg),'.mat'));
+save(matname,'quality_array');
+
 fig=figure('units','inches','position',[1 1 7 5],'color','w');clf;
 plot(quality_array,'o','Color','m','MarkerFaceColor','m','MarkerSize',6); hold on;
 %yline(0.05,'LineStyle','-','Color','k','Linewidth',2,'DisplayName','0.05 Threshold');
 hold on; legend('Quality Value (# NaNs/# points in transect)','0.05 Threshold'); xlabel('Image # (time/2)');
 ylim([0 1]);xlim([0 numframes+1]); ax=gca; ax.XTick=unique(round(ax.XTick));title('Quality Value for Transects');
+
 qualfigpath=append(figfolder,'/Quality_of_Transects');
-qualname=append(qualfigpath,'/qaulityPlot',string(ypick(1)),'_',string(yavg));
+qualname=append(qualfigpath,'/qaulity');
 saveas(fig,qualname,'png');
 close(fig);
-
-matname=fullfile(qualfigpath,append('/quality','_',string(ypick(1)),'_',string(yavg),'.mat'));
-save(matname,'quality_array');
 
 %% TEST
 % GEMpath='/Volumes/kanarde/MasonBEAST/data/GEMs/Camera_Location_Analysis/Measured/1708030441768/meanGEMz.mat';
