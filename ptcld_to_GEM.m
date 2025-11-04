@@ -1,4 +1,4 @@
-function[meanGEMz,medGEMz,Xrot,Yrot]=ptcld_to_GEM(camlocA,camlocB,rbrloc,dxy,numframes,pcpath,GEMsavepath,figpath,spec)
+function[meanGEMz,medGEMz,Xrot,Yrot]=ptcld_to_GEM(camlocA,camlocB,rbrloc,dxy,pcpath,GEMsavepath,figpath,spec)
 % function[meanGEMz,medGEMz]=ptcld_to_GEM(datapath,savepath)
 % --------------------------------------------------------------------------
 % This function takes in a pointcloud txt file from Metashape and creates a
@@ -50,7 +50,7 @@ gridX = 0:dxy:110;
 gridY = -80:dxy:25;
 [Xgrid,Ygrid] = meshgrid(gridX,gridY);
 
-% % create matrix for storing z values
+% create matrix for storing z values
 meanGEMz = NaN(size(Xgrid,1),size(Xgrid,2),numframes);
 numpts = meanGEMz;
 medGEMz = NaN(size(Xgrid,1),size(Xgrid,2),numframes);
@@ -74,6 +74,8 @@ medGEMz = NaN(size(Xgrid,1),size(Xgrid,2),numframes);
 filePattern=fullfile(pcpath,spec);
 listofFiles=dir(filePattern);
 sortfilenames=natsortfiles({listofFiles.name});
+
+numframes=length(sortfilenames);
 
 % Create median and mean GEM using the Pointcloud (Modified from CM Baker)
 % point cloud is in NAVD83 (2011) UTM Zone 18 N EPSG 6347
@@ -114,7 +116,9 @@ sortfilenames=natsortfiles({listofFiles.name});
         numpts(:,:,i) = ntemp;
         clear ztemp ntemp 
 
-    GEMname=split(listofFiles(1).name,'_');
+    GEMname=split(fullFilename,'/');
+    GEMname=GEMname(7,1);
+    GEMname=split(GEMname,'_');
     GEMname=GEMname(1,1);
     GEMname=string(GEMname);
     GEMdate=datetime(str2num(GEMname),'ConvertFrom','epochtime','TicksPerSecond',1000); % epochs in milliseconds
@@ -138,7 +142,8 @@ sortfilenames=natsortfiles({listofFiles.name});
     axis equal;ylim([-60 30]); ylabel(ylab);xlabel(xlab);xlim([-10 90]);clim([0 3.8]);
     ftsz = [22 18]; lw = 1.2; hc = colorbar('Location','eastoutside','Position', [0.83 0.14 0.035 0.4],'orientation','vertical','YAxisLocation','right');
     set(hc,'fontsize',ftsz(2),'linewidth',lw);
-    set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 1, 0.96]); % Enlarge figure to full screen
+    set(gca,'fontsize',14);
+    %set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 1, 0.96]); % Enlarge figure to full screen
     title(GEMtitle);
     filename=append('mean',GEMname,'_',string(i));
     %meanfigpath=fullfile(figpath, filename);
