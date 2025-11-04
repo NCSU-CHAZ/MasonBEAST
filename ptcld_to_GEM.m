@@ -1,5 +1,5 @@
-function[meanGEMz,medGEMz,Xrot,Yrot]=ptcld_to_GEM(camlocA,camlocB,rbrloc,dxy,pcpath,savepath,figpath,spec)
-% function[meanGEMz,medGEMz]=ptcld_to_GEM(datapath,savepath)
+function[meanMAPz,medMAPz,Xrot,Yrot]=ptcld_to_GEM(camlocA,camlocB,rbrloc,dxy,pcpath,savepath,figpath,spec)
+% function[meanMAPz,medMAPz,Xrot,Yrot]=ptcld_to_GEM(camlocA,camlocB,rbrloc,dxy,pcpath,savepath,figpath,spec)
 % --------------------------------------------------------------------------
 % This function takes in a pointcloud txt file from Metashape and creates a
 % Gridded Elevation Model and saves it as a matrix in a mat file to a 
@@ -33,10 +33,8 @@ function[meanGEMz,medGEMz,Xrot,Yrot]=ptcld_to_GEM(camlocA,camlocB,rbrloc,dxy,pcp
 % pointcloud as a mat file
 % Xrot = rotated x coords of GEM
 % Yrot = rotated y coords of GEM
-
-% EDITS NEEDED - 
-%       save GEMs in a matrix
 %
+% Last Updated: 11/4/2025 BG
 % --------------------------------------------------------------------------
 format long g
 
@@ -49,12 +47,6 @@ rotang = 35;
 gridX = 0:dxy:110;
 gridY = -80:dxy:25;
 [Xgrid,Ygrid] = meshgrid(gridX,gridY);
-
-% create matrix for storing z values
-meanGEMz = NaN(size(Xgrid,1),size(Xgrid,2),numframes);
-numpts = meanGEMz;
-medGEMz = NaN(size(Xgrid,1),size(Xgrid,2),numframes);
-
 
 % GCP Input
 %GCPs = readmatrix(GCPpath);
@@ -76,6 +68,11 @@ listofFiles=dir(filePattern);
 sortfilenames=natsortfiles({listofFiles.name});
 
 numframes=length(sortfilenames);
+
+% create matrix for storing z values
+meanMAPz = NaN(size(Xgrid,1),size(Xgrid,2),numframes);
+numpts = meanMAPz;
+medMAPz = NaN(size(Xgrid,1),size(Xgrid,2),numframes);
 
 % Create median and mean GEM using the Pointcloud (Modified from CM Baker)
 % point cloud is in NAVD83 (2011) UTM Zone 18 N EPSG 6347
