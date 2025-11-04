@@ -11,34 +11,34 @@ decNoreastherpath=append(stormCHAZerspath,'/Dec2023Noreaster_Processed');
 
 epochnum='1702827001820'; % epoch number 
 
-ptcldpath=append(decNoreastherpath,'/',epochnum);
+ptcldpath=append(decNoreastherpath,'/',epochnum,'_allframes');
 % GEM specs
 % --------------
 camlocA = [239766.1, 3784761.9];%, 10.37
 camlocB = [239759.4, 3784755.0];%, 10.26];
 rbrloc = [239779.25, 3784738.325];
 dxy = 0.2; % meter
-numframes=120;
+numframes=240; % remember to change when needed
 
 % Process Pointclouds
 % ------------------------
-spec='*meas_ptcld*';
-GEMsavepath=append(ptcldpath,'/GEMs/meas');
+spec='*_ptcld*';
+GEMsavepath=append(ptcldpath,'/GEMs/');
 figpath=append(ptcldpath,'/Figures');
 [meanGEMz_matrix,medGEMz_matrix,Xrot,Yrot]=ptcld_to_GEM(camlocA,camlocB,rbrloc,dxy,numframes,ptcldpath,GEMsavepath,figpath,spec);
 
 % Create Transect Video
 % ------------------------
 %ypick = [7.3 -20]; % in m, define locations to pick transects
-ypick = [10 -20];
-yavg = 1.2; % in m, defining how wide in the alongshore to average over
+ypick = [0 -20];
+yavg = 1.2; % in m, defining how wide in the alongshore to average over (1.2 what it's been set to)
 %GEMpath=append(GEMsavepath,'meanGEMz_',num2str(1),'.mat');
 GEMmatrixpath=append(GEMsavepath,'/meanGEMz.mat');
 [v,quality_array]=tran_video(GEMmatrixpath,yavg,dxy,ypick,figpath);
 
 % Plot Time Series of Various Transects at a Point
 % -------------------------------------------------
-TS_path='/Volumes/rsstu/users/k/kanarde/MasonBEAST/data/StormCHAZerz Data/Dec2023Noreaster_Processed/1702827001820/WaveTimeSeries';
+TS_path='/Volumes/kanarde/MasonBEAST/data/StormCHAZerz Data/Dec2023Noreaster_Processed/1702827001820_allframes/WaveTimeSeries';
 pt=73;
 timeseries73=GEMmatrix_to_timeseries(GEMmatrixpath,pt,dxy,ypick,yavg,TS_path);
 pt=76;
