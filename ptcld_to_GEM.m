@@ -141,7 +141,7 @@ medMAPz = NaN(size(Xgrid,1),size(Xgrid,2),numframes);
     set(hc,'fontsize',ftsz(2),'linewidth',lw);
     set(gca,'fontsize',14);
     %set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 1, 0.96]); % Enlarge figure to full screen
-    title(GEMtitle);
+    title(MAPtitle);
     filename=append('mean',MAPname,'_',string(i));
     %meanfigpath=fullfile(figpath, filename);
     meanfigpath=append(figpath,"/mean",MAPname,'_',num2str(i));
@@ -164,8 +164,9 @@ medMAPz = NaN(size(Xgrid,1),size(Xgrid,2),numframes);
     axis equal;ylim([-60 30]); ylabel(ylab);xlabel(xlab);xlim([-10 90]);clim([0 3.8]);
     ftsz = [22 18]; lw = 1.2; hc = colorbar('Location','eastoutside','Position', [0.83 0.14 0.035 0.4],'orientation','vertical','YAxisLocation','right');
     set(hc,'fontsize',ftsz(2),'linewidth',lw);
-    set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 1, 0.96]); % Enlarge figure to full screen
-    title(GEMtitle);
+    set(gca,'fontsize',14);
+    %set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 1, 0.96]); % Enlarge figure to full screen
+    title(MAPtitle);
     filename=append('med',MAPname,'_',string(i));
     %medfigpath=fullfile(figpath, filename);
     medfigpath=append(figpath,"/med",MAPname,'_',num2str(i));
