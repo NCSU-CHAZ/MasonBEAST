@@ -1,4 +1,4 @@
-function[meanGEMz,medGEMz,Xrot,Yrot]=ptcld_to_GEM(camlocA,camlocB,rbrloc,dxy,pcpath,GEMsavepath,figpath,spec)
+function[meanGEMz,medGEMz,Xrot,Yrot]=ptcld_to_GEM(camlocA,camlocB,rbrloc,dxy,pcpath,savepath,figpath,spec)
 % function[meanGEMz,medGEMz]=ptcld_to_GEM(datapath,savepath)
 % --------------------------------------------------------------------------
 % This function takes in a pointcloud txt file from Metashape and creates a
@@ -104,7 +104,7 @@ numframes=length(sortfilenames);
         ztemp(ztemp == 0) = NaN; % z is the gridded elevations, rounding grid function sets locations without points equal to zero, switching to nan
         ntemp(ntemp == 0) = NaN; % n is the number of points per bin, rounding grid function sets locations without points equal to zero, switching to nan
         % store output into a matrix
-        meanGEMz(:,:,i) = ztemp; % median (or mean) values of all of the point cloud frames
+        meanMAPz(:,:,i) = ztemp; % median (or mean) values of all of the point cloud frames
         numpts(:,:,i) = ntemp;
         clear ztemp ntemp
     % Median
@@ -112,24 +112,24 @@ numframes=length(sortfilenames);
         ztemp(ztemp == 0) = NaN; % z is the gridded elevations, rounding grid function sets locations without points equal to zero, switching to nan
         ntemp(ntemp == 0) = NaN; % n is the number of points per bin, rounding grid function sets locations without points equal to zero, switching to nan
         % store output into a matrix
-        medGEMz(:,:,i) = ztemp; % median (or mean) values of all of the point cloud frames
+        medMAPz(:,:,i) = ztemp; % median (or mean) values of all of the point cloud frames
         numpts(:,:,i) = ntemp;
         clear ztemp ntemp 
 
-    GEMname=split(fullFilename,'/');
-    GEMname=GEMname(7,1);
-    GEMname=split(GEMname,'_');
-    GEMname=GEMname(1,1);
-    GEMname=string(GEMname);
-    GEMdate=datetime(str2num(GEMname),'ConvertFrom','epochtime','TicksPerSecond',1000); % epochs in milliseconds
-    GEMdate=string(GEMdate);
-    GEMtitle=append(GEMname,',',GEMdate);
-    GEMfilepath=append(GEMsavepath,'GEMz_matrix');
+    MAPname=split(fullFilename,'/');
+    MAPname=MAPname(9,1);
+    MAPname=split(MAPname,'_');
+    MAPname=MAPname(1,1);
+    MAPname=string(MAPname);
+    MAPdate=datetime(str2num(MAPname),'ConvertFrom','epochtime','TicksPerSecond',1000); % epochs in milliseconds
+    MAPdate=string(MAPdate);
+    MAPtitle=append(MAPname,',',MAPdate);
+    MAPfilepath=append(savepath,'MAPz_matrix');
     
 % Plotting GEM with mean elevation
     xlab = 'Cross-Shore (m)';ylab = 'Alongshore (m)';
     fig=figure('units','inches','position',[0 0 10 6],'color','w');
-    pcolor(Xgrid,Ygrid,meanGEMz(:,:,i)); grid off;box on;hold on
+    pcolor(Xgrid,Ygrid,meanMAPz(:,:,i)); grid off;box on;hold on
     %scatter(GCPx,GCPy,60,'fill','r','MarkerEdgeColor','k') (need to figure
     %out how to specifiy GCPs/do we need?)
     scatter(CamAx,CamAy,60,'fill','sq','m','MarkerEdgeColor','k');
@@ -145,16 +145,16 @@ numframes=length(sortfilenames);
     set(gca,'fontsize',14);
     %set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 1, 0.96]); % Enlarge figure to full screen
     title(GEMtitle);
-    filename=append('mean',GEMname,'_',string(i));
+    filename=append('mean',MAPname,'_',string(i));
     %meanfigpath=fullfile(figpath, filename);
-    meanfigpath=append(figpath,"/mean",GEMname,'_',num2str(i));
+    meanfigpath=append(figpath,"/mean",MAPname,'_',num2str(i));
     saveas(fig,meanfigpath,'png');
     close(fig);
 
     % Plotting GEM with median elevation
     xlab = 'Cross-Shore (m)';ylab = 'Alongshore (m)';
     fig=figure('units','inches','position',[0 0 10 6],'color','w');
-    pcolor(Xgrid,Ygrid,medGEMz(:,:,i)); grid off;box on;hold on
+    pcolor(Xgrid,Ygrid,medMAPz(:,:,i)); grid off;box on;hold on
     %scatter(GCPx,GCPy,60,'fill','r','MarkerEdgeColor','k') (need to figure
     %out how to specifiy GCPs/do we need?)
     scatter(CamAx,CamAy,60,'fill','sq','m','MarkerEdgeColor','k');
@@ -169,9 +169,9 @@ numframes=length(sortfilenames);
     set(hc,'fontsize',ftsz(2),'linewidth',lw);
     set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 1, 0.96]); % Enlarge figure to full screen
     title(GEMtitle);
-    filename=append('med',GEMname,'_',string(i));
+    filename=append('med',MAPname,'_',string(i));
     %medfigpath=fullfile(figpath, filename);
-    medfigpath=append(figpath,"/med",GEMname,'_',num2str(i));
+    medfigpath=append(figpath,"/med",MAPname,'_',num2str(i));
     saveas(fig,medfigpath,'png');
     close(fig);
 
@@ -179,10 +179,10 @@ numframes=length(sortfilenames);
 
  % save mean and median elevation values
 
-    matname=fullfile(GEMsavepath,append('/meanGEMz','.mat'));%fullfile(GEMsavepath,append('meanGEMz_',num2str(i),'.mat'));
-    save(matname,'meanGEMz')
-    matname=fullfile(GEMsavepath,append('/medGEMz','.mat'));%fullfile(GEMsavepath,append('medGEMz_',num2str(i),'.mat'));
-    save(matname,'medGEMz')
+    matname=fullfile(GEMsavepath,append('/meanMAPz','.mat'));%fullfile(GEMsavepath,append('meanGEMz_',num2str(i),'.mat'));
+    save(matname,'meanMAPz')
+    matname=fullfile(GEMsavepath,append('/medMAPz','.mat'));%fullfile(GEMsavepath,append('medGEMz_',num2str(i),'.mat'));
+    save(matname,'medMAPz')
 end
     
   
