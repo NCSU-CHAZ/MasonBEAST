@@ -179,9 +179,9 @@ numframes=length(sortfilenames);
 
  % save mean and median elevation values
 
-    matname=fullfile(GEMsavepath,append('/meanMAPz','.mat'));%fullfile(GEMsavepath,append('meanGEMz_',num2str(i),'.mat'));
+    matname=fullfile(savepath,append('/meanMAPz','.mat'));%fullfile(GEMsavepath,append('meanGEMz_',num2str(i),'.mat'));
     save(matname,'meanMAPz')
-    matname=fullfile(GEMsavepath,append('/medMAPz','.mat'));%fullfile(GEMsavepath,append('medGEMz_',num2str(i),'.mat'));
+    matname=fullfile(savepath,append('/medMAPz','.mat'));%fullfile(GEMsavepath,append('medGEMz_',num2str(i),'.mat'));
     save(matname,'medMAPz')
 end
     
