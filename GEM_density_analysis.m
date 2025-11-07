@@ -142,7 +142,7 @@ save(matname,'density')
 
 % plot density histograms
 % ------------------------------------
-path=metashape_path; % or measured_path metashape_path
+path=measured_path; % or measured_path metashape_path
 % list of files in folder
 listofFiles=dir(path);
 filenames = cell(length(listofFiles), 1); % Preallocate cell array
