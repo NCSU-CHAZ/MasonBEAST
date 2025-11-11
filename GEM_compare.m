@@ -145,7 +145,7 @@ pcolor(Xgrid,Ygrid,MAPz-ZtranMean); grid off; shading flat; title('Stereo minus 
 colormap(ax3,'hot'); cb3=colorbar(ax3); cb3.Label.String = 'Difference in Elevation (m NAVD83 (2011))';
 set(gca,'fontsize',14);xlim([0 50]); ylim([-45 20]);
 set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 1, 0.96]);% Enlarge figure to full screen
-    %rmse_txt=num2str(rmse_mean(i)); rmse_txt=append('RMSE = ', rmse_txt); annotation('textbox',[0.531589801274837,0.07001239157373,0.100000000000001,0.2],'String',rmse_txt,'EdgeColor','none','FontSize',28);
+rmse_txt=num2str(rmse_val); rmse_txt=append('RMSE = ', rmse_txt); annotation('textbox',[0.531589801274837,0.07001239157373,0.100000000000001,0.2],'String',rmse_txt,'EdgeColor','none','FontSize',28);
 clim(ax1,[0 5]);clim(ax2,[0 5]), clim(ax3,[-0.15 0.15]);
 saveas(t,compfigpath,'png');
 close(fig);
