@@ -83,7 +83,8 @@ GEMdate=string(GEMdate);
 GEMtitle=append(GEMname,',',GEMdate);
 %}
 epoch=epoch{1};
-GEMdate=datetime(epoch,'ConvertFrom','epochtime','TicksPerSecond',1000); % TIME IS WRONG BY LIKE A DAY
+GEMdate=datetime(str2num(epoch),'ConvertFrom','epochtime','TicksPerSecond',1000); % TIME IS WRONG BY LIKE A DAY
+GEMname=string(epoch);
 GEMtitle=append(string(epoch),',',string(GEMdate));
 %--------------------------------------------------------------------------
 % read in hand surveys
@@ -138,11 +139,11 @@ ax2=nexttile;
 pcolor(Xgrid,Ygrid,ZtranMean); grid off; shading flat; title("Gridded Hand Transect Elevation Values");
 cb2=colorbar(ax2); cb2.Label.String = 'Elevation (m NAVD83 (2011))';
     %linkaxes([ax1 ax2]);sgtitle(append(GEMname,',',GEMdate)); 
-title(t,append(GEMname,',',GEMdate));ylabel(t,'Alongshore (m)');xlabel(t,'Cross-shore (m)');
+title(t,GEMtitle);ylabel(t,'Alongshore (m)');xlabel(t,'Cross-shore (m)');
 hold on; set(gca,'fontsize',14);xlim([0 50]); ylim([-45 20]);
 ax3=nexttile;
 pcolor(Xgrid,Ygrid,MAPz-ZtranMean); grid off; shading flat; title('Stereo minus Transects');
-colormap(ax3,'hot'); cb3=colorbar(ax3); cb3.Label.String = 'Difference in Elevation (m NAVD83 (2011))';
+colormap(ax3,'cool'); cb3=colorbar(ax3); cb3.Label.String = 'Difference in Elevation (m NAVD83 (2011))';
 set(gca,'fontsize',14);xlim([0 50]); ylim([-45 20]);
 set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 1, 0.96]);% Enlarge figure to full screen
 rmse_txt=num2str(rmse_val); rmse_txt=append('RMSE = ', rmse_txt); annotation('textbox',[0.531589801274837,0.07001239157373,0.100000000000001,0.2],'String',rmse_txt,'EdgeColor','none','FontSize',28);
