@@ -17,7 +17,7 @@ numframes=2;
 % Loop through Metashape pointclouds
 spec='*meta_ptcld*';
 figpath=append(metashape_path,'Figures');
-[meanGEMz,medGEMz,Xrot,Yrot]=ptcld_to_GEM(camlocA,camlocB,rbrloc,dxy,numframes,pcpath,metashape_path,figpath,spec);
+[meanMAPzmatrix,medMAPzmatrix,Xrot,Yrot]=ptcld_to_GEM(camlocA,camlocB,rbrloc,dxy,pcpath,metashape_path,figpath,spec);
 
 
 % compare to hand surveys (need to figure out how to grab surveys through
@@ -38,7 +38,7 @@ figpath=append(metashape_path,'Figures');
 % Loop through Measured pointclouds
 spec='*meas_ptcld*';
 figpath=append(measured_path,'Figures');
-[meanGEMz,medGEMz]=ptcld_to_GEM(camlocA,camlocB,rbrloc,dxy,numframes,pcpath,measured_path,figpath,spec);
+[meanMAPzmatrix,medMAPzmatrix]=ptcld_to_GEM(camlocA,camlocB,rbrloc,dxy,pcpath,measured_path,figpath,spec);
 
 
 % GEM comparison manually
@@ -54,6 +54,21 @@ surveypath=append(CAM_analysispath,'/Surveys');
 % '2024_11_04_Transects_UTM.xlsx' '2025_01_29_Transects_UTM.xlsx'
 % '2025_03_14_Transects_UTM.xlsx'
 
+% epochs
+epochs={'1711479601066','1713452401874', '1717156801902','1719428401397','1721934001780', '1723489201189', '1726772401770', '1728561601419','1730736001873','1734181201371', '1735848001721', '1738526401587', '1741978801668'};
+surveynames={'2024_03_26_Transects_UTM.xlsx', '2024_03_26_Transects_UTM.xlsx','2024_05_31_Transects_UTM.xlsx' ,'2024_06_26_Transects_UTM.xlsx','2024_07_25_transects_UTM.xlsx', '2024_08_12_Transects_UTM.xlsx','2024_09_18_Transects_UTM.xlsx', '2024_10_01_Transects_UTM.xlsx','2024_11_04_Transects_UTM.xlsx', '2025_01_29_Transects_UTM.xlsx','2025_01_29_Transects_UTM.xlsx','2025_01_29_Transects_UTM.xlsx','2025_03_14_Transects_UTM.xlsx'};
+
+for i=1:length(epochs)
+    hand_survey_path=append(surveypath,'/',surveynames(i)); % assign hand survey
+    epoch=epochs(i); % epoch num
+    for j=3:2:size(meanMAPzmatrix,3)
+        MAPz=meanMAPzmatrix(:,:,j); % assign map z
+    end
+    % compare
+    [hs_gridmean,hs_gridmed]=GEM_compare(MAPz,epoch,camlocA,camlocB,dxy,hand_survey_path,HS_savepath,figpath);
+end
+%% OLD____
+%{
 % survey path
 hand_survey_path=append(surveypath,'/2025_01_29_Transects_UTM.xlsx');
 % metashape
@@ -64,7 +79,7 @@ figpath=append(metashape_path,'Figures');
 GEMmat_path=append(measured_path,'1735848001721/');
 figpath=append(measured_path,'Figures');
 [handsurvey_grid_mean,handsurvey_grid_med]=GEM_compare(GEMmat_path,camlocA,camlocB,dxy,hand_survey_path,HS_savepath,figpath);
-
+%}
 %% Pull a transect from GEMs
 % specs
 ypick = [7.3 -20]; % (location on grid)
