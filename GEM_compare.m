@@ -1,16 +1,17 @@
-function[handsurvey_grid_mean,handsurvey_grid_med]=GEM_compare(GEMmat_path,camlocA,camlocB,dxy,hand_survey_path,HS_savepath,figpath)
-% function[handsurvey_grid_mean, handsurvey_grid_med]=GEM_compare(GEMmat_path,camlocA,camlocB,dxy,hand_survey,transect_dates,pcpath,GEMsavepath,figpath)
+function[handsurvey_grid_mean,handsurvey_grid_med]=GEM_compare(MAPz,epoch,camlocA,camlocB,dxy,hand_survey_path,HS_savepath,figpath)
+% function[handsurvey_grid_mean,handsurvey_grid_med]=GEM_compare(MAPz,epoch,camlocA,camlocB,dxy,hand_survey_path,HS_savepath,figpath)
 % --------------------------------------------------------------------------
 % This function takes a mat file of a griided GEM (has gone through
 % ptcld_to_GEM) and compares it's values to a hand survey. This is done by
-% puuting the hand survey on the same grid. The survey serves as the true
+% puting the hand survey on the same grid. The survey serves as the true
 % value and RMSE is calculated to show how the GEM compares to the hand
 % survey. 
 % --------------------------------------------------------------------------
 % INPUTS:
 % -------
 % 
-% GEMmat_path = path to mat files of GEMs
+% MAPz = matrix of elevation values from stereo map
+% epoch = epoch # of map
 % camlocA = camera A location coordinates [Ax,Ay]
 % camlocB = camera B location coordinates [Bx,By]
 % dxy = grid bin size (m)
@@ -28,6 +29,12 @@ function[handsurvey_grid_mean,handsurvey_grid_med]=GEM_compare(GEMmat_path,camlo
 % --------
 % handsurvey_grid_mean = gridded mean hand survey as a mat file
 % handsurvey_grid_med = gridded median hand survey as a mat file
+%
+% EDITS NEEDED:
+% -------------------------------------------
+% epoch to time conversion is wrong
+% 
+% LAST UPDATED: BG 11/11/2025
 %
 %
 % EXAMPLE:
@@ -58,7 +65,8 @@ gridY = -80:dxy:25;
 [CamBx, CamBy] = rotateCoordinates(camlocB(1), camlocB(2), Xloc, Yloc, rotang);
 
 %-------------------------------------------------------------------------------
-
+%{ 
+OLD FOR LOADING GEM
 % Load in GEM med and mean
 medGEMz=load(fullfile(GEMmat_path,'medGEMz_1.mat'));
 medGEMz=[medGEMz.medGEMz];
@@ -73,10 +81,13 @@ GEMname=string(GEMname);
 GEMdate=datetime(str2num(GEMname),'ConvertFrom','epochtime','TicksPerSecond',1000);
 GEMdate=string(GEMdate);
 GEMtitle=append(GEMname,',',GEMdate);
-
+%}
+epoch=epoch{1};
+GEMdate=datetime(epoch,'ConvertFrom','epochtime','TicksPerSecond',1000); % TIME IS WRONG BY LIKE A DAY
+GEMtitle=append(string(epoch),',',string(GEMdate));
 %--------------------------------------------------------------------------
 % read in hand surveys
-
+    hand_survey_path=hand_survey_path{1};
     handtran=readmatrix(hand_survey_path);
     Xtran=handtran(:,3); % Easting
     Ytran=handtran(:,2); % Northing
@@ -109,19 +120,48 @@ GEMtitle=append(GEMname,',',GEMdate);
 
 
 % --------------------------------------------------------------------------
-
 % Calculate RMSE for GEM vs Hand Survey
-% median
+rmse_array=rmse(MAPz,handsurvey_grid_mean,'omitnan');
+rmse_val=mean(rmse_array,'omitnan');
+
+% PLOT MAP, SURVEY, AND DIFF
+% --------------------------------------------------------------------------
+compfigpath=append(figpath,"/comp_",GEMname,'_',string(i));
+fig=figure;
+t=tiledlayout('horizontal');ax1=nexttile;
+    %ax1=subplot(1,2,1);
+pcolor(Xgrid,Ygrid,MAPz); grid off; shading flat;
+hold on; title("Averaged Stereo Elevation Values"); cb1=colorbar(ax1);hold on;cb1.Label.String = 'Elevation (m NAVD83 (2011))';
+hold on; set(gca,'fontsize',14); xlim([0 50]); ylim([-45 20]);
+    %ax2=subplot(1,2,2);
+ax2=nexttile;
+pcolor(Xgrid,Ygrid,ZtranMean); grid off; shading flat; title("Gridded Hand Transect Elevation Values");
+cb2=colorbar(ax2); cb2.Label.String = 'Elevation (m NAVD83 (2011))';
+    %linkaxes([ax1 ax2]);sgtitle(append(GEMname,',',GEMdate)); 
+title(t,append(GEMname,',',GEMdate));ylabel(t,'Alongshore (m)');xlabel(t,'Cross-shore (m)');
+hold on; set(gca,'fontsize',14);xlim([0 50]); ylim([-45 20]);
+ax3=nexttile;
+pcolor(Xgrid,Ygrid,MAPz-ZtranMean); grid off; shading flat; title('Stereo minus Transects');
+colormap(ax3,'hot'); cb3=colorbar(ax3); cb3.Label.String = 'Difference in Elevation (m NAVD83 (2011))';
+set(gca,'fontsize',14);xlim([0 50]); ylim([-45 20]);
+set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 1, 0.96]);% Enlarge figure to full screen
+    %rmse_txt=num2str(rmse_mean(i)); rmse_txt=append('RMSE = ', rmse_txt); annotation('textbox',[0.531589801274837,0.07001239157373,0.100000000000001,0.2],'String',rmse_txt,'EdgeColor','none','FontSize',28);
+clim(ax1,[0 5]);clim(ax2,[0 5]), clim(ax3,[-0.15 0.15]);
+saveas(t,compfigpath,'png');
+close(fig);
+
+% ---------------------------------------------------------------------------
+%{
+OLD FOR MED OR MEAN
 numframes=2;
 for i=1:numframes
-    medGEMz_r=medGEMz(:,:,i);
-    rmse_array=rmse(medGEMz_r,handsurvey_grid_med,'omitnan'); % forecasted, observed, omitnans
-    rmse_med(i)=mean(rmse_array,'omitnan');
+    rmse_array=rmse(MAPz,handsurvey_grid_med,'omitnan'); % forecasted, observed, omitnans
+    rmse_med=mean(rmse_array,'omitnan');
 end
 
 % mean
 for i=1:numframes
-    meanGEMz_r=meanGEMz(:,:,i);
+    meanGEMz_r=meanGEMz;
     rmse_array=rmse(meanGEMz_r,handsurvey_grid_mean,'omitnan'); % forecasted, observed, omitnans
     rmse_mean(i)=mean(rmse_array,'omitnan');
 end
@@ -133,7 +173,7 @@ for i=1:numframes
     fig=figure;
     t=tiledlayout('horizontal');nexttile;
     %ax1=subplot(1,2,1);
-    pcolor(Xgrid,Ygrid,meanGEMz(:,:,i)); grid off; shading flat;
+    pcolor(Xgrid,Ygrid,meanGEMz); grid off; shading flat;
     hold on; title("Averaged GEM Elevation Values"); colorbar;caxis([0 5]);c1=clim; hold on;
     %ax2=subplot(1,2,2);
     nexttile;
@@ -141,8 +181,9 @@ for i=1:numframes
     a=colorbar();caxis([0 5]);c2 = clim; a.Label.String = 'Elevation (m NAD83 (2011))';
     %linkaxes([ax1 ax2]);sgtitle(append(GEMname,',',GEMdate)); 
     title(t,append(GEMname,',',GEMdate));ylabel(t,'Alongshore (m)');xlabel(t,'Cross-shore (m)');
+    set(gca,'fontsize',14);
     set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 1, 0.96]);% Enlarge figure to full screen
-    rmse_txt=num2str(rmse_mean(i)); rmse_txt=append('RMSE = ', rmse_txt); annotation('textbox',[0.531589801274837,0.07001239157373,0.100000000000001,0.2],'String',rmse_txt,'EdgeColor','none','FontSize',28);
+    %rmse_txt=num2str(rmse_mean(i)); rmse_txt=append('RMSE = ', rmse_txt); annotation('textbox',[0.531589801274837,0.07001239157373,0.100000000000001,0.2],'String',rmse_txt,'EdgeColor','none','FontSize',28);
     saveas(t,meanfigpath,'png');
     close(fig);
 
@@ -159,8 +200,11 @@ for i=1:numframes
     a=colorbar();caxis([0 5]);c2 = clim; a.Label.String = 'Elevation (m NAD83 (2011))';
     %linkaxes([ax1 ax2]);sgtitle(append(GEMname,',',GEMdate));
     title(t,append(GEMname,',',GEMdate));ylabel(t,'Alongshore (m)');xlabel(t,'Cross-shore (m)');
+    set(gca,'fontsize',14);
     set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 1, 0.96]);% Enlarge figure to full screen
-    rmse_txt=num2str(rmse_med(i)); rmse_txt=append('RMSE = ', rmse_txt); annotation('textbox',[0.531589801274837,0.07001239157373,0.100000000000001,0.2],'String',rmse_txt,'EdgeColor','none','FontSize',28);
+    %rmse_txt=num2str(rmse_med(i)); rmse_txt=append('RMSE = ', rmse_txt); annotation('textbox',[0.531589801274837,0.07001239157373,0.100000000000001,0.2],'String',rmse_txt,'EdgeColor','none','FontSize',28);
     saveas(t,medfigpath,'png');
     close(fig);
 end
+
+%}
