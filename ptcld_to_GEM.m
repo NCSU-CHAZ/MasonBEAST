@@ -35,6 +35,10 @@ function[meanMAPz,medMAPz,Xrot,Yrot]=ptcld_to_GEM(camlocA,camlocB,rbrloc,dxy,pcp
 % Yrot = rotated y coords of GEM
 %
 % Last Updated: 11/4/2025 BG
+%
+% EDITS NEEDED:
+% --------------
+% video of stereo maps
 % --------------------------------------------------------------------------
 format long g
 
@@ -114,7 +118,7 @@ medMAPz = NaN(size(Xgrid,1),size(Xgrid,2),numframes);
         clear ztemp ntemp 
 
     MAPname=split(fullFilename,'/');
-    MAPname=MAPname(9,1);
+    MAPname=MAPname(7,1);
     MAPname=split(MAPname,'_');
     MAPname=MAPname(1,1);
     MAPname=string(MAPname);
@@ -185,6 +189,7 @@ end
     
   
 
+%% Create Video of Stereo Maps (want to add)
 
 %% TEST
 % camlocA = [239766.1, 3784761.9];%, 10.37
