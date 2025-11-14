@@ -142,7 +142,7 @@ medMAPz = NaN(size(Xgrid,1),size(Xgrid,2),numframes);
     shading interp;
     axis equal;ylim([-60 30]); ylabel(ylab);xlabel(xlab);xlim([-10 90]);clim([0 3.8]);
     ftsz = [22 18]; lw = 1.2; hc = colorbar('Location','eastoutside','Position', [0.83 0.14 0.035 0.4],'orientation','vertical','YAxisLocation','right');
-    set(hc,'fontsize',ftsz(2),'linewidth',lw);
+    set(hc,'fontsize',ftsz(2),'linewidth',lw); hc.Label.String = 'Elevation (m NAVD83 (2011))';
     set(gca,'fontsize',14);
     %set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 1, 0.96]); % Enlarge figure to full screen
     title(MAPtitle);
@@ -167,7 +167,7 @@ medMAPz = NaN(size(Xgrid,1),size(Xgrid,2),numframes);
     shading interp;
     axis equal;ylim([-60 30]); ylabel(ylab);xlabel(xlab);xlim([-10 90]);clim([0 3.8]);
     ftsz = [22 18]; lw = 1.2; hc = colorbar('Location','eastoutside','Position', [0.83 0.14 0.035 0.4],'orientation','vertical','YAxisLocation','right');
-    set(hc,'fontsize',ftsz(2),'linewidth',lw);
+    set(hc,'fontsize',ftsz(2),'linewidth',lw); hc.Label.String = 'Elevation (m NAVD83 (2011))';
     set(gca,'fontsize',14);
     %set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 1, 0.96]); % Enlarge figure to full screen
     title(MAPtitle);
@@ -190,6 +190,36 @@ end
   
 
 %% Create Video of Stereo Maps (want to add)
+vname=append(MAPname,'stereo_vid');
+v = VideoWriter(vname,'MPEG-4');
+v.FrameRate = 30; 
+v.Quality = 100;
+open(v)
+
+figure('units','inches','position',[0 0 10 6],'color','w');
+for i=1:28%numframes
+    clf
+    pcolor(Xgrid,Ygrid,meanMAPz(:,:,i)); grid off;box on;hold on
+    %scatter(GCPx,GCPy,60,'fill','r','MarkerEdgeColor','k') (need to figure
+    %out how to specifiy GCPs/do we need?)
+    scatter(CamAx,CamAy,60,'fill','sq','m','MarkerEdgeColor','k');
+    text(CamAx(1)+0.5, CamAy(1), 'Cam A', 'FontSize', 12, 'Color', 'm');
+    scatter(CamBx,CamBy,60,'fill','sq','m','MarkerEdgeColor','k');
+    text(CamBx(1)+0.5, CamBy(1), 'Cam B', 'FontSize', 12, 'Color', 'm'); 
+    scatter(rbrx,rbry,60,'fill','sq','g','MarkerEdgeColor','k');
+    text(rbrx(1)+0.5, rbry(1), 'RBR', 'FontSize', 12, 'Color', 'g');
+    shading interp;
+    axis equal;ylim([-60 30]); ylabel('Alongshore (m)');xlabel('Cross-shore (m)');xlim([-10 90]);clim([0 3.8]);
+    ftsz = [22 18]; lw = 1.2; hc = colorbar('Location','eastoutside','Position', [0.83 0.14 0.035 0.4],'orientation','vertical','YAxisLocation','right');
+    set(hc,'fontsize',ftsz(2),'linewidth',lw); hc.Label.String = 'Elevation (m NAVD83 (2011))';
+    set(gca,'fontsize',14);
+    pause(0.1)
+    writeVideo(v,getframe(gcf))
+end
+
+close(v)
+
+
 
 %% TEST
 % camlocA = [239766.1, 3784761.9];%, 10.37
