@@ -1,4 +1,4 @@
-function[handsurvey_grid_mean,handsurvey_grid_med]=GEM_compare(MAPz,epoch,camlocA,camlocB,dxy,hand_survey_path,HS_savepath,figpath)
+function[handsurvey_grid_mean,handsurvey_grid_med,diff,rmse_val]=GEM_compare(MAPz,epoch,camlocA,camlocB,dxy,hand_survey_path,HS_savepath,figpath)
 % function[handsurvey_grid_mean,handsurvey_grid_med]=GEM_compare(MAPz,epoch,camlocA,camlocB,dxy,hand_survey_path,HS_savepath,figpath)
 % --------------------------------------------------------------------------
 % This function takes a mat file of a griided GEM (has gone through
@@ -29,6 +29,8 @@ function[handsurvey_grid_mean,handsurvey_grid_med]=GEM_compare(MAPz,epoch,camloc
 % --------
 % handsurvey_grid_mean = gridded mean hand survey as a mat file
 % handsurvey_grid_med = gridded median hand survey as a mat file
+% diff = matrix of GEM - Handsurvey Mean
+% rmse_val = rmse between GEM and survey
 %
 % EDITS NEEDED:
 % -------------------------------------------
@@ -127,6 +129,8 @@ rmse_val=mean(rmse_array,'omitnan');
 
 % PLOT MAP, SURVEY, AND DIFF
 % --------------------------------------------------------------------------
+diff=MAPz-ZtranMean;
+
 compfigpath=append(figpath,"/comp_",GEMname,'_',string(i));
 fig=figure;
 t=tiledlayout('horizontal');ax1=nexttile;
@@ -142,7 +146,7 @@ cb2=colorbar(ax2); cb2.Label.String = 'Elevation (m NAVD83 (2011))';
 title(t,GEMtitle);ylabel(t,'Alongshore (m)');xlabel(t,'Cross-shore (m)');
 hold on; set(gca,'fontsize',14);xlim([0 50]); ylim([-45 20]);
 ax3=nexttile;
-pcolor(Xgrid,Ygrid,MAPz-ZtranMean); grid off; shading flat; title('Stereo minus Transects');
+pcolor(Xgrid,Ygrid,diff); grid off; shading flat; title('Stereo minus Transects');
 colormap(ax3,'cool'); cb3=colorbar(ax3); cb3.Label.String = 'Difference in Elevation (m NAVD83 (2011))';
 set(gca,'fontsize',14);xlim([0 50]); ylim([-45 20]);
 set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 1, 0.96]);% Enlarge figure to full screen
