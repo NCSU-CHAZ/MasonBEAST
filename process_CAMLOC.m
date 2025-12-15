@@ -62,12 +62,17 @@ diff_matrix = NaN(211,221,length(epochs)); % this is hard coded
 hs_matrix = NaN(211,221,length(epochs)); % this is hard coded
 rmse_vals=NaN(length(epochs),1);
 
+meanMAPzmatrix_oneframe=meanMAPzmatrix(:,:,3:2:28);
+
 for i=1:length(epochs)
     hand_survey_path=append(surveypath,'/',surveynames(i)); % assign hand survey
     epoch=epochs(i); % epoch num
-    for j=3:2:size(meanMAPzmatrix,3)
-        MAPz=meanMAPzmatrix(:,:,j); % assign map z
-    end
+    MAPz=meanMAPzmatrix_oneframe(:,:,i);
+    disp(string(hand_survey_path));
+    disp(string(epoch));
+    %for j=3:2:size(meanMAPzmatrix,3)
+        %MAPz=meanMAPzmatrix(:,:,j); % assign map z
+    %end
     % compare
     [hs_gridmean,hs_gridmed,diff,rmse_val]=GEM_compare(MAPz,epoch,camlocA,camlocB,dxy,hand_survey_path,HS_savepath,figpath);
     diff_matrix(:,:,i)=diff;
@@ -117,6 +122,48 @@ for i=1:length(epochs)
 end
 close(v)
 
+%% Forced Extrinsics
+% Loop through Measured pointclouds
+spec='*1741978801668_meas_ptcld*';
+figpath=append(measured_path,'Figures');
+[march25_meanMAPzmatrix,medMAPzmatrix]=ptcld_to_GEM(camlocA,camlocB,rbrloc,dxy,pcpath,measured_path,figpath,spec);
+
+spec='*1711479601066_meas_ptcld*';
+figpath=append(measured_path,'Figures');
+[march24_meanMAPzmatrix,medMAPzmatrix]=ptcld_to_GEM(camlocA,camlocB,rbrloc,dxy,pcpath,measured_path,figpath,spec);
+
+% combine matrices 
+meanMAPzmatrix=cat(3,march25_meanMAPzmatrix(:,:,1),march25_meanMAPzmatrix(:,:,3),march24_meanMAPzmatrix(:,:,1));
+
+% GEM comparison manually
+HS_savepath=append(genpath,'/Surveys/rotated_surveys');
+surveypath=append(CAM_analysispath,'/Surveys');
+
+% epochs
+epochs={'1741978801668','1741978801668','1711479601066'};
+surveynames={'2025_03_14_Transects_UTM.xlsx','2025_03_14_Transects_UTM.xlsx','2024_03_26_Transects_UTM.xlsx'};
+% diff matrix and rmse
+diff_matrix = NaN(211,221,length(epochs)); % this is hard coded
+hs_matrix = NaN(211,221,length(epochs)); % this is hard coded
+rmse_vals=NaN(length(epochs),1);
+
+for i=1:length(epochs)
+    hand_survey_path=append(surveypath,'/',surveynames(i)); % assign hand survey
+    epoch=epochs(i); % epoch num
+    disp(string(epoch));
+    disp(string(hand_survey_path));
+    %j=0:2:size(meanMAPzmatrix,3)-1;
+    %k=i+j;
+    MAPz=meanMAPzmatrix(:,:,i); % assign map z
+    %disp(string(j));
+    %disp(string(k));
+   
+    % compare
+    [hs_gridmean,hs_gridmed,diff,rmse_val]=GEM_compare(MAPz,epoch,camlocA,camlocB,dxy,hand_survey_path,HS_savepath,figpath);
+    diff_matrix(:,:,i)=diff;
+    rmse_vals(i,1)=rmse_val;
+    hs_matrix(:,:,i)=hs_gridmean;
+end
 
 %% OLD____
 %{
