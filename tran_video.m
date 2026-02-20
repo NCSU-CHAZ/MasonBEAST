@@ -23,8 +23,10 @@ function[v,quality_array]=tran_video(MAPzmatrixpath,yavg,dxy,ypick,figpath)
 
 % EDITS NEEDED
 % -------------
-% 
-% Last Updated: 11/4/2025 BG
+% save timesteps as pngs
+% possibly have a gappy and nongappy folder
+
+% Last Updated: 02/20/26 BG
 
 % Constants
 xloc=239737;
@@ -33,6 +35,8 @@ rotang=35;
 iyavg=round(yavg/dxy/2); % indices to pull out before and after transect to average over
 figfolder=figpath; % path to save figures
 timestepfolder=append(figpath,'/Individual_timesteps'); % folder to save individual timestep pngs
+gappypath=append(timestepfolder,'/gappy');
+lessgappypath=append(timestepfolder,'/less_gappy');
 
 % Load elevation map
 
@@ -95,7 +99,7 @@ ylab = 'Elev. (m)';
 sname =append(MAPname,'_',string(ypick(1)),'_timeseries_',string(yavg));
 % this is epochnum_transect y location_timeseries_yavg
 
-% need to test this
+% create timestep video
 v = VideoWriter(append(figfolder,'/',sname), 'MPEG-4');
 v.FrameRate=2;%12;
 v.Quality = 100;
@@ -142,7 +146,7 @@ for i = 1:numframes%+1
     title(['$t$ = ',num2str(round(i/2)),' s'],'interpreter','latex','fontsize',ftsz(1));
     xlabel("Cross-Shore (m)",'Fontsize',14,'Fontname','Times New Roman'); ylabel("Elevation (m)",'Fontsize',14,'Fontname','Times New Roman')
 
-    filename=append(MAPname,'_',string(ypick(1)),'_',string(yavg),'_timestep_',num2str(round(i/2)));
+    filename=append(MAPname,'_',string(ypick(1)),'_',string(yavg),'_image_',num2str(i),'.png');
     timefigpath=fullfile(timestepfolder, filename);
     
     nannum=sum(isnan(ztran(:,i)));
@@ -151,15 +155,27 @@ for i = 1:numframes%+1
     % create time step folder (if not created) and save individual time
     % step
     if isfolder(timestepfolder) == true
-        saveas(fig,timefigpath,'png');
-        %fprintf(string(i)); % print number at 
-        close(fig);
+        if quality_array<=0.35
+            MAEtimefigpath=fullfile(lessgappypath,filename);
+            saveas(fig,MAEtimefigpath,'png');
+            close(fig);
+        else
+            MAEtimefigpath=fullfile(gappypath,filename);
+            saveas(fig,MAEtimefigpath,'png');
+            close(fig);
+        end
     else
         mkdir(timestepfolder);
         fprintf('Created new folder for timestep photos');
-        saveas(fig,timefigpath,'png');
-        %fprintf(string(i)); % print number at 
-        close(fig);
+         if quality_array<=0.35
+            MAEtimefigpath=fullfile(lessgappypath,filename);
+            saveas(fig,MAEtimefigpath,'png');
+            close(fig);
+        else
+            MAEtimefigpath=fullfile(gappypath,filename);
+            saveas(fig,MAEtimefigpath,'png');
+            close(fig);
+         end
     end
    
 end
