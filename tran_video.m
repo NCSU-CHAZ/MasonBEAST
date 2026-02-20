@@ -155,7 +155,7 @@ for i = 1:numframes%+1
     % create time step folder (if not created) and save individual time
     % step
     if isfolder(timestepfolder) == true
-        if quality_array<=0.35
+        if quality_array(i)<=0.30 % need better way to calculate this
             MAEtimefigpath=fullfile(lessgappypath,filename);
             saveas(fig,MAEtimefigpath,'png');
             close(fig);
@@ -167,7 +167,7 @@ for i = 1:numframes%+1
     else
         mkdir(timestepfolder);
         fprintf('Created new folder for timestep photos');
-         if quality_array<=0.35
+         if quality_array(i)<=0.33 % need better way to calculate this
             MAEtimefigpath=fullfile(lessgappypath,filename);
             saveas(fig,MAEtimefigpath,'png');
             close(fig);
