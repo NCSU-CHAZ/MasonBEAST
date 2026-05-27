@@ -82,7 +82,7 @@ medMAPz = NaN(size(Xgrid,1),size(Xgrid,2),numframes);
 % point cloud is in NAVD83 (2011) UTM Zone 18 N EPSG 6347
 % save z values in a matrix for each pointcloud
 
-    for i = 1:length(listofFiles)
+    for i = 1:length(listofFiles) 
     % read point cloud
     %baseFilename=listofFiles(i).name;
     baseFilename=string(sortfilenames(i));
@@ -137,8 +137,8 @@ medMAPz = NaN(size(Xgrid,1),size(Xgrid,2),numframes);
     text(CamAx(1)+0.5, CamAy(1), 'Cam A', 'FontSize', 12, 'Color', 'm');
     scatter(CamBx,CamBy,60,'fill','sq','m','MarkerEdgeColor','k');
     text(CamBx(1)+0.5, CamBy(1), 'Cam B', 'FontSize', 12, 'Color', 'm');
-    scatter(rbrx,rbry,60,'fill','sq','g','MarkerEdgeColor','k');
-    text(rbrx(1)+0.5, rbry(1), 'RBR', 'FontSize', 12, 'Color', 'g');
+    scatter(rbrx,rbry,60,'fill','sq','k','MarkerEdgeColor','k');
+    text(rbrx(1)+0.5, rbry(1), 'RBR', 'FontSize', 12, 'Color', 'k');
     shading interp;
     axis equal;ylim([-60 30]); ylabel(ylab);xlabel(xlab);xlim([-10 90]);clim([0 3.8]);
     ftsz = [22 18]; lw = 1.2; hc = colorbar('Location','eastoutside','Position', [0.83 0.14 0.035 0.4],'orientation','vertical','YAxisLocation','right');
@@ -162,8 +162,8 @@ medMAPz = NaN(size(Xgrid,1),size(Xgrid,2),numframes);
     text(CamAx(1)+0.5, CamAy(1), 'Cam A', 'FontSize', 12, 'Color', 'm');
     scatter(CamBx,CamBy,60,'fill','sq','m','MarkerEdgeColor','k');
     text(CamBx(1)+0.5, CamBy(1), 'Cam B', 'FontSize', 12, 'Color', 'm'); 
-    scatter(rbrx,rbry,60,'fill','sq','g','MarkerEdgeColor','k');
-    text(rbrx(1)+0.5, rbry(1), 'RBR', 'FontSize', 12, 'Color', 'g');
+    scatter(rbrx,rbry,60,'fill','sq','k','MarkerEdgeColor','k');
+    text(rbrx(1)+0.5, rbry(1), 'RBR', 'FontSize', 12, 'Color', 'k');
     shading interp;
     axis equal;ylim([-60 30]); ylabel(ylab);xlabel(xlab);xlim([-10 90]);clim([0 3.8]);
     ftsz = [22 18]; lw = 1.2; hc = colorbar('Location','eastoutside','Position', [0.83 0.14 0.035 0.4],'orientation','vertical','YAxisLocation','right');
@@ -185,21 +185,19 @@ medMAPz = NaN(size(Xgrid,1),size(Xgrid,2),numframes);
     save(matname,'meanMAPz')
     matname=fullfile(savepath,append('/medMAPz','.mat'));%fullfile(GEMsavepath,append('medGEMz_',num2str(i),'.mat'));
     save(matname,'medMAPz')
-end
-    
-  
+     
 
 %% Create Video of Stereo Maps (want to add)
-vname=append(MAPname,'_stereo_vid');
-v = VideoWriter(append(figpath,'/',vname),'MPEG-4');
-v.FrameRate = 0.5; 
-v.Quality = 100;
-open(v)
+%vname=append(string(epochnum),'_stereo_vid');
+%v = VideoWriter(append(figpath,'/',vname),'MPEG-4');
+%v.FrameRate = 2; 
+%v.Quality = 100;
+%open(v)
 
-figure('units','inches','position',[0 0 10 6],'color','w');
-for i=1:28%numframes
-    clf
-    pcolor(Xgrid,Ygrid,meanMAPzmatrix(:,:,i)); grid off;box on;hold on
+%figure('units','inches','position',[0 0 10 6],'color','w');
+%for i=1:numframes
+    %clf
+    %pcolor(Xgrid,Ygrid,meanMAPz(:,:,i)); grid off;box on;hold on
     %scatter(GCPx,GCPy,60,'fill','r','MarkerEdgeColor','k') (need to figure
     %out how to specifiy GCPs/do we need?)
     %scatter(CamAx,CamAy,60,'fill','sq','m','MarkerEdgeColor','k');
@@ -208,16 +206,17 @@ for i=1:28%numframes
     %text(CamBx(1)+0.5, CamBy(1), 'Cam B', 'FontSize', 12, 'Color', 'm'); 
     %scatter(rbrx,rbry,60,'fill','sq','g','MarkerEdgeColor','k');
     %text(rbrx(1)+0.5, rbry(1), 'RBR', 'FontSize', 12, 'Color', 'g');
-    shading interp;
-    axis equal;ylim([-60 30]); ylabel('Alongshore (m)');xlabel('Cross-shore (m)');xlim([-10 90]);clim([0 3.8]);
-    ftsz = [22 18]; lw = 1.2; hc = colorbar('Location','eastoutside','Position', [0.83 0.14 0.035 0.4],'orientation','vertical','YAxisLocation','right');
-    set(hc,'fontsize',ftsz(2),'linewidth',lw); hc.Label.String = 'Elevation (m NAVD83 (2011))';
-    set(gca,'fontsize',14);
-    pause(0.1)
-    writeVideo(v,getframe(gcf))
-end
+    %shading interp;
+    %axis equal;ylim([-60 30]); ylabel('Alongshore (m)');xlabel('Cross-shore (m)');xlim([-10 90]);clim([0 3.8]);
+    %ftsz = [22 18]; lw = 1.2; hc = colorbar('Location','eastoutside','Position', [0.83 0.14 0.035 0.4],'orientation','vertical','YAxisLocation','right');
+    %set(hc,'fontsize',ftsz(2),'linewidth',lw); hc.Label.String = 'Elevation (m NAVD83 (2011))';
+    %set(gca,'fontsize',14);
+    %pause(0.1)
+    %writeVideo(v,getframe(gcf))
+%end
 
-close(v)
+%close(v)
+%end
 
 
 

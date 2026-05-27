@@ -1,4 +1,4 @@
-function[v,quality_array]=tran_video(MAPzmatrixpath,yavg,dxy,ypick,figpath)
+function[v,quality_array,ztran]=tran_video(MAPzmatrixpath,yavg,dxy,ypick,figpath)
 %function[v,quality_array]=tran_video(MAPzmatrixpath,yavg,dxy,ypick,figpath)
 % 
 % This function takes in a GEM and creates a video showing timesteps of 1 
@@ -149,37 +149,28 @@ for i = 1:numframes%+1
     filename=append(MAPname,'_',string(ypick(1)),'_',string(yavg),'_image_',num2str(i),'.png');
     timefigpath=fullfile(timestepfolder, filename);
     
+    tranfilename=append(MAPname,'_',string(ypick(1)),'_',string(yavg),'.mat');
+
     nannum=sum(isnan(ztran(:,i)));
     quality_array(i)=nannum/length(ztran(:,i)); % array of quality values (later use to separate usable transects for ML training)
 
     % create time step folder (if not created) and save individual time
     % step
     if isfolder(timestepfolder) == true
-        if quality_array(i)<=0.30 % need better way to calculate this
-            MAEtimefigpath=fullfile(lessgappypath,filename);
-            saveas(fig,MAEtimefigpath,'png');
-            close(fig);
-        else
-            MAEtimefigpath=fullfile(gappypath,filename);
-            saveas(fig,MAEtimefigpath,'png');
-            close(fig);
-        end
+        saveas(fig,timefigpath,'png');
+        %fprintf(string(i)); % print number at
+        close(fig);
     else
         mkdir(timestepfolder);
         fprintf('Created new folder for timestep photos');
-         if quality_array(i)<=0.33 % need better way to calculate this
-            MAEtimefigpath=fullfile(lessgappypath,filename);
-            saveas(fig,MAEtimefigpath,'png');
-            close(fig);
-        else
-            MAEtimefigpath=fullfile(gappypath,filename);
-            saveas(fig,MAEtimefigpath,'png');
-            close(fig);
-         end
+        saveas(fig,timefigpath,'png');
+        %fprintf(string(i)); % print number at
+        close(fig);
     end
    
 end
-
+matname=fullfile(figpath,append('/transects','_',string(ypick(1)),'_',string(yavg),'.mat'));
+save(matname,'ztran');
 
 fig=figure('units','inches','position',[1 1 7 5],'color','w');clf;
 plot(quality_array,'o','Color','m','MarkerFaceColor','m','MarkerSize',6); hold on;
