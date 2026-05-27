@@ -170,7 +170,7 @@ for i = 1:numframes%+1
    
 end
 matname=fullfile(figpath,append('/transects','_',string(ypick(1)),'_',string(yavg),'.mat'));
-save(matname,'quality_array');
+save(matname,'ztran');
 
 fig=figure('units','inches','position',[1 1 7 5],'color','w');clf;
 plot(quality_array,'o','Color','m','MarkerFaceColor','m','MarkerSize',6); hold on;
