@@ -130,7 +130,11 @@ medMAPz = NaN(size(Xgrid,1),size(Xgrid,2),numframes);
 % Plotting GEM with mean elevation
     xlab = 'Cross-Shore (m)';ylab = 'Alongshore (m)';
     fig=figure('units','inches','position',[0 0 10 6],'color','w');
-    pcolor(Xgrid,Ygrid,meanMAPz(:,:,i)); grid off;box on;hold on
+    pcolor(Xgrid,Ygrid,meanMAPz(:,:,i)); grid off;box on;hold on;
+    yvals=-60:2:6;
+    yline(yvals,'--','Color',[0.7 0.7 0.7],'Linewidth',1.5); hold on;
+    yvals=8.3:2:22.3;
+    yline(yvals,'--','Color',[0.7 0.7 0.7],'Linewidth',1.5); hold on;
     %scatter(GCPx,GCPy,60,'fill','r','MarkerEdgeColor','k') (need to figure
     %out how to specifiy GCPs/do we need?)
     scatter(CamAx,CamAy,60,'fill','sq','m','MarkerEdgeColor','k');
