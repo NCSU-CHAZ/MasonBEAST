@@ -28,7 +28,7 @@ function[meanDEMz,medDEMz,Xrot,Yrot]=ptcld2DEM(camlocA,camlocB,rbrloc,dxy,pcpath
 % Xrot = rotated x coords of DEM (used in later plotting)
 % Yrot = rotated y coords of DEM (used in later plotting) 
 %
-% Last Edits: BG 08/06/2026
+% Last Edits: BG 08/17/2026
 % 
 % EDITS NEEDED: 
 % ---------------------------
