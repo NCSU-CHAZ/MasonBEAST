@@ -72,7 +72,7 @@ gridX=0:dxy:110;
 gridY=-80:dxy:25;
 [x,y]=meshgrid(gridX,gridY);
 % extranct transect in all frames
-[~,iy] = min(abs(y(:,1)-ypick(1)));
+[~,iy] = min(abs(y(:,1)-ypick));
 ztran = median(DEMz(iy-iyavg:iy+iyavg,:,:),1,'omitnan');
 ztran = squeeze(ztran); % one matrix
 ztran = movmean(ztran,2,1,'omitnan');
@@ -84,7 +84,7 @@ zbeachmean = mean(ztran,2,'omitnan');
 ix2 = find(x(1,:) > 34 & x(1,:) < 36);
 [~,ixtran] = min(abs(x(1,:)-14));
 [~,ixon] = min(abs(x(1,:)-2));
-ztran_matrix=ztran;
+ztran_matrix=ztran+zbeach;
 %ztran(ztran-zbeach < 0.02)  = NaN; % NaN out z elevations if they're within 2 cm of beach elevation
 %--------------------------------------------------------------------------
 % STEP 2: Create Video of the Transect Over Time
