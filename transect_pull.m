@@ -27,7 +27,7 @@ figfolder=figpath;
 
 % Load GEM
 GEMz=load(GEMpath);
-GEMz=GEMz.meanGEMz;
+GEMz=GEMz.meanMAPz;
 
 % GEM name
 GEMname=split(GEMpath,'/');

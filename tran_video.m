@@ -12,6 +12,7 @@ function[v,points_array,ztran_matrix]=tran_video(DEMzmatrixpath,epochnum,yavg,dx
 % INPUTS:
 % ---------
 % DEMzmatrixpath = path to DEM elevation mat file matrix
+% epochnum = epoch number of DEM
 % yavg = width of transect in alongshore direction (m)
 % dxy = matrix bin size
 % ypick = transect location (m in the alongshore)
@@ -117,6 +118,7 @@ for i = 1:numframes %+1
     writeVideo(v,getframe(gcf))
 end
 close(v)
+close(figure);
 fprintf('Saved video of transect to %s\n', append(videopath,sname));
 
 % -------------------------------------------------------------------------

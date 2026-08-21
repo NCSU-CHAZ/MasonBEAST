@@ -1,5 +1,5 @@
-function[DEMvid]=DEMvideo(DEMzmatrixpath,epochnum,camlocA,camlocB,rbrloc,dxy,savepath)
-%function[DEMvid]=DEMvideo(DEMzmatrixpath,camlocA,camlocB,rbrloc,dxy,savepath)
+function[v]=DEMvideo(DEMzmatrixpath,epochnum,camlocA,camlocB,rbrloc,dxy,savepath)
+%function[v]=DEMvideo(DEMzmatrixpath,camlocA,camlocB,rbrloc,dxy,savepath)
 % -------------------------------------------------------------------------
 % This function generates a video of DEM timeseries and saves it as a MP4
 % file.
@@ -16,7 +16,7 @@ function[DEMvid]=DEMvideo(DEMzmatrixpath,epochnum,camlocA,camlocB,rbrloc,dxy,sav
 %
 % OUTPUTS:
 % -------------
-% DEMvid = video of DEM over time
+% v = video of DEM over time
 % 
 % Last Updated: 08/17/26 BG
 % ------------------------------------------------------------------------
