@@ -11,14 +11,24 @@
 
 % Paths
 % ---------------
-genpath='/Volumes/kanarde/MasonBEAST/data';% path to Research storage /Volumes/kanarde-1/MasonBEAST/data /Volumes/rsstu/users/k/kanarde/MasonBEAST/data;
-stormCHAZerspath=append(genpath,'/StormCHAZerz Data');
-decNoreastherpath=append(stormCHAZerspath,'/Dec2023Noreaster_Processed');
+%genpath='/Volumes/kanarde/MasonBEAST/data';% path to Research storage /Volumes/kanarde-1/MasonBEAST/data /Volumes/rsstu/users/k/kanarde/MasonBEAST/data;
+%stormCHAZerspath=append(genpath,'/StormCHAZerz Data');
+%decNoreastherpath=append(stormCHAZerspath,'/Dec2023Noreaster_Processed');
 
-epochnum='1702827001820'; % epoch number 
-ptcldpath=append(decNoreastherpath,'/',epochnum,'_allframes/ptclds');
-figpath=append(decNoreastherpath,'/',epochnum,'_allframes','/Figures');
-savepath=append(decNoreastherpath,'/',epochnum,'_allframes','/MAPs/');
+% paths if using external drive
+genpath='/Volumes/Elements';
+stormCHAZerspath=append(genpath,'/StormCHAZerz Data');
+decNoreastherpath=append(stormCHAZerspath,'/Dec2023Noreaster_processed');
+epochnum='17028270018120'; % epoch number 
+ptcldpath=append(decNoreastherpath,'/',epochnum,'_ptclds');
+figpath=append(decNoreastherpath,'/Figures');
+savepath=append(decNoreastherpath,'/GEMs/');
+
+
+%epochnum='1702827001820'; % epoch number 
+%ptcldpath=append(decNoreastherpath,'/',epochnum,'_allframes/ptclds');
+%figpath=append(decNoreastherpath,'/',epochnum,'_allframes','/Figures');
+%savepath=append(decNoreastherpath,'/',epochnum,'_allframes','/MAPs/');
 % GEM specs 
 % --------------
 camlocA = [239766.1, 3784761.9];%, 10.37
@@ -32,44 +42,44 @@ spec='*_ptcld*';
 
 % Create Transect Video 
 % ------------------------
-ypick = [20 -20]; % in m, define locations to pick transects
+ypick = [7.3 -20]; % in m, define locations to pick transects
 MAPzmatrixpath=append(savepath,'/meanMAPz.mat');
 % 0.5 m alongshore avg
 yavg = 0.5;
-newfigpath=append(figpath,'/Transect_yneg30','/05yavg');
+newfigpath=append(figpath,'/Transect_y7.3','/05yavg');
 [v_05,quality_array05]=tran_video(MAPzmatrixpath,yavg,dxy,ypick,newfigpath);
 
 yavg = 1.2; % in m, defining how wide in the alongshore to average over
-newfigpath=append(figpath,'/Transect_yneg30','/12yavg');
+newfigpath=append(figpath,'/Transect_y7.3','/12yavg');
 [v_12,quality_array12]=tran_video(MAPzmatrixpath,yavg,dxy,ypick,newfigpath);
 
 yavg=1.5;
-newfigpath=append(figpath,'/Transect_yneg30','/15yavg');
+newfigpath=append(figpath,'/Transect_y7.3','/15yavg');
 [v_15,quality_array15]=tran_video(MAPzmatrixpath,yavg,dxy,ypick,newfigpath);
 
 yavg=2.0;
-newfigpath=append(figpath,'/Transect_yneg30','/20yavg');
+newfigpath=append(figpath,'/Transect_y7.3','/20yavg');
 [v_20,quality_array20]=tran_video(MAPzmatrixpath,yavg,dxy,ypick,newfigpath);
 
 yavg=2.5;
-newfigpath=append(figpath,'/Transect_yneg30','/25yavg');
+newfigpath=append(figpath,'/Transect_y7.3','/25yavg');
 [v_25,quality_array25]=tran_video(MAPzmatrixpath,yavg,dxy,ypick,newfigpath);
 
 yavg=3.0;
-newfigpath=append(figpath,'/Transect_yneg30','/30yavg');
+newfigpath=append(figpath,'/Transect_y7.3','/30yavg');
 [v_30,quality_array30]=tran_video(MAPzmatrixpath,yavg,dxy,ypick,newfigpath);
 
 % plot all quality on 1 plot
 fig=figure('units','inches','position',[1 1 16 10],'color','w');clf;
-plot(quality_array05,'o','Color','r','MarkerFaceColor','r','MarkerSize',6); hold on;
-plot(quality_array12,'o','Color','m','MarkerFaceColor','m','MarkerSize',6); hold on;
-plot(quality_array15,'o','Color','y','MarkerFaceColor','y','MarkerSize',6); hold on;
-plot(quality_array20,'o','Color','g','MarkerFaceColor','g','MarkerSize',6); hold on;
-plot(quality_array25,'o','Color','c','MarkerFaceColor','c','MarkerSize',6); hold on;
-plot(quality_array30,'o','Color','b','MarkerFaceColor','b','MarkerSize',6); hold on;
-hold on; ylabel('Quality Value (# NaNs/# points in transect)');
-legend('yavg = 0.5m','yavg = 1.2m','yavg = 1.5m','yavg = 2.0m','yavg = 2.5m','yavg = 3.0m','FontSize',14); xlabel('Image # (time/2)');
-ylim([0 1]);xlim([0 numframes+1]); ax=gca; ax.XTick=unique(round(ax.XTick));title('Quality Value for Transects');set(gca,'FontSize',16);
+plot(quality_array05.*100,'o','Color','r','MarkerFaceColor','r','MarkerSize',6); hold on;
+plot(quality_array12.*100,'o','Color','m','MarkerFaceColor','m','MarkerSize',6); hold on;
+plot(quality_array15.*100,'o','Color','y','MarkerFaceColor','y','MarkerSize',6); hold on;
+plot(quality_array20.*100,'o','Color','g','MarkerFaceColor','g','MarkerSize',6); hold on;
+plot(quality_array25.*100,'o','Color','c','MarkerFaceColor','c','MarkerSize',6); hold on;
+plot(quality_array30.*100,'o','Color','b','MarkerFaceColor','b','MarkerSize',6); hold on;
+hold on; ylabel('% Gappy-ness(# NaNs/# points in transect)');
+legend('yavg = 0.5m','yavg = 1.2m','yavg = 1.5m','yavg = 2.0m','yavg = 2.5m','yavg = 3.0m','FontSize',18); xlabel('Image # (time/2)');
+ylim([0 100]);xlim([0 numframes+1]); ax=gca; ax.XTick=unique(round(ax.XTick));set(gca,'FontSize',18);set(gcf,'FontSize',18);
 % Plot Time Series of Various Transects at a Point
 % -------------------------------------------------
 TS_path='/Volumes/kanarde/MasonBEAST/data/StormCHAZerz Data/Dec2023Noreaster_Processed/1702827001820_allframes/WaveTimeSeries';

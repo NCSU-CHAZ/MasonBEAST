@@ -69,9 +69,9 @@ fig=figure('units','inches','position',[1 1 10 3],'color','w');
 hold on
 plot(time,wavetimeseries,'LineWidth',3); hold on; ylabel("Elevation (m)");
 xlabel("Time (s)"); title(append("GEM Derived Wave Time Series at ",pt_val,"m From Camera System"));
-ylim([0 0.5]);
-filename=append('timeseries_plot_',string(ypick(1)),'_',pt_valsave,'_',string(numframes));
-figpath=append(savepath,'/Plots/',filename);
+ylim([0 0.5]);set(gca,'fontsize',14);
+filename=append('timeseries_plot_',string(floor(ypick(1))),'_',pt_valsave,'_',string(numframes));
+figpath=append(savepath,'/Figures/',filename);
 saveas(fig,figpath,'png');
 close(fig);
 
@@ -83,12 +83,12 @@ shading interp;
 axis equal;ylim([-60 30]); ylabel(ylab);xlabel(xlab);xlim([-10 90]);clim([0 3.8]);
 ftsz = [22 18]; lw = 1.2; hc = colorbar('Location','eastoutside','Position', [0.83 0.14 0.035 0.4],'orientation','vertical','YAxisLocation','right');
 set(hc,'fontsize',ftsz(2),'linewidth',lw);
-set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 1, 0.96]); % Enlarge figure to full screen
-title(GEMtitle);
+%set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 1, 0.96]); % Enlarge figure to full screen
+title(GEMtitle);set(gca,'fontsize',14);
 hold on; yline(ypick(1),'k--','LineWidth',3);hold on,
 scatter(pt*dxy,ypick(1),140,'fill','sq','m','MarkerEdgeColor','k');
 filename=append('GEM_pt_plot_',pt_valsave,'_',string(numframes));
-figpath=append(savepath,'/Plots/',filename);
+figpath=append(savepath,'/Figures/',filename);
 saveas(fig,figpath,'png');
 close(fig);
 

@@ -1,4 +1,4 @@
-function[transect_matrix]=DEM2transects(DEMzmatrixpath,camlocA,camlocB,rbrloc,dxy,ypick,yavg,savepath)
+function[transect_matrix]=DEM2transects(DEMzmatrixpath,epochnum,camlocA,camlocB,rbrloc,dxy,ypick,yavg,savepath)
 % function[transect_matrix]=DEM2transects(DEMzmatrixpath,dxy,ypick,yavg,savepath)
 % % --------------------------------------------------------------------------
 % This function takes in a DEM matrix mat file and pulls transects at
@@ -11,6 +11,7 @@ function[transect_matrix]=DEM2transects(DEMzmatrixpath,camlocA,camlocB,rbrloc,dx
 % INPUTS:
 % -------
 % DEMzmatrixpath = path to DEM elevation mat file matrix
+% epochnum = epochnum of DEM
 % camloc = camera A location coordinates [Ax,Ay]
 % camloc = camera B location coordinates [Bx,By]
 % rbrloc = rbr location coordinates [x,y]
@@ -73,6 +74,7 @@ gridY = -80:dxy:25;
 % matrix for plotting
 cat_trans=cat(3,tran_struct.data); % (pts, tsteps, transect name)
 combined_tran_matrix=permute(cat_trans,[3,1,2]); % (transect name, pts, tsteps)
+transect_matrix=combined_tran_matrix;
 [Xgrid,Ygrid] = meshgrid(gridX,ypick);
 xlab = 'Cross-Shore (m)';ylab = 'Alongshore (m)';
 
@@ -107,4 +109,10 @@ for i=1:size(combined_tran_matrix,3) % loop over timesteps
     close(fig);
 
 end
+
+% -------------------------------------------------------------------------
+% Create Video of DEMs
+% -------------------------------------------------------------------------
+savepath=append(transavepath,'Alongshore_avg_DEM');
+
 

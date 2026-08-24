@@ -1,5 +1,5 @@
 % Workflow for processing full epoch folders
-% Last edits: 05/27/2026 BG
+% Last edits: 06/22/2026 BG
 
 
 % paths,epochnum, specs
@@ -35,11 +35,36 @@ spec='1702827001820*_ptcld*';
 ypick = [7.3 -20]; % in m, define locations to pick transects
 Zmatrixpath=append(GEMsavepath,'/meanMAPz.mat');
 % 0.5 m alongshore avg
-yavg = 1.2;
-newfigpath=append(vidsavepath,'Transect_y7_3','/1_2yavg');
-[v_12,quality_array12]=tran_video(Zmatrixpath,yavg,dxy,ypick,newfigpath);
+yavg = 2.0;
+newfigpath=append(vidsavepath,'Transect_y7_3','/2yavg');
+[v_2,quality_array2]=tran_video(Zmatrixpath,yavg,dxy,ypick,newfigpath); % this also saves the transect .m to folder for MAE
 
+% Create Transects in Alongshore
+% --------------------------------
+ypick_array_neg=-60:2:6.3;
+y_pick_array_pos=8.3:2:30;
 
+tran_struct=struct();
 
+for i=1:length(y_pick_array_pos)
+    current_y=y_pick_array_pos(i);
+    figpath=append(vidsavepath,'transect_y',num2str(current_y));
 
+    [vid,qual,tran]=tran_video(Zmatrixpath,yavg,dxy,current_y,figpath);
+    tran_struct(i).name=append('transect_y',num2str(current_y));
+    tran_struct(i).data=tran;
+end
+
+tran_struct2=struct();
+for i=1:length(ypick_array_neg)
+    current_y=ypick_array_neg(i);
+    figpath=append(vidsavepath,'transect_y',num2str(current_y));
+
+    [vid,qual,tran]=tran_video(Zmatrixpath,yavg,dxy,current_y,figpath);
+    tran_struct2(i).name=append('transect_y',num2str(current_y));
+    tran_struct2(i).data=tran;
+end
+
+all_trans_struct=[tran_struct2,tran_struct];
+save(append(vidsavepath,'1702827001820_transects.mat'),'all_trans_struct');
 

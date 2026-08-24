@@ -1,5 +1,5 @@
-function[meanDEMz,medDEMz,Xrot,Yrot]=ptcld2DEM(camlocA,camlocB,rbrloc,dxy,pcpath,savepath,spec)
-% function[meanDEMz_matrix,medDEMz_matrix,Xrot,Yrot]=ptcld2DEM(camlocA,camlocB,rbrloc,dxy,pcpath,savepath,spec)
+function[meanDEMz,medDEMz]=ptcld2DEM(camlocA,camlocB,rbrloc,dxy,pcpath,savepath,spec)
+% function[meanDEMz_matrix,medDEMz_matrix]=ptcld2DEM(camlocA,camlocB,rbrloc,dxy,pcpath,savepath,spec)
 % % --------------------------------------------------------------------------
 % This function takes in a pointcloud txt file from Metashape and creates a
 % Digital Elevation Model (DEM). The DEM is saved as a matrix .mat file
@@ -25,14 +25,13 @@ function[meanDEMz,medDEMz,Xrot,Yrot]=ptcld2DEM(camlocA,camlocB,rbrloc,dxy,pcpath
 % pointcloud as a mat file
 % medDEMz_matrix = matrix of median elevation values from given
 % pointcloud as a mat file
-% Xrot = rotated x coords of DEM (used in later plotting)
-% Yrot = rotated y coords of DEM (used in later plotting) 
 %
 % Last Edits: BG 08/17/2026
 % 
 % EDITS NEEDED: 
 % ---------------------------
 % leave space in matrix for null pointcloud
+% add video of DEM timesteps
 % 
 % POTENTIALLY ADD IF NEEDED
 % % GCPpath = path to GCP location (.txt file) THIS IS NOT ADDED IN YET BUT
@@ -72,6 +71,7 @@ gridY = -80:dxy:25;
 % Loop through given pointclouds
 filePattern=fullfile(pcpath,spec);
 listofFiles=dir(filePattern);
+listofFiles=listofFiles(~startsWith({listofFiles.name},'.')); % exclude gen files
 sortfilenames=natsortfiles({listofFiles.name});
 numframes=length(sortfilenames);
 
@@ -112,7 +112,7 @@ for i = 1:length(listofFiles)
      clear ztemp ntemp 
 
     DEMname=split(fullFilename,'/');
-    DEMname=DEMname(7,1);
+    DEMname=DEMname(6,1);
     DEMname=split(DEMname,'_');
     DEMname=DEMname(1,1);
     DEMname=string(DEMname);
