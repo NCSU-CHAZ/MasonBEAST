@@ -1,24 +1,28 @@
 # Script to run Metashape and create a pointcloud from given image folder (adapted from CB)
-# last edits: BG 08/05/2026
+# last edits: BG 08/24/2026
 
 # edits needed:
 # ----------------------------
 # non hard coded paths
 # fix exporting pointcloud
 # GCPs need to be added to the photo, this still isn't working.... maybe have metashape scan for GCPs? test this out
-# run code in terminal:  /Applications/MetashapePro.app/Contents/MacOS/MetashapePro -r /Users/bagaenzl/MasonBEAST/aur_meta.py
-import Metashape
+# run code in terminal: /Applications/MetashapePro.app/Contents/MacOS/MetashapePro -r /Users/bagaenzl/MasonBEAST/aur_meta.py
 import os
-# Monday Aug 12, 2024
-image_folder=r'/Volumes/Elements/RawImages/1702830601159/' # change to be not hard coded just for test run
+import Metashape
+# inputs
+epochnum='1702841401078'
+genpath=r'/Volumes/Elements/'
+image_folder=os.path.join(genpath,'RawImages/',epochnum)  #/Volumes/Elements/RawImages/1702819801171
 #gcp_path=r'/Volumes/Elements/GCPs/GCPsfromNCSUcomp/GCPS_08_12_2024.txt'
-pcpath="/Volumes/Elements/1702830601159/1702830601159_ptcld"
+pcpath=os.path.join(genpath,epochnum,f'/{epochnum}_ptcld')
+#"/Volumes/Elements/1702830601159/1702830601159_ptcld"
 cam_a=r'/Volumes/Elements/MetashapeFiles/camA_precal.xml'
 cam_b=r'/Volumes/Elements/MetashapeFiles/camB_precal.xml'
 
 # initialize project document
 doc=Metashape.app.document
-psx_path="/Volumes/Elements/MetashapeFiles/1702830601159.psx" # needs to be changed to not be hard coded
+psx_path=os.path.join(genpath,'MetashapeFiles/',f'{epochnum}.psx')
+#"/Volumes/Elements/MetashapeFiles/1702830601159.psx" # needs to be changed to not be hard coded
 doc.save(psx_path)
 
 print('-----------------------------------------')
@@ -267,3 +271,5 @@ doc.save()
                        #precision=6)
 
 #print("pointclouds exported")
+
+# find u,v and insert from gui
