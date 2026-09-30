@@ -865,12 +865,16 @@ def train_MAE(ds,ds_orig, exclude_tran,num_training,iterations,window_size,avg_m
 
     return current_dataset,pipeline_history,historical_stages_zoo,current_window_size
 
-
+print("Loading Data..................")
 # LOAD IN DATA & DETREND (TAKE OUT MEAN)
 tran1702827001820=loadNprep(transect_1702827001820_path) # load
 sorted_1820_dict=sort_transects(tran1702827001820,descending=True) #sort
 sorted_1820=pd.concat(sorted_1820_dict.values(), keys=sorted_1820_dict.keys()) # dataframe
 ds1820_demeaned,avg_mwl1820,ds1820_lp=detrend_ds(sorted_1820.iloc[200:,:],filter_wn=0.05,filter_order=2) 
+
+print("Data prepped for training..................")
+
+print("Training MAE.................")
 
 recon_df, history, zoo, fnal_ws = train_MAE(
     ds=ds1820_demeaned,
