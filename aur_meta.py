@@ -10,8 +10,8 @@
 import os
 import Metashape
 # inputs
-epochnum='1702841401078'
-genpath=r'/Volumes/Elements/'
+epochnum='1790377201755'
+genpath=r'/Volumes/rsstu/users/k/kanarde/MasonBEAST/data/'
 image_folder=os.path.join(genpath,'RawImages/',epochnum)  #/Volumes/Elements/RawImages/1702819801171
 #gcp_path=r'/Volumes/Elements/GCPs/GCPsfromNCSUcomp/GCPS_08_12_2024.txt'
 pcpath=os.path.join(genpath,epochnum,f'/{epochnum}_ptcld')
