@@ -31,6 +31,9 @@ function[v,points_array,ztran_matrix]=tran_video(DEMzmatrixpath,epochnum,yavg,dx
 % change to moving average of lowest points for beach face every 5 min? 
 % remove points within beachface range from water values
 
+% add storage of where is water at each timestep, grab location of furthest
+% point up beach face that is 2-3cm above the beach
+
 % Last Updated: 08/17/26 BG
 % -------------------------------------------------------------------------
 % CONSTANTS
@@ -77,10 +80,37 @@ gridY=-80:dxy:25;
 ztran = median(DEMz(iy-iyavg:iy+iyavg,:,:),1,'omitnan');
 ztran = squeeze(ztran); % one matrix
 ztran = movmean(ztran,2,1,'omitnan');
+
+
 % compute beach as minimum (THIS CAN BE IMPROVED)
-zbeach = min(ztran,[],2,'omitnan'); % beach elevation
+%zbeach = min(ztran,[],2,'omitnan'); % beach elevation
 [~,ix] = min(abs(x(1,:)-44));
-zbeachmean = mean(ztran,2,'omitnan');
+%zbeachmean = mean(ztran,2,'omitnan');
+
+% trying moving 5 min avg for zbeach
+avg_period=5*60; % 5 min in s (trying 1 min avg)
+frames=round(avg_period/0.5);% frames in 5 min period
+
+zbeach_min=movmin(ztran,frames,2,'omitnan');
+zbeach=movmean(zbeach_min,frames,2,'omitnan');
+
+% remove outliers (TESTING)
+window_size=15; 
+zbeach=filloutliers(zbeach,'pchip','movmedian',window_size,'ThresholdFactor',1.5); % despike with moving median
+
+
+
+% beach water thresholding (TESTING)
+dzthresh=0.03; % 3 cm threshold
+water_depth=ztran-zbeach;
+is_water=water_depth>dzthresh;
+is_beach=water_depth<=dzthresh;
+zwater=ztran;
+zwater(~is_water)=NaN; 
+zdry=ztran;
+zdry(~is_beach)=NaN;
+
+
 [~,ixmean] = min(abs(x(1,:)-12));
 ix2 = find(x(1,:) > 34 & x(1,:) < 36);
 [~,ixtran] = min(abs(x(1,:)-14));
@@ -103,9 +133,12 @@ figure('units','inches','position',[1 1 10 3],'color','w');
 for i = 1:numframes %+1
     clf
     plot(x(1,ixon:ix)*dxy,zbeach(ixon:ix),'LineWidth',3,'Color',[148, 116, 27]/256) % plots beach (minimum transect)
+    %plot(x*dxy,zbeach(:,i),'LineWidth',3,'Color',[148, 116, 27]/256) %
+    %plots beach (DOESN"T WORK)
     hold on
     plot(x(1,ix:end)*dxy,ztran(ix:end,i),'LineWidth',3,'Color','b') % plots water in swash
     plot(x(1,ixtran:ix)*dxy,ztran(ixtran:ix,i),'LineWidth',3,'Color','b') % plots water in uprush
+    %plot(x*dxy,zwater(:,i),'LineWidth',3,'Color','b') % plots water (TESTING)
     box on
     ylim([0 4.5]);
     xlim([0 23]);
@@ -131,6 +164,7 @@ for i = 1:numframes%+1
     clf(fig);
     plot(x(1,ixon:ix),zbeach(ixon:ix),'LineWidth',3,'Color',[148, 116, 27]/256) % plots beach (minimum transect)
     hold on
+    %plot(x*dxy,zwater(:,i),'LineWidth',3,'Color','b') % plots water (TESTING)
     plot(x(1,ix:end),ztran(ix:end,i),'LineWidth',3,'Color','b') % plots water in swash
     plot(x(1,ixtran:ix),ztran(ixtran:ix,i),'LineWidth',3,'Color','b') % plots water in uprush
     box on
