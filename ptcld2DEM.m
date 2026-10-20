@@ -26,7 +26,7 @@ function[meanDEMz,medDEMz]=ptcld2DEM(camlocA,camlocB,rbrloc,dxy,pcpath,savepath,
 % medDEMz_matrix = matrix of median elevation values from given
 % pointcloud as a mat file
 %
-% Last Edits: BG 08/17/2026
+% Last Edits: BG 09/22/2026 added ptcld num to saving
 % 
 % EDITS NEEDED: 
 % ---------------------------
@@ -75,6 +75,7 @@ listofFiles=listofFiles(~startsWith({listofFiles.name},'.')); % exclude gen file
 sortfilenames=natsortfiles({listofFiles.name});
 numframes=length(sortfilenames);
 
+
 % CREATE DEMs (STATIC PLOTS AND .MAT FILE)
 %----------------------------------------------
 % create matrix for storing z values
@@ -112,7 +113,7 @@ for i = 1:length(listofFiles)
      clear ztemp ntemp 
 
     DEMname=split(fullFilename,'/');
-    DEMname=DEMname(6,1);
+    DEMname=DEMname(7,1);
     DEMname=split(DEMname,'_');
     DEMname=DEMname(1,1);
     DEMname=string(DEMname);
@@ -120,6 +121,14 @@ for i = 1:length(listofFiles)
     DEMdate=string(DEMdate);
     DEMtitle=append(DEMname,',',DEMdate);
     DEMfilepath=append(DEMsavepath,'DEMz_matrix'); 
+
+    ptcldnum=split(fullFilename,'/');
+    ptcldnum=ptcldnum(8,1);
+    ptcldnum=split(ptcldnum,'d');
+    ptcldnum=ptcldnum(2,1);
+    ptcldnum=split(ptcldnum,'.');
+    ptcldnum=ptcldnum(1,1);
+    ptcldnum=string(ptcldnum);
     
 % Plotting DEM with mean elevation
     xlab = 'Cross-Shore (m)';ylab = 'Alongshore (m)';
@@ -141,7 +150,7 @@ for i = 1:length(listofFiles)
     set(hc,'fontsize',ftsz(2),'linewidth',lw); hc.Label.String = 'Elevation (m NAVD83 (2011))';
     set(gca,'fontsize',14);
     title(DEMtitle);
-    meanfigpath=append(DEMfigpath,"/meanDEM",DEMname,'_',num2str(i));
+    meanfigpath=append(DEMfigpath,"/meanDEM",DEMname,'_',ptcldnum);
     saveas(fig,meanfigpath,'png');
     fprintf('saved meanDEM fig: %s to %s\n', DEMtitle, meanfigpath);
     close(fig);
@@ -162,7 +171,7 @@ for i = 1:length(listofFiles)
     set(hc,'fontsize',ftsz(2),'linewidth',lw); hc.Label.String = 'Elevation (m NAVD83 (2011))';
     set(gca,'fontsize',14);
     title(DEMtitle);
-    medfigpath=append(DEMfigpath,"/medDEM",DEMname,'_',num2str(i));
+    medfigpath=append(DEMfigpath,"/medDEM",DEMname,'_',ptcldnum);
     saveas(fig,medfigpath,'png');
     fprintf('saved medDEM fig: %s to %s\n', DEMtitle, medfigpath);
     close(fig);
